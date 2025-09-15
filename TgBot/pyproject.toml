@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "MyProject"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiogram = "^3.3.0"
+pydantic-settings = "^2.1.0"
+cachetools = "^5.3.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
