@@ -4,3 +4,190 @@
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+
+
+
+
+# ------------------------------
+# Common / IDE
+# ------------------------------
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Rider / Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ------------------------------
+# ASP.NET / .NET (C#) backend
+# ------------------------------
+# Build outputs
+bin/
+obj/
+publish/
+artifacts/
+
+# NuGet
+*.nupkg
+# packages folder (older projects)
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# EF Core
+*.db
+*.db-journal
+
+# User-specific / local configs / secrets
+appsettings.*.Local.json
+appsettings.Secret*.json
+secrets.json
+*.pfx
+*.key
+*.pem
+
+# Logs
+*.log
+Logs/
+
+# Rider / VS specific
+Generated\ Files/
+
+# Dotnet tools
+dotnet-*.json
+
+# temporary
+*.tmp
+
+# ------------------------------
+# Docker
+# ------------------------------
+# Local env files and overrides (often contain secrets)
+.env
+.env.*
+docker-compose.override.yml
+docker-compose.*.override.yml
+
+# Docker build cache / local tmp (if you create folders)
+docker-compose*.local.yml
+
+# Note: Do NOT ignore Dockerfile or .dockerignore by default (usually should be committed)
+
+# ------------------------------
+# Flutter / Dart (mobile/web)
+# ------------------------------
+# Dart / Flutter
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-plugins-deps
+.flutter-credentials
+.flutter-*
+pubspec.lock
+
+# Build outputs
+build/
+# Android
+**/android/.gradle/
+**/android/app/build/
+**/android/gradle/
+**/android/.idea/
+**/android/local.properties
+# iOS
+**/ios/Pods/
+**/ios/Runner.xcworkspace/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/engine/
+**/ios/Flutter/Generated.xcconfig
+
+# Generated plugin files
+**/ios/Flutter/GeneratedPluginRegistrant.*
+**/lib/generated_plugin_registrant.dart
+
+# VS / IntelliJ
+*.iml
+
+# ------------------------------
+# Python (aiogram / bot)
+# ------------------------------
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+.ENV/
+env.bak/
+venv.bak/
+
+# Packaging
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Test / misc caches
+.pytest_cache/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+htmlcov/
+
+# Mypy, pipenv
+.mypy_cache/
+pip-wheel-metadata/
+Pipfile.lock
+
+# Local env files / secrets
+.env
+.env.*
+secrets.yml
+instance/
+
+# SQLite (if used)
+*.sqlite3
+*.db
+
+# ------------------------------
+# Logs, temp, OS files (general)
+# ------------------------------
+*.log
+tmp/
+temp/
+*.tmp
+
+# ------------------------------
+# Optional: keep track of special tracked files
+# ------------------------------
+# If you want to keep a specific appsettings (e.g. appsettings.Production.json) commit it explicitly:
+# !appsettings.Production.json
+
+# If you want to keep a specific .env.sample template:
+# !.env.example
