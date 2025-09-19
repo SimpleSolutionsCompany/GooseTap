@@ -41,10 +41,13 @@ _ReSharper*/
 # ASP.NET / .NET (C#) backend
 # ------------------------------
 # Build outputs
-bin/
-obj/
-publish/
-artifacts/
+# .NET build artifacts (усі підпроекти рекурсивно)
+**/bin/
+**/obj/
+**/out/
+**/publish/
+**/artifacts/
+
 
 # NuGet
 *.nupkg
@@ -88,6 +91,7 @@ docker-compose.override.yml
 docker-compose.*.override.yml
 
 # Docker build cache / local tmp (if you create folders)
+**/Container/
 docker-compose*.local.yml
 
 # Note: Do NOT ignore Dockerfile or .dockerignore by default (usually should be committed)
