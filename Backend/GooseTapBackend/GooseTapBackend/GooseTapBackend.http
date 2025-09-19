@@ -1,0 +1,6 @@
+@GooseTapBackend_HostAddress = http://localhost:5097
+
+GET {{GooseTapBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
