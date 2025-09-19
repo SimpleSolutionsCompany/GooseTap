@@ -8,7 +8,7 @@ namespace GooseTapBackend.Controllers
     {
         private static readonly string[] Summaries = new[]
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            "Sunny", "Mostly sunny", "Hot" , "Dry"
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
