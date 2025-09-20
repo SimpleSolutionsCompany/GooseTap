@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
+import "package:goose_tap/features/exchange/widgets/energy.dart";
 import "package:goose_tap/features/exchange/widgets/upper_info.dart";
 
 import "../widgets/widgets.dart";
@@ -85,46 +86,47 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
                 const SizedBox(height: 30),
                 GooseCircle(onTap: () => addClick()),
                 const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: SvgPicture.asset(
-                              "assets/energy.svg",
-                              semanticsLabel: 'Energy',
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            "1000/1000",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "Boost",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                const Energy(),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(
+                //     horizontal: 20,
+                //     vertical: 0,
+                //   ),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Row(
+                //         children: [
+                //           SizedBox(
+                //             width: 30,
+                //             height: 30,
+                //             child: SvgPicture.asset(
+                //               "assets/energy.svg",
+                //               semanticsLabel: 'Energy',
+                //             ),
+                //           ),
+                //           const SizedBox(width: 5),
+                //           Text(
+                //             "1000/1000",
+                //             style: TextStyle(
+                //               fontSize: 18,
+                //               color: Colors.white,
+                //               fontWeight: FontWeight.w700,
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //       Text(
+                //         "Boost",
+                //         style: TextStyle(
+                //           fontSize: 18,
+                //           color: Colors.white,
+                //           fontWeight: FontWeight.w700,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),
