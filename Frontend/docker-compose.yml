@@ -1,0 +1,6 @@
+services:
+  flutter-nginx:
+    build: .
+    container_name: flutter-nginx
+    ports:
+      - "8080:80"

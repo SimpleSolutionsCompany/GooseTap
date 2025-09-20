@@ -36,6 +36,20 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.2.1
   google_fonts: ^6.3.1
+  
+
+  #Logger
+  talker_flutter: ^5.0.1
+  talker_dio_logger: ^5.0.1
+  talker_bloc_logger: ^5.0.1
+  #Bloc
+  bloc: ^9.0.0
+  flutter_bloc: ^9.1.1
+  #API
+  dio: ^5.9.0
+  retrofit: ^4.7.2
+  #Local Storage
+  hive: ^2.2.3
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +82,7 @@ flutter:
     - assets/info.svg
     - assets/account_icon.svg
     - assets/binance_logo.svg
+    - assets/coin.png
 
     #Bottom Navigation Bar Icons
     - assets/bottom_nav_bar_imgs/binance.svg

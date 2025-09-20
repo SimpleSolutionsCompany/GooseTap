@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
+import "package:goose_tap/features/exchange/widgets/upper_info.dart";
 
 import "../widgets/widgets.dart";
 
@@ -26,89 +27,7 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Center(
-          //   child: Text(
-          //     "Goose Tap",
-          //     style: TextStyle(
-          //       color: Colors.white,
-          //       fontSize: 16,
-          //       fontWeight: FontWeight.w600,
-          //     ),
-          //   ),
-          // ),
-          // const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 55,
-                      height: 55,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        gradient: LinearGradient(
-                          colors: [
-                            Color.fromARGB(49, 255, 255, 255),
-                            Color(0XAA4E4949),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: SvgPicture.asset("assets/account_icon.svg"),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    Text(
-                      "Nick Jay",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  width: 90,
-                  height: 55,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(
-                      colors: [
-                        Color.fromARGB(49, 255, 255, 255),
-                        Color(0XAA4E4949),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Row(
-                      children: [
-                        SvgPicture.asset("assets/binance_logo.svg"),
-                        const SizedBox(width: 5),
-                        Text(
-                          "Binance",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          UpperInfo(),
           const SizedBox(height: 15),
           Container(
             decoration: BoxDecoration(
@@ -139,14 +58,15 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
                     width: 200,
                     height: 70,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Image.asset("assets/dollar_coin.svg", scale: 15),
-                        SvgPicture.asset(
-                          "assets/big_dollar_coin.svg",
-                          alignment: AlignmentGeometry.center,
-                        ),
+                        // SvgPicture.asset(
+                        //   "assets/big_dollar_coin.svg",
+                        //   alignment: AlignmentGeometry.center,
+                        // ),
+                        Container(height: 50, width: 50, color: Colors.red),
                         // const SizedBox(width: 2),
                         Text(
                           counter.toString(),

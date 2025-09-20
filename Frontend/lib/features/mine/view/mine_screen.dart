@@ -5,19 +5,6 @@ class MineScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Shop Screen")),
-      body: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(width: 300, height: 300, color: Colors.red),
-            Center(
-              child: Container(width: 200, height: 200, color: Colors.green),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Scaffold(appBar: AppBar(title: Text("Mine Screen")));
   }
 }
