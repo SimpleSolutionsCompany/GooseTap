@@ -1,15 +1,21 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import 'features/widgets/widgets.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  final talker = TalkerFlutter.init();
+  Bloc.observer = TalkerBlocObserver(talker: talker);
+
   runApp(const MyApp());
 }
 
