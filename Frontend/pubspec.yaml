@@ -45,11 +45,14 @@ dependencies:
   #Bloc
   bloc: ^9.0.0
   flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
   #API
   dio: ^5.9.0
   retrofit: ^4.7.2
   #Local Storage
   hive: ^2.2.3
+  #Responsivness
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
@@ -82,7 +85,19 @@ flutter:
     - assets/info.svg
     - assets/account_icon.svg
     - assets/binance_logo.svg
-    - assets/coin.png
+    - assets/coin.jpg
+
+    #Mine Screen Icons and Images
+    - assets/mine_imgs/success.svg
+    - assets/mine_imgs/big_meme.svg
+    - assets/mine_imgs/small_meme.svg
+    - assets/mine_imgs/bug.svg
+    - assets/mine_imgs/island.svg
+    - assets/mine_imgs/m.svg
+    - assets/mine_imgs/x10.svg
+    - assets/mine_imgs/x20.svg
+    - assets/mine_imgs/x30.svg
+    - assets/mine_imgs/x50.svg
 
     #Bottom Navigation Bar Icons
     - assets/bottom_nav_bar_imgs/binance.svg

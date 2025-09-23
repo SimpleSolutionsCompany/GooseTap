@@ -52,9 +52,9 @@ class ProgressBar extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           Container(
-            height: 12,
+            height: 9,
             width: double.infinity,
             decoration: BoxDecoration(
               border: Border.all(color: Color(0xFF555555), width: 1),

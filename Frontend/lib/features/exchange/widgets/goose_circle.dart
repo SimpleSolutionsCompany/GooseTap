@@ -14,10 +14,10 @@ class GooseCircle extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Container(
-              width: 300,
-              height: 300,
+              width: 320,
+              height: 320,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(150),
+                borderRadius: BorderRadius.circular(160),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.lightBlue.withOpacity(0.2),
@@ -32,10 +32,10 @@ class GooseCircle extends StatelessWidget {
               ),
             ),
             Container(
-              width: 280,
-              height: 280,
+              width: 300,
+              height: 300,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(145),
+                borderRadius: BorderRadius.circular(150),
                 gradient: LinearGradient(
                   colors: [Color(0xFF35389E), Color(0xFF1C2848)],
                 ),
