@@ -7,11 +7,6 @@ namespace GooseTapBackend.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult<string> GetName(int userId)
-        {
-            var str = "Nazar";
-            return  Unauthorized(str);
-        }
+        
     }
 }

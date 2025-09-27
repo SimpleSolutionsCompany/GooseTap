@@ -14,5 +14,5 @@ namespace Infrastructure.Configuration
         public string SenderDisplayName { get; set; }
         public string SenderPassword { get; set; }
         public bool UseSSL { get; set; }
-    }
+    }   
 }
