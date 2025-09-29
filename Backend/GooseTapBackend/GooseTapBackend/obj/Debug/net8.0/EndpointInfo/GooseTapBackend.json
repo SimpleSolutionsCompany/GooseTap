@@ -6,6 +6,18 @@
     "version": "v1"
   },
   "paths": {
+    "/api/Auth/test": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Auth/authorize": {
       "post": {
         "tags": [

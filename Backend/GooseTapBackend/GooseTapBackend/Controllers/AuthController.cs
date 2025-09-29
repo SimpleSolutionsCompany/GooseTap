@@ -39,7 +39,11 @@ namespace GooseTapBackend.Controllers
             //_mapper = mapper;
         }
 
-
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Ok("AuthController is working!");
+        }
 
         [HttpPost("authorize")]
         public async Task<ActionResult> Authorize([FromBody] AuthorizeDTO user)

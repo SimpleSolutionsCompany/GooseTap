@@ -105,12 +105,20 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 var app = builder.Build();
 
 
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    db.Database.Migrate();
+//}
+
+
+
 //ServiceLocator.SetLocatorProvider(app.Services);
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 //}
 

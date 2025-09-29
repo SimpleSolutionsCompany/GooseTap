@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
-    public class UserRepository : IRepository<User>
+    public class _ExampleUserRepository : IRepository<User>
     {
-        public UserRepository() { 
+        public _ExampleUserRepository() { 
             
         }
 
