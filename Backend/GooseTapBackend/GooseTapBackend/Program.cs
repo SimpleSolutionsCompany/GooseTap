@@ -1,3 +1,4 @@
+﻿
 using System;
 using CoreContext.Context;
 using Infrastructure.Configuration;
@@ -9,9 +10,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using DotNetEnv; // 👈 додано для роботи з .env файлами
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 👇 Завантажуємо змінні з .env (тільки локально, файл у .gitignore)
+DotNetEnv.Env.Load();
+
+// Додаємо Environment Variables у Configuration
+builder.Configuration.AddEnvironmentVariables();
+
+
+
+
 
 // Add services to the container.
 
@@ -56,6 +68,7 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+// 👇 Connection string тепер можна брати з .env або Environment Variables
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -85,15 +98,16 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JWTSettings:Issuer"],
-        ValidAudience = builder.Configuration["JWTSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:key"]))
+        ValidIssuer = builder.Configuration["JWTSettings:Issuer"], // 👈 береться з ENV або .env
+        ValidAudience = builder.Configuration["JWTSettings:Audience"], // 👈 береться з ENV або .env
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:key"])) // 👈 береться з ENV або .env
     };
 });
 
 
 builder.Services.AddTransient<TokenService>();
 
+// 👇 EmailSettings тепер теж через ENV або .env
 var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>();
 builder.Services.AddSingleton(emailSettings);
 builder.Services.AddTransient<IEmailService, EmailService>();
@@ -119,7 +133,7 @@ var app = builder.Build();
 //if (app.Environment.IsDevelopment())
 //{
 app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwaggerUI();
 //}
 
 app.UseHttpsRedirection();
@@ -130,3 +144,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
