@@ -219,3 +219,5 @@ C:\Users\Nazar\source\repos\SimpleSolutionsCompany\GooseTap\Backend\GooseTapBack
 C:\Users\Nazar\source\repos\SimpleSolutionsCompany\GooseTap\Backend\GooseTapBackend\GooseTapBackend\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Nazar\source\repos\SimpleSolutionsCompany\GooseTap\Backend\GooseTapBackend\GooseTapBackend\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Nazar\source\repos\SimpleSolutionsCompany\GooseTap\Backend\GooseTapBackend\GooseTapBackend\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Nazar\source\repos\SimpleSolutionsCompany\GooseTap\Backend\GooseTapBackend\GooseTapBackend\bin\Debug\net8.0\DotNetEnv.dll
+C:\Users\Nazar\source\repos\SimpleSolutionsCompany\GooseTap\Backend\GooseTapBackend\GooseTapBackend\bin\Debug\net8.0\Sprache.dll
