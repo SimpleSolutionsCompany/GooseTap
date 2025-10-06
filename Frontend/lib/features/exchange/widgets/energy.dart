@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Energy extends StatelessWidget {
   const Energy({super.key});
@@ -7,38 +7,28 @@ class Energy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+      padding: EdgeInsets.symmetric(horizontal: 40.w),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 30,
-                height: 30,
-                child: SvgPicture.asset(
-                  "assets/energy.svg",
-                  semanticsLabel: 'Energy',
-                ),
+                width: 40,
+                height: 40,
+                child: Image.asset("assets/exchange_imgs/energy.png"),
               ),
-              const SizedBox(width: 5),
               Text(
-                "1000/1000",
+                "6500/6500",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ],
-          ),
-          Text(
-            "Boost",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
           ),
         ],
       ),

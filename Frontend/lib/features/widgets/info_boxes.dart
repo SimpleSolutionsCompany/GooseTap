@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class InfoBoxes extends StatelessWidget {
@@ -8,38 +9,60 @@ class InfoBoxes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 50,
-              width: 110,
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Container(
+        width: 318.w,
+        height: 50.h,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 40,
+              spreadRadius: 15,
+              offset: Offset(0, 0),
+              color: Color.fromARGB(46, 225, 0, 255),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.35), // shadow color
+              offset: const Offset(0, 4), // x, y offset (only vertical)
+              blurRadius: 8, // how soft the shadow is
+              spreadRadius: 0, // how much the shadow spreads
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 50.h,
+              width: 98.w,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Color(0xFF32363C),
+                borderRadius: BorderRadius.circular(12.r),
+                color: Color.fromARGB(196, 39, 39, 39),
               ),
               child: Column(
                 children: [
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   Text(
                     "Earn per tap",
                     style: TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFFF79841),
+                      fontSize: 11.sp,
+                      color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset("assets/little_dollar_coin.svg"),
-                      const SizedBox(width: 3),
+                      SizedBox(
+                        width: 15.w,
+                        height: 15.h,
+                        child: Image.asset("assets/exchange_imgs/coin.png"),
+                      ),
+                      SizedBox(width: 3.w),
                       Text(
                         "+12",
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 11.sp,
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
                         ),
@@ -49,36 +72,41 @@ class InfoBoxes extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Container(
-              height: 50,
-              width: 110,
+            SizedBox(width: 10.w),
+            Container(
+              height: 50.h,
+              width: 98.w,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Color(0xFF32363C),
+                borderRadius: BorderRadius.circular(12.r),
+                color: Color.fromARGB(196, 39, 39, 39),
               ),
               child: Column(
                 children: [
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   Text(
                     "Earn per tap",
                     style: TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFF6F72E2),
+                      fontSize: 11.sp,
+                      color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(width: 3),
+                      SizedBox(
+                        width: 15.w,
+                        height: 15.h,
+                        child: Image.asset("assets/exchange_imgs/coin.png"),
+                      ),
+
+                      SizedBox(width: 3.w),
+
                       Text(
                         "10M",
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 11.sp,
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
                         ),
@@ -88,53 +116,58 @@ class InfoBoxes extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Container(
-              height: 50,
-              width: 110,
+            SizedBox(width: 10.w),
+            Container(
+              height: 50.h,
+              width: 98.w,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Color(0xFF32363C),
+                borderRadius: BorderRadius.circular(12.r),
+                color: Color.fromARGB(196, 39, 39, 39),
               ),
               child: Column(
                 children: [
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   Text(
                     "Earn per tap",
                     style: TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFF84CB69),
+                      fontSize: 11.sp,
+                      color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset("assets/little_dollar_coin.svg"),
-                      const SizedBox(width: 3),
+                      SizedBox(
+                        width: 15.w,
+                        height: 15.h,
+                        child: Image.asset("assets/exchange_imgs/coin.png"),
+                      ),
+                      // Image.asset("assets/coin.png"),
+                      SizedBox(width: 3.w),
                       Text(
                         "+678.3K",
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 11.sp,
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(width: 5),
+                      SizedBox(width: 5.w),
                       GestureDetector(
                         onTap: onTap,
-                        child: SvgPicture.asset("assets/info.svg"),
+                        child: SvgPicture.asset(
+                          "assets/exchange_imgs/info.svg",
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -16,7 +16,7 @@ class ShopCard extends StatelessWidget {
       child: Padding(
         padding: EdgeInsetsGeometry.symmetric(horizontal: 10.w, vertical: 10.h),
         child: Row(children: [
-
+             
           ],
         ),
       ),

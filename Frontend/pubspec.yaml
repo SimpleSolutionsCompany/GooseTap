@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.2.1
   google_fonts: ^6.3.1
+
+  blur: ^4.0.2
+
+  js: any
   
 
   #Logger
@@ -49,10 +53,12 @@ dependencies:
   #API
   dio: ^5.9.0
   retrofit: ^4.7.2
+  json_annotation: ^4.9.0
   #Local Storage
   hive: ^2.2.3
   #Responsivness
   flutter_screenutil: ^5.9.3
+  telegram_web_app: ^0.3.3
 
 dev_dependencies:
   flutter_test:
@@ -63,7 +69,10 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
+  retrofit_generator: ^10.0.1
+  build_runner: ^2.6.0
+  json_serializable: ^6.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -78,14 +87,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/big_dollar_coin.svg
-    - assets/little_dollar_coin.svg
-    - assets/goose.PNG
-    - assets/energy.svg
-    - assets/info.svg
-    - assets/account_icon.svg
-    - assets/binance_logo.svg
-    - assets/coin.jpg
+
+    #Exchage Screen Imags
+    - assets/exchange_imgs/coin.png
+    - assets/exchange_imgs/energy.png
+    - assets/exchange_imgs/goose.png
+    - assets/exchange_imgs/gradient_bg_purple.png
+    - assets/exchange_imgs/info.svg
+    - assets/exchange_imgs/me.jpg
 
     #Mine Screen Icons and Images
     - assets/mine_imgs/success.svg
@@ -103,8 +112,10 @@ flutter:
     - assets/bottom_nav_bar_imgs/binance.svg
     - assets/bottom_nav_bar_imgs/coins.svg
     - assets/bottom_nav_bar_imgs/friends.svg
-    - assets/bottom_nav_bar_imgs/goose_coin.svg
+    - assets/bottom_nav_bar_imgs/goose_coin.png
     - assets/bottom_nav_bar_imgs/pickaxe.svg
+
+   
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
