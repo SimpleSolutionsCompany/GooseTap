@@ -11230,23 +11230,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Nazar\\.nuget\\packages\\": {},
+    "C:\\Users\\nazar\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\GooseTapBackend\\GooseTapBackend.csproj",
+      "projectUniqueName": "C:\\Users\\nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\GooseTapBackend\\GooseTapBackend.csproj",
       "projectName": "GooseTapBackend",
-      "projectPath": "C:\\Users\\Nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\GooseTapBackend\\GooseTapBackend.csproj",
-      "packagesPath": "C:\\Users\\Nazar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\GooseTapBackend\\obj\\",
+      "projectPath": "C:\\Users\\nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\GooseTapBackend\\GooseTapBackend.csproj",
+      "packagesPath": "C:\\Users\\nazar\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\GooseTapBackend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Nazar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\nazar\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -11262,11 +11262,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\AppBLL\\AppBLL.csproj": {
-              "projectPath": "C:\\Users\\Nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\AppBLL\\AppBLL.csproj"
+            "C:\\Users\\nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\AppBLL\\AppBLL.csproj": {
+              "projectPath": "C:\\Users\\nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\AppBLL\\AppBLL.csproj"
             },
-            "C:\\Users\\Nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\Infrastructure\\Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\Nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\Infrastructure\\Infrastructure.csproj"
+            "C:\\Users\\nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\nazar\\source\\repos\\SimpleSolutionsCompany\\GooseTap\\Backend\\GooseTapBackend\\Infrastructure\\Infrastructure.csproj"
             }
           }
         }
@@ -11353,7 +11353,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

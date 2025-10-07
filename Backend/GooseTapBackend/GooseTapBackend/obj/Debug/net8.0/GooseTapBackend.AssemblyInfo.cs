@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GooseTapBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8966b182c294f98cb79bdc3bca72a90ce22767fb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a89e17e9aa08246caba406965fe75e00708d9b2")]
 [assembly: System.Reflection.AssemblyProductAttribute("GooseTapBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GooseTapBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
