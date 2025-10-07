@@ -34,5 +34,23 @@
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
+  <script src="https://telegram.org/js/telegram-web-app.js" defer=""></script>
+  <script>
+      function expandTelegramApp() {
+        // const ua = navigator.userAgent.toLowerCase();
+        // const isMobile = /iphone|android|ipad|mobile/.test(ua);
+
+          Telegram.WebApp.ready();
+          Telegram.WebApp.expand();
+          console.log("Telegram WebApp expanded (mobile).");
+       
+      }
+
+      function goFullscreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+      }
+    </script>
 </body>
 </html>
