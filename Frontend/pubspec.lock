@@ -262,6 +262,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.1.1"
+  flutter_bounce:
+    dependency: "direct main"
+    description:
+      name: flutter_bounce
+      sha256: "445fb27c936a19ed053bd159dd8ba0f9857eebed553e34f3322734d33adb5539"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
-import "package:goose_tap/features/exchange/widgets/widgets.dart";
+import "package:flutter_bounce/flutter_bounce.dart";
 import "../../widgets/widgets.dart";
+import "../widgets/widgets.dart";
 
 class ExchangeScreen extends StatefulWidget {
   const ExchangeScreen({super.key});
@@ -10,6 +11,29 @@ class ExchangeScreen extends StatefulWidget {
 }
 
 class _ExchangeScreenState extends State<ExchangeScreen> {
+  int _counter = 0;
+  int _energy = 1000;
+  double _progress = 0;
+
+  final List<FlyingOne> _flyingOnes = [];
+
+  void _onTap(BuildContext context, TapUpDetails details) {
+    setState(() {
+      _counter++;
+      _energy--;
+      _progress += 0.001;
+      final renderBox = context.findRenderObject() as RenderBox;
+      final position = renderBox.globalToLocal(details.globalPosition);
+      _flyingOnes.add(FlyingOne(key: UniqueKey(), position: position));
+    });
+  }
+
+  void _removeFlyingOne(Key key) {
+    setState(() {
+      _flyingOnes.removeWhere((e) => e.key == key);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +55,10 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
                     ),
                   ),
 
-                  Positioned(top: height * 0.12, child: UserCard()),
+                  Positioned(
+                    top: height * 0.12,
+                    child: UserCard(counter: _counter, progress: _progress),
+                  ),
 
                   Positioned(
                     top: height * 0.38,
@@ -39,10 +66,17 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
                   ),
                   Positioned(
                     top: height * 0.50,
-                    child: GooseCircle(onTap: () {}),
+                    child: GooseCircle(
+                      counter: _counter,
+                      onTapUp: (details) => _onTap(context, details),
+                    ),
                   ),
 
-                  Positioned(top: height * 0.9, child: Energy()),
+                  Positioned(
+                    top: height * 0.9,
+                    child: Energy(energy: _energy),
+                  ),
+                  ..._flyingOnes.map((e) => e.build(context, _removeFlyingOne)),
                 ],
               ),
             ],

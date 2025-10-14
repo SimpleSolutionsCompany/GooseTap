@@ -2,23 +2,31 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:goose_tap/features/exchange/widgets/widgets.dart';
 
-class GooseCircle extends StatelessWidget {
-  const GooseCircle({super.key, required this.onTap});
+class GooseCircle extends StatefulWidget {
+  const GooseCircle({super.key, required this.counter, required this.onTapUp});
 
-  final void Function()? onTap;
+  final int counter;
+  final void Function(TapUpDetails) onTapUp;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final height = constraints.maxHeight;
-            final width = constraints.maxWidth;
+  State<GooseCircle> createState() => _GooseCircleState();
+}
 
-            return Stack(
+class _GooseCircleState extends State<GooseCircle> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // final height = constraints.maxHeight;
+          // final width = constraints.maxWidth;
+
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapUp: widget.onTapUp,
+            child: Stack(
               alignment: Alignment.center,
               clipBehavior: Clip.none,
               children: [
@@ -28,7 +36,7 @@ class GooseCircle extends StatelessWidget {
                   // width: width * 0.9,
                   // height: height * 0.4,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(170.r),
+                    shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
                         color: Color.fromARGB(61, 225, 0, 255),
@@ -48,29 +56,33 @@ class GooseCircle extends StatelessWidget {
                   ),
                 ),
                 // Inner shadow overlay
-                ClipOval(
-                  child: Container(
-                    width: 323.w,
-                    height: 323.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(170.r),
-                      boxShadow: [
-                        BoxShadow(
-                          offset: Offset(0, -200),
-                          color: Colors.white.withOpacity(0.25),
-                          blurRadius: 50,
-                          spreadRadius: 20,
-                        ),
-                      ],
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withOpacity(0.15),
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.4),
+                IgnorePointer(
+                  child: ClipOval(
+                    child: Container(
+                      //TODO: Oval proble with iphones
+                      width: 323.w,
+                      height: 323.h,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        // borderRadius: BorderRadius.circular(170.r),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, -200),
+                            color: Colors.white.withOpacity(0.25),
+                            blurRadius: 50,
+                            spreadRadius: 20,
+                          ),
                         ],
-                        stops: const [0.0, 0.5, 1.0],
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withOpacity(0.15),
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.4),
+                          ],
+                          stops: const [0.0, 0.5, 1.0],
+                        ),
                       ),
                     ),
                   ),
@@ -80,7 +92,7 @@ class GooseCircle extends StatelessWidget {
                   width: 294.w,
                   height: 294.h,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(150.r),
+                    shape: BoxShape.circle,
                     gradient: LinearGradient(
                       colors: [Color(0xFF8800FF), Color(0xFF15023A)],
                       begin: Alignment.topCenter,
@@ -99,7 +111,7 @@ class GooseCircle extends StatelessWidget {
                       height: 200.h,
 
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100.r),
+                        shape: BoxShape.circle,
                         color: Colors.white.withOpacity(0.7),
                       ),
                     ),
@@ -114,7 +126,7 @@ class GooseCircle extends StatelessWidget {
                       height: 200.h,
 
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100.r),
+                        shape: BoxShape.circle,
                         color: Colors.black.withOpacity(0.7),
                       ),
                     ),
@@ -123,9 +135,9 @@ class GooseCircle extends StatelessWidget {
 
                 Image.asset("assets/exchange_imgs/goose.png", scale: 4),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

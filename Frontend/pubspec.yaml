@@ -59,6 +59,7 @@ dependencies:
   #Responsivness
   flutter_screenutil: ^5.9.3
   telegram_web_app: ^0.3.3
+  flutter_bounce: ^1.1.0
 
 dev_dependencies:
   flutter_test:

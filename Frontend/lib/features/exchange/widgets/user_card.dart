@@ -5,7 +5,10 @@ import 'package:goose_tap/features/exchange/widgets/widgets.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
 
 class UserCard extends StatelessWidget {
-  const UserCard({super.key});
+  UserCard({super.key, required this.counter, required this.progress});
+
+  int counter;
+  double progress;
 
   @override
   Widget build(BuildContext context) {
@@ -110,9 +113,9 @@ class UserCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                MoneyBox(),
+                MoneyBox(counter: counter),
                 Spacer(),
-                ProgressBar(progress: 1),
+                ProgressBar(progress: progress),
               ],
             ),
           ),

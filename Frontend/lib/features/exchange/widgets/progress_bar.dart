@@ -20,7 +20,7 @@ class ProgressBar extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    "Epic",
+                    "Level",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14.sp,
@@ -35,7 +35,7 @@ class ProgressBar extends StatelessWidget {
                 ],
               ),
               Text(
-                "0/10",
+                "1/10",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.sp,
