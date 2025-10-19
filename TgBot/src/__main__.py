@@ -5,9 +5,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from handlers import setup_message_routers
-from callbacks import setup_callback_routers
-from config_reader import config
+from src.handlers import setup_message_routers
+from src.callbacks import setup_callback_routers
+from src.config_reader import config
 
 
 async def main() -> None:
