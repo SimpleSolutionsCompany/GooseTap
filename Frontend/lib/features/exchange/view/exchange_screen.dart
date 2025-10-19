@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
-import "package:flutter_bounce/flutter_bounce.dart";
+import "package:get_it/get_it.dart";
+import "package:goose_tap/responsiveness/responsiveness.dart";
 import "../../widgets/widgets.dart";
 import "../widgets/widgets.dart";
 
@@ -16,12 +17,16 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
   double _progress = 0;
 
   final List<FlyingOne> _flyingOnes = [];
+  final getIt = GetIt.instance;
 
   void _onTap(BuildContext context, TapUpDetails details) {
     setState(() {
-      _counter++;
-      _energy--;
-      _progress += 0.001;
+      if (_energy > 0) {
+        _counter++;
+        _energy--;
+        _progress += 0.001;
+      }
+
       final renderBox = context.findRenderObject() as RenderBox;
       final position = renderBox.globalToLocal(details.globalPosition);
       _flyingOnes.add(FlyingOne(key: UniqueKey(), position: position));
@@ -36,52 +41,49 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final scale = getIt<Responsiveness>().scale;
+
     return Scaffold(
       backgroundColor: Colors.black,
 
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final height = constraints.maxHeight;
-          return Column(
+      body: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
             children: [
-              Stack(
-                alignment: Alignment.center,
-                clipBehavior: Clip.none,
-                children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Image.asset(
-                      "assets/exchange_imgs/gradient_bg_purple.png",
-                    ),
-                  ),
-
-                  Positioned(
-                    top: height * 0.12,
-                    child: UserCard(counter: _counter, progress: _progress),
-                  ),
-
-                  Positioned(
-                    top: height * 0.38,
-                    child: InfoBoxes(onTap: () {}),
-                  ),
-                  Positioned(
-                    top: height * 0.50,
-                    child: GooseCircle(
-                      counter: _counter,
-                      onTapUp: (details) => _onTap(context, details),
-                    ),
-                  ),
-
-                  Positioned(
-                    top: height * 0.9,
-                    child: Energy(energy: _energy),
-                  ),
-                  ..._flyingOnes.map((e) => e.build(context, _removeFlyingOne)),
-                ],
+              Align(
+                alignment: Alignment.topRight,
+                child: Image.asset(
+                  "assets/exchange_imgs/gradient_bg_purple.png",
+                ),
               ),
+
+              Positioned(
+                top: 100 * scale,
+                child: UserCard(counter: _counter, progress: _progress),
+              ),
+
+              Positioned(
+                top: 330 * scale,
+                child: InfoBoxes(onTap: () {}),
+              ),
+              Positioned(
+                top: 420 * scale,
+                child: GooseCircle(
+                  counter: _counter,
+                  onTapUp: (details) => _onTap(context, details),
+                ),
+              ),
+
+              Positioned(
+                top: 750 * scale,
+                child: Energy(energy: _energy),
+              ),
+              ..._flyingOnes.map((e) => e.build(context, _removeFlyingOne)),
             ],
-          );
-        },
+          ),
+        ],
       ),
     );
   }

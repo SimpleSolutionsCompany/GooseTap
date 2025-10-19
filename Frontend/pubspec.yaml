@@ -37,11 +37,6 @@ dependencies:
   flutter_svg: ^2.2.1
   google_fonts: ^6.3.1
 
-  blur: ^4.0.2
-
-  js: any
-  
-
   #Logger
   talker_flutter: ^5.0.1
   talker_dio_logger: ^5.0.1
@@ -56,10 +51,10 @@ dependencies:
   json_annotation: ^4.9.0
   #Local Storage
   hive: ^2.2.3
-  #Responsivness
-  flutter_screenutil: ^5.9.3
+  
   telegram_web_app: ^0.3.3
   flutter_bounce: ^1.1.0
+  get_it: ^8.2.0
 
 dev_dependencies:
   flutter_test:
@@ -113,7 +108,7 @@ flutter:
     - assets/bottom_nav_bar_imgs/binance.svg
     - assets/bottom_nav_bar_imgs/coins.svg
     - assets/bottom_nav_bar_imgs/friends.svg
-    - assets/bottom_nav_bar_imgs/goose_coin.png
+    - assets/bottom_nav_bar_imgs/goose_coin.svg
     - assets/bottom_nav_bar_imgs/pickaxe.svg
 
    
