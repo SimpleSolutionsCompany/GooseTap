@@ -1,3 +1,4 @@
+import "package:dio/dio.dart";
 import "package:flutter/material.dart";
 import "package:get_it/get_it.dart";
 import "package:goose_tap/responsiveness/responsiveness.dart";
@@ -42,46 +43,64 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
   @override
   Widget build(BuildContext context) {
     final scale = getIt<Responsiveness>().scale;
+    Dio dio = Dio();
 
     return Scaffold(
       backgroundColor: Colors.black,
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final response = await dio.get(
+            'https://kirozan-001-site1.qtempurl.com/api/Auth/test',
+          );
+          print(response.data.toString());
+        },
+        child: Icon(Icons.add),
+      ),
       body: Column(
         children: [
-          Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Image.asset(
-                  "assets/exchange_imgs/gradient_bg_purple.png",
-                ),
-              ),
+          Expanded(
+            child: Builder(
+              builder: (stackContext) {
+                return Stack(
+                  alignment: Alignment.center,
+                  clipBehavior: Clip.none,
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Image.asset(
+                        "assets/exchange_imgs/gradient_bg_purple.png",
+                      ),
+                    ),
 
-              Positioned(
-                top: 100 * scale,
-                child: UserCard(counter: _counter, progress: _progress),
-              ),
+                    Positioned(
+                      top: 120 * scale,
+                      child: UserCard(counter: _counter, progress: _progress),
+                    ),
 
-              Positioned(
-                top: 330 * scale,
-                child: InfoBoxes(onTap: () {}),
-              ),
-              Positioned(
-                top: 420 * scale,
-                child: GooseCircle(
-                  counter: _counter,
-                  onTapUp: (details) => _onTap(context, details),
-                ),
-              ),
+                    Positioned(
+                      top: 350 * scale,
+                      child: InfoBoxes(onTap: () {}),
+                    ),
+                    Positioned(
+                      top: 430 * scale,
+                      child: GooseCircle(
+                        counter: _counter,
+                        onTapUp: (details) => _onTap(stackContext, details),
+                      ),
+                      // child: TestCircle(),
+                    ),
 
-              Positioned(
-                top: 750 * scale,
-                child: Energy(energy: _energy),
-              ),
-              ..._flyingOnes.map((e) => e.build(context, _removeFlyingOne)),
-            ],
+                    Positioned(
+                      top: 770 * scale,
+                      child: Energy(energy: _energy),
+                    ),
+                    ..._flyingOnes.map(
+                      (e) => e.build(stackContext, _removeFlyingOne),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ],
       ),

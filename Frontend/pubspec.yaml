@@ -53,8 +53,12 @@ dependencies:
   hive: ^2.2.3
   
   telegram_web_app: ^0.3.3
-  flutter_bounce: ^1.1.0
+  
   get_it: ^8.2.0
+  #Animation
+  # bounce: ^1.0.2
+  motion: ^2.0.1
+  flutter_bounce: ^1.1.0
 
 dev_dependencies:
   flutter_test:

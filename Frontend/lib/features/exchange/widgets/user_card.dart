@@ -17,7 +17,7 @@ class UserCard extends StatelessWidget {
     final scale = getIt<Responsiveness>().scale;
 
     return Center(
-      child: Stack(
+      child: Column(
         children: [
           Container(
             width: 378 * scale,

@@ -16,8 +16,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          tg.ready();
-          tg.expand();
+          print(TelegramWebApp.instance.initData.toString());
         },
       ),
       appBar: AppBar(title: Text("Friends Screen")),
