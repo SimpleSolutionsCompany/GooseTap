@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
+import 'package:goose_tap/responsiveness/responsiveness.dart';
 
-class Energy extends StatelessWidget {
-  const Energy({super.key});
+class Energy extends StatefulWidget {
+  const Energy({super.key, required this.energy});
+
+  final int energy;
+
+  @override
+  State<Energy> createState() => _EnergyState();
+}
+
+class _EnergyState extends State<Energy> {
+  final getIt = GetIt.instance;
+  int avaliableEnergy = 1000;
 
   @override
   Widget build(BuildContext context) {
+    final scale = getIt<Responsiveness>().scale;
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 40.w),
+      padding: EdgeInsets.symmetric(horizontal: 40 * scale),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -16,14 +29,14 @@ class Energy extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 40,
-                height: 40,
+                width: 40 * scale,
+                height: 40 * scale,
                 child: Image.asset("assets/exchange_imgs/energy.png"),
               ),
               Text(
-                "6500/6500",
+                "${widget.energy}/$avaliableEnergy",
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16 * scale,
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                 ),
