@@ -27,6 +27,7 @@ namespace Infrastructure.Services
         {
             var claims = new List<Claim>
             {
+                
                 //new Claim(ClaimTypes.NameIdentifier,applicationUser.Id),
                 //new Claim(ClaimTypes.Name, applicationUser.UserName),
                 //new Claim("FirstName", applicationUser.FirstName),

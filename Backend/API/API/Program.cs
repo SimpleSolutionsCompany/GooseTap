@@ -18,10 +18,19 @@ using Infrastructure.Services; // <--- Змінено (реалізація з I
 using Infrastructure.Configuration;
 using Application.Services;
 
+using DotNetEnv;
+
 // TODO: Додай правильний namespace для AutoMapper профілів
 // using Application.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+
+DotNetEnv.Env.Load();
+builder.Configuration.AddEnvironmentVariables();
+
+
 
 
 // Add services to the container.

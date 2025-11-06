@@ -45,6 +45,10 @@ namespace API.Controllers
         [HttpPost("login-telegram")]
         public async Task<IActionResult> LoginTelegram([FromBody] TelegramValidateRequest dto)
         {
+
+
+
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -63,6 +67,18 @@ namespace API.Controllers
                 _logger.LogWarning("Telegram Auth Failed: Could not parse user data.");
                 return BadRequest(new { Message = "Could not parse user data." });
             }
+
+            Console.WriteLine("=== Telegram User Data ===");
+            Console.WriteLine($"ID: {telegramUser.Id}");
+            Console.WriteLine($"First Name: {telegramUser.FirstName}");
+            Console.WriteLine($"Last Name: {telegramUser.LastName ?? "N/A"}");
+            Console.WriteLine($"Username: {telegramUser.Username ?? "N/A"}");
+            Console.WriteLine($"Photo URL: {telegramUser.PhotoUrl ?? "N/A"}");
+            Console.WriteLine($"Language Code: {telegramUser.LanguageCode ?? "N/A"}");
+            Console.WriteLine($"Allows Write to PM: {telegramUser.AllowsWriteToPm}");
+            Console.WriteLine("==========================");
+
+
 
             string telegramId = telegramUser.Id.ToString();
 
@@ -87,7 +103,8 @@ namespace API.Controllers
                     UserName = username,
                     Email = email,
                     
-                    
+
+
                     TelegramId = telegramId,
                     EmailConfirmed = true
                 };
