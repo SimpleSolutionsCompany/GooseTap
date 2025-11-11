@@ -1,9 +1,10 @@
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:goose_tap/di/di.dart';
 import 'package:goose_tap/responsiveness/responsiveness.dart';
-import 'package:motion/motion.dart';
+import 'package:goose_tap/theme/theme.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:telegram_web_app/telegram_web_app.dart';
@@ -56,12 +57,8 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'GooseTap',
           debugShowCheckedModeBanner: false,
-          // theme: ThemeData(
-          //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          //   textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme),
-          // ),
+          theme: myTheme,
           // theme: TelegramThemeUtil.getTheme(TelegramWebApp.instance),
-
           // home: tg.platform == "android" || tg.platform == "ios"
           //     ? MyBottomBar()
           //     : QrCodeScreen(),
