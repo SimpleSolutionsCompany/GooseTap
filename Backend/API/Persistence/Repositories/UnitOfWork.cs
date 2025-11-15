@@ -14,6 +14,7 @@ namespace Persistence.Repositories
     {
         private readonly ApplicationDbContext _context;
         private  IGenericRepository<Upgrade> _upgradeRepository;
+        private IGenericRepository<ApplicationUser> _userRepository;
         public UnitOfWork(ApplicationDbContext applicationDbContext)
         {
             _context = applicationDbContext;
@@ -21,6 +22,10 @@ namespace Persistence.Repositories
         }
         public IGenericRepository<Upgrade> UpgradeReposiotry {
             get { return _upgradeRepository ??= new UpgradeRepository(_context); }
-        }  
+        }
+        public IGenericRepository<ApplicationUser> UserRepository
+        {
+            get { return _userRepository ??= new UserRepository(_context); }
+        }
     }
 }

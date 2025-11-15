@@ -11,6 +11,7 @@ namespace Application.Contracts.Persistence
     public interface IUnitOfWork
     {
         IGenericRepository<Upgrade> UpgradeReposiotry { get; }
+        IGenericRepository<ApplicationUser> UserRepository { get; }
         //TODO: Add other repositories
     }
 }
