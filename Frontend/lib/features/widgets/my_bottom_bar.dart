@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:goose_tap/features/airdrop/view/airdrop_screen.dart';
 import 'package:goose_tap/features/earn/earn.dart';
 import 'package:goose_tap/features/friends/friends.dart';
-import 'package:goose_tap/features/mine/view/mine_screen.dart';
+import 'package:goose_tap/features/shop/view/shop_screen.dart';
 import 'package:goose_tap/features/widgets/bottom_bar_box.dart';
 import 'package:goose_tap/responsiveness/responsiveness.dart';
 import '../exchange/view/exchange_screen.dart';
@@ -33,7 +33,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
       body: _selectedIndex == 0
           ? ExchangeScreen()
           : _selectedIndex == 1
-          ? MineScreen()
+          ? ShopScreen()
           : _selectedIndex == 2
           ? FriendsScreen()
           : _selectedIndex == 3

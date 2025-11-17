@@ -31,50 +31,12 @@ class EarnScreen extends StatelessWidget {
                 child: Container(
                   height: 100,
                   width: 100,
-                  decoration: BoxDecoration(
-                    // shape: BoxShape.circle,
-                    color: Colors.amber,
-                  ),
+                  decoration: BoxDecoration(color: Colors.amber),
                 ),
               ),
             ),
           ),
           const SizedBox(height: 40),
-
-          // Expanded(
-          //   child: GridView.builder(
-          //     itemCount: 20,
-          //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //       crossAxisCount: 3,
-          //     ),
-          //     itemBuilder: (context, index) {
-          //       return AspectRatio(
-          //         aspectRatio: 16 / 9,
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(8.0),
-          //           child: Container(
-          //             decoration: BoxDecoration(
-          //               borderRadius: BorderRadius.circular(12),
-
-          //               gradient: LinearGradient(
-          //                 colors: [Colors.redAccent, Colors.lightBlue],
-          //                 transform: GradientRotation(pi / 4),
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
-
-          // Row(
-          //   children: [
-          //     Expanded(child: Container(color: Colors.red)),
-          //     Flexible(child: Container(width: 100, color: Colors.green)),
-          //     Expanded(flex: 2, child: Container(color: Colors.blue)),
-          //   ],
-          // ),
           Wrap(
             spacing: 10,
             runSpacing: 10,
