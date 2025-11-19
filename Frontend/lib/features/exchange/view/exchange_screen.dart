@@ -1,7 +1,6 @@
 import "package:dio/dio.dart";
 import "package:flutter/material.dart";
 import "package:get_it/get_it.dart";
-import "package:goose_tap/responsiveness/responsiveness.dart";
 import "../../widgets/widgets.dart";
 import "../widgets/widgets.dart";
 
@@ -42,7 +41,7 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final scale = getIt<Responsiveness>().scale;
+    final height = MediaQuery.of(context).size.height;
     Dio dio = Dio();
 
     return Scaffold(
@@ -73,16 +72,16 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
                     ),
 
                     Positioned(
-                      top: 120 * scale,
+                      top: height * 0.10,
                       child: UserCard(counter: _counter, progress: _progress),
                     ),
 
                     Positioned(
-                      top: 350 * scale,
+                      top: height * 0.36,
                       child: InfoBoxes(onTap: () {}),
                     ),
                     Positioned(
-                      top: 430 * scale,
+                      top: height * 0.45,
                       child: GooseCircle(
                         counter: _counter,
                         onTapUp: (details) => _onTap(stackContext, details),
@@ -91,7 +90,7 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
                     ),
 
                     Positioned(
-                      top: 770 * scale,
+                      top: height * 0.84,
                       child: Energy(energy: _energy),
                     ),
                     ..._flyingOnes.map(

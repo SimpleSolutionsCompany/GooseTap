@@ -1,9 +1,7 @@
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:goose_tap/di/di.dart';
-import 'package:goose_tap/responsiveness/responsiveness.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:goose_tap/theme/theme.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -34,7 +32,8 @@ Future<void> initTelegramWebApp() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initTelegramWebApp();
-  setupDependencies();
+  await dotenv.load(fileName: ".env");
+  // setupDependencies();
 
   FlutterError.onError = (details) {
     log("Flutter error happened: $details");
@@ -53,7 +52,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        getIt<Responsiveness>().init(constraints);
+        // getIt<Responsiveness>().init(constraints);
         return MaterialApp(
           title: 'GooseTap',
           debugShowCheckedModeBanner: false,

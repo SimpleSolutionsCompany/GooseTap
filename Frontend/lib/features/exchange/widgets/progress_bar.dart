@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:goose_tap/responsiveness/responsiveness.dart';
 
 class ProgressBar extends StatelessWidget {
   final double progress;
@@ -11,12 +10,11 @@ class ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isFull = progress >= 1.0;
-    final scale = getIt<Responsiveness>().scale;
 
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20 * scale),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -26,14 +24,14 @@ class ProgressBar extends StatelessWidget {
                     "Level",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 14 * scale,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Icon(
                     Icons.chevron_right_outlined,
                     color: Colors.white,
-                    size: 15 * scale,
+                    size: 15,
                   ),
                 ],
               ),
@@ -41,21 +39,21 @@ class ProgressBar extends StatelessWidget {
                 "1/10",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16 * scale,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: 8 * scale),
+        SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(13 * scale),
-            bottomRight: Radius.circular(13 * scale),
+            bottomLeft: Radius.circular(13),
+            bottomRight: Radius.circular(13),
           ),
           child: Container(
-            height: 12 * scale,
+            height: 12,
             color: Colors.grey.shade900, // background
             child: Align(
               alignment: Alignment.centerLeft,
@@ -63,11 +61,9 @@ class ProgressBar extends StatelessWidget {
                 widthFactor: progress.clamp(0.0, 1.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10 * scale),
-                    bottomRight: Radius.circular(10 * scale),
-                    topRight: isFull
-                        ? Radius.zero
-                        : Radius.circular(10 * scale),
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                    topRight: isFull ? Radius.zero : Radius.circular(10),
                   ),
                   child: Container(
                     decoration: const BoxDecoration(

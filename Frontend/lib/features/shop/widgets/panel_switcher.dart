@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:goose_tap/di/di.dart';
-import 'package:goose_tap/responsiveness/responsiveness.dart';
 
 class PanelSwitcher extends StatelessWidget {
   const PanelSwitcher({
@@ -14,39 +12,39 @@ class PanelSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scale = getIt<Responsiveness>().scale;
+    final size = MediaQuery.of(context).size;
+    final double horizontalPadding = size.width * 0.07; // responsive
+    final double radius = size.width * 0.02;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 30 * scale),
-      child: Container(
-        width: 399 * scale,
-        height: 41 * scale,
-        decoration: BoxDecoration(
-          color: Color.fromARGB(96, 47, 47, 47),
-          borderRadius: BorderRadius.circular(10 * scale),
+    return Container(
+      width: 360,
+      height: 50,
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(96, 47, 47, 47),
+        // color: Colors.red,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: size.width * 0.015,
+          vertical: size.height * 0.008,
         ),
-        child: Padding(
-          padding: EdgeInsetsGeometry.symmetric(
-            horizontal: 5 * scale,
-            vertical: 5 * scale,
-          ),
-          child: Row(
-            children: [
-              SwitchBox(
-                text: "Upgrades",
-                index: 0,
-                selectedIndex: selectedIndex,
-                onTap: onChanged,
-              ),
-              SizedBox(width: 4 * scale),
-              SwitchBox(
-                text: "Cards",
-                index: 1,
-                selectedIndex: selectedIndex,
-                onTap: onChanged,
-              ),
-            ],
-          ),
+        child: Row(
+          children: [
+            SwitchBox(
+              text: "Upgrades",
+              index: 0,
+              selectedIndex: selectedIndex,
+              onTap: onChanged,
+            ),
+            SizedBox(width: size.width * 0.015),
+            SwitchBox(
+              text: "Cards",
+              index: 1,
+              selectedIndex: selectedIndex,
+              onTap: onChanged,
+            ),
+          ],
         ),
       ),
     );
@@ -69,30 +67,32 @@ class SwitchBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scale = getIt<Responsiveness>().scale;
+    final size = MediaQuery.of(context).size;
     final bool isSelected = selectedIndex == index;
+    final double radius = size.width * 0.02;
+    final double fontSize = size.width * 0.032; // scales with screen
 
     return Expanded(
       child: GestureDetector(
         onTap: () => onTap(index),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          child: Container(
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? Color.fromARGB(127, 47, 47, 47)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(5 * scale),
-            ),
-            child: Center(
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? const Color.fromARGB(127, 47, 47, 47)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(radius),
+          ),
+          padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: fontSize,
+                fontWeight: FontWeight.w600,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
