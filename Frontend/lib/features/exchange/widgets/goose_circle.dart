@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:goose_tap/responsiveness/responsiveness.dart';
 
 class GooseCircle extends StatefulWidget {
   const GooseCircle({super.key, required this.counter, required this.onTapUp});
@@ -75,8 +74,6 @@ class _GooseCircleState extends State<GooseCircle>
 
   @override
   Widget build(BuildContext context) {
-    final scale = getIt<Responsiveness>().scale;
-
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -90,8 +87,8 @@ class _GooseCircleState extends State<GooseCircle>
               clipBehavior: Clip.hardEdge,
               children: [
                 Container(
-                  width: 323 * scale,
-                  height: 323 * scale,
+                  width: 323,
+                  height: 323,
 
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -99,9 +96,9 @@ class _GooseCircleState extends State<GooseCircle>
                     boxShadow: [
                       BoxShadow(
                         color: Color.fromARGB(61, 225, 0, 255),
-                        offset: Offset(0, 20 * scale),
-                        spreadRadius: 8 * scale,
-                        blurRadius: 180 * scale,
+                        offset: Offset(0, 20),
+                        spreadRadius: 8,
+                        blurRadius: 180,
                       ),
                     ],
                     gradient: LinearGradient(
@@ -119,16 +116,16 @@ class _GooseCircleState extends State<GooseCircle>
                 IgnorePointer(
                   child: ClipOval(
                     child: Container(
-                      width: 323 * scale,
-                      height: 323 * scale,
+                      width: 323,
+                      height: 323,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            offset: Offset(0, -200 * scale),
+                            offset: Offset(0, -200),
                             color: Colors.white.withOpacity(0.25),
-                            blurRadius: 50 * scale,
-                            spreadRadius: 20 * scale,
+                            blurRadius: 50,
+                            spreadRadius: 20,
                           ),
                         ],
                         gradient: LinearGradient(
@@ -147,8 +144,8 @@ class _GooseCircleState extends State<GooseCircle>
                 ),
 
                 Container(
-                  width: 294 * scale,
-                  height: 294 * scale,
+                  width: 294,
+                  height: 294,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
@@ -159,16 +156,13 @@ class _GooseCircleState extends State<GooseCircle>
                   ),
                 ),
                 Positioned(
-                  right: 20 * scale,
+                  right: 20,
 
                   child: ImageFiltered(
-                    imageFilter: ImageFilter.blur(
-                      sigmaX: 105 * scale,
-                      sigmaY: 105 * scale,
-                    ),
+                    imageFilter: ImageFilter.blur(sigmaX: 105, sigmaY: 105),
                     child: Container(
-                      width: 200 * scale,
-                      height: 200 * scale,
+                      width: 200,
+                      height: 200,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white.withOpacity(0.7),
@@ -177,15 +171,12 @@ class _GooseCircleState extends State<GooseCircle>
                   ),
                 ),
                 Positioned(
-                  left: 20 * scale,
+                  left: 20,
                   child: ImageFiltered(
-                    imageFilter: ImageFilter.blur(
-                      sigmaX: 35 * scale,
-                      sigmaY: 35 * scale,
-                    ),
+                    imageFilter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
                     child: Container(
-                      width: 200 * scale,
-                      height: 200 * scale,
+                      width: 200,
+                      height: 200,
 
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -197,8 +188,8 @@ class _GooseCircleState extends State<GooseCircle>
                 FittedBox(
                   fit: BoxFit.contain,
                   child: SizedBox(
-                    width: 300 * scale,
-                    height: 270 * scale,
+                    width: 300,
+                    height: 270,
                     child: Image.asset("assets/exchange_imgs/goose.png"),
                   ),
                 ),

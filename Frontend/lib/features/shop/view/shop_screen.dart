@@ -1,10 +1,7 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:goose_tap/di/di.dart';
 import 'package:goose_tap/features/shop/shop.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
-import 'package:goose_tap/responsiveness/responsiveness.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -25,7 +22,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final scale = getIt<Responsiveness>().scale;
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -43,12 +40,12 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
           ),
           Positioned(
-            top: 100 * scale,
+            top: height * 0.08,
             child: InfoBoxes(onTap: () {}),
           ),
-          Positioned(top: 170, child: MoneyBox(counter: 1000)),
+          Positioned(top: height * 0.17, child: MoneyBox(counter: 1000)),
           Positioned(
-            top: 270,
+            top: height * 0.28,
             child: PanelSwitcher(
               selectedIndex: selectedIndex,
               onChanged: switchPanels,

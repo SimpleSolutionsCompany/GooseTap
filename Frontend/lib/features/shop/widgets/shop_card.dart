@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:goose_tap/di/di.dart';
-import 'package:goose_tap/responsiveness/responsiveness.dart';
 
 class ShopCard extends StatelessWidget {
   const ShopCard({super.key, required this.selectedIndex});
@@ -9,7 +7,8 @@ class ShopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scale = getIt<Responsiveness>().scale;
+    final size = MediaQuery.of(context).size;
+
     List<String> imgList = [
       "assets/shop_imgs/italy.png",
       "assets/shop_imgs/meme.png",
@@ -19,64 +18,67 @@ class ShopCard extends StatelessWidget {
       "assets/shop_imgs/dungeon_master.png",
     ];
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 40 * scale),
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 40),
       child: FractionallySizedBox(
         heightFactor: 0.5,
         widthFactor: 1,
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(13 * scale),
+            borderRadius: BorderRadius.circular(size.width * 0.03),
             color: Color.fromARGB(65, 47, 47, 47),
           ),
           child: selectedIndex == 1
               ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15 * scale),
+                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        // width: 365 * scale,
-                        // height: 365 * scale,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12 * scale),
+                          borderRadius: BorderRadius.circular(
+                            size.width * 0.03,
+                          ),
                         ),
                         child: Image.asset(
                           "assets/comming_soon.png",
                           fit: BoxFit.fill,
+                          width: size.width * 0.5,
                         ),
                       ),
-                      SizedBox(height: 50 * scale),
+                      SizedBox(height: size.height * 0.03),
                       Text(
                         "COMMING SOON...)))",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 24,
+                          fontSize: size.width * 0.06,
                           fontWeight: FontWeight.w600,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 )
-              : GridView.builder(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20 * scale,
-                    vertical: 20 * scale,
-                  ),
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return GridView.builder(
+                      padding: EdgeInsets.all(constraints.maxWidth * 0.04),
 
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.32,
-                  ),
-                  itemCount: 6,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: size.width < 450 ? 2 : 3,
+                        childAspectRatio: 1.2,
+                      ),
+                      itemCount: 6,
 
-                  itemBuilder: (context, index) {
-                    return ShopBox(
-                      img: imgList[index],
-                      level: "lvl 13",
-                      moneyToBuy: "156.92K",
-                      possibleMoney: "1.61K",
-                      profitType: "Profit per hour",
-                      title: "ITALLIIAAA!!!",
+                      itemBuilder: (context, index) {
+                        return ShopBox(
+                          img: imgList[index],
+                          level: "lvl 13",
+                          moneyToBuy: "156.92K",
+                          possibleMoney: "1.61K",
+                          profitType: "Profit per hour",
+                          title: "ITALLIIAAA!!!",
+                        );
+                      },
                     );
                   },
                 ),
@@ -106,32 +108,32 @@ class ShopBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scale = getIt<Responsiveness>().scale;
+    final size = MediaQuery.of(context).size;
     return Padding(
-      padding: EdgeInsetsGeometry.all(4 * scale),
+      padding: EdgeInsetsGeometry.all(size.width * 0.01),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15 * scale),
+          borderRadius: BorderRadius.circular(size.width * 0.035),
           color: Color.fromARGB(67, 47, 47, 47),
         ),
         child: Column(
           children: [
             Padding(
               padding: EdgeInsets.only(
-                left: 10 * scale,
-                right: 10 * scale,
-                top: 15 * scale,
-                bottom: 5 * scale,
+                left: size.width * 0.025,
+                right: size.width * 0.025,
+                top: size.width * 0.03,
+                bottom: size.width * 0.012,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 44 * scale,
-                    width: 44 * scale,
+                    height: size.width * 0.1,
+                    width: size.width * 0.1,
                     child: Image.asset(img),
                   ),
-                  SizedBox(width: 12 * scale),
+                  SizedBox(width: size.width * 0.025),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,37 +142,39 @@ class ShopBox extends StatelessWidget {
                         title,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 9,
+                          fontSize: size.width * 0.022,
                           fontWeight: FontWeight.w600,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 6 * scale),
+                      SizedBox(height: size.height * 0.005),
                       Text(
                         profitType,
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 7,
+                          fontSize: size.width * 0.022,
                           fontWeight: FontWeight.w400,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 4 * scale),
+                      SizedBox(height: size.height * 0.004),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            height: 12 * scale,
-                            width: 12 * scale,
+                            height: size.width * 0.03,
                             child: Image.asset("assets/exchange_imgs/coin.png"),
                           ),
-                          SizedBox(width: 2 * scale),
+                          SizedBox(width: size.width * 0.01),
                           Text(
                             possibleMoney,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 8.2 * scale,
+                              fontSize: size.width * 0.026,
                               fontWeight: FontWeight.w400,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
@@ -185,46 +189,42 @@ class ShopBox extends StatelessWidget {
               thickness: 0.5,
             ),
             Padding(
-              padding: EdgeInsets.only(
-                left: 10 * scale,
-                right: 10 * scale,
-                top: 5 * scale,
-              ),
+              padding: EdgeInsets.only(left: 10, right: 10, top: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(width: 6 * scale),
+                  SizedBox(width: size.width * 0.02),
                   Text(
                     level,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 9,
+                      fontSize: size.width * 0.028,
                       fontWeight: FontWeight.w600,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(width: 10 * scale),
+                  SizedBox(width: size.width * 0.03),
                   Container(
-                    height: 25 * scale,
-                    width: 0.5 * scale,
+                    height: 25,
+                    width: 0.5,
                     color: const Color.fromARGB(44, 158, 158, 158),
                   ),
-                  SizedBox(width: 15 * scale),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 15 * scale,
-                        width: 15 * scale,
+                        width: size.width * 0.03,
                         child: Image.asset("assets/exchange_imgs/coin.png"),
                       ),
-                      SizedBox(width: 4 * scale),
+                      SizedBox(width: size.width * 0.01),
                       Text(
                         moneyToBuy,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 11,
+                          fontSize: size.width * 0.025,
                           fontWeight: FontWeight.w600,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:goose_tap/features/exchange/widgets/widgets.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
-import 'package:goose_tap/responsiveness/responsiveness.dart';
 
 class UserCard extends StatelessWidget {
   UserCard({super.key, required this.counter, required this.progress});
@@ -14,22 +13,20 @@ class UserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scale = getIt<Responsiveness>().scale;
-
     return Center(
       child: Column(
         children: [
           Container(
-            width: 378 * scale,
-            height: 213 * scale,
+            width: 358,
+            height: 213,
             decoration: BoxDecoration(
               color: const Color.fromARGB(125, 0, 0, 0),
-              borderRadius: BorderRadius.circular(13 * scale),
+              borderRadius: BorderRadius.circular(13),
               boxShadow: [
                 BoxShadow(
-                  blurRadius: 40 * scale,
-                  spreadRadius: 20 * scale,
-                  offset: Offset(2 * scale, 2 * scale),
+                  blurRadius: 40,
+                  spreadRadius: 20,
+                  offset: Offset(2, 2),
                   color: Color.fromARGB(61, 225, 0, 255),
                 ),
               ],
@@ -37,10 +34,7 @@ class UserCard extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20 * scale,
-                    vertical: 20 * scale,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -48,23 +42,23 @@ class UserCard extends StatelessWidget {
                         clipBehavior: Clip.none,
                         children: [
                           Positioned(
-                            left: 32 * scale,
+                            left: 32,
                             child: Container(
-                              height: 44 * scale,
-                              width: 44 * scale,
+                              height: 44,
+                              width: 44,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(22 * scale),
+                                borderRadius: BorderRadius.circular(22),
                                 color: Color(0xFF4C0061),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.white.withOpacity(0.2),
-                                    blurRadius: 3 * scale,
-                                    offset: Offset(3 * scale, 3 * scale),
+                                    blurRadius: 3,
+                                    offset: Offset(3, 3),
                                   ),
                                 ],
                                 border: Border.all(
                                   color: Color(0xFFFF0004),
-                                  width: 2.5 * scale,
+                                  width: 2.5,
                                 ),
                               ),
                               child: Image.asset(
@@ -74,24 +68,24 @@ class UserCard extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            height: 44 * scale,
-                            width: 44 * scale,
+                            height: 44,
+                            width: 44,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(22 * scale),
+                              borderRadius: BorderRadius.circular(22),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.white.withOpacity(0.2),
-                                  blurRadius: 3 * scale,
-                                  offset: Offset(3 * scale, 3 * scale),
+                                  blurRadius: 3,
+                                  offset: Offset(3, 3),
                                 ),
                               ],
                               border: Border.all(
                                 color: Color(0xFFFFEA00),
-                                width: 2.5 * scale,
+                                width: 2.5,
                               ),
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(22 * scale),
+                              borderRadius: BorderRadius.circular(22),
                               child: Image.asset(
                                 "assets/exchange_imgs/me.jpg",
                                 fit: BoxFit.cover,
@@ -101,13 +95,13 @@ class UserCard extends StatelessWidget {
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(bottom: 20 * scale),
+                        padding: EdgeInsets.only(bottom: 20),
                         child: Text(
                           "Semeniuk Vlad",
                           style: GoogleFonts.sarpanch(
                             textStyle: TextStyle(
                               color: Colors.white,
-                              fontSize: 20 * scale,
+                              fontSize: 20,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
