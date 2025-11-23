@@ -1,12 +1,14 @@
-// import 'package:dio/dio.dart';
-// import 'package:retrofit/retrofit.dart';
+import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
 
-// part 'api.g.dart';
+import 'models/models.dart';
 
-// @RestApi(baseUrl: 'https://5d42a6e2bc64f90014a56ca0.mockapi.io/api/v1/')
-// abstract class RestClient {
-//   factory RestClient(Dio dio, {String? baseUrl}) = _RestClient;
+part 'api.g.dart';
 
-//   @POST('/api/Auth/login-telegram')
-//   Future<String> validateUser(dynamic request);
-// }
+@RestApi(baseUrl: "")
+abstract class RestClient {
+  factory RestClient(Dio dio, {String? baseUrl}) = _RestClient;
+
+  @GET("/api/Upgrades/GetAll")
+  Future<MainUpgradeModel> getAllUpgrades();
+}

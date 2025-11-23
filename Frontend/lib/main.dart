@@ -1,7 +1,12 @@
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:goose_tap/api/api.dart';
+import 'package:goose_tap/di/di.dart';
+import 'package:goose_tap/features/shop/blocs/get_upgrades_bloc/get_upgrades_bloc.dart';
 import 'package:goose_tap/theme/theme.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -31,9 +36,10 @@ Future<void> initTelegramWebApp() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // TelegramWebApp.instance.ready();
   await initTelegramWebApp();
   await dotenv.load(fileName: ".env");
-  // setupDependencies();
+  setupDependencies();
 
   FlutterError.onError = (details) {
     log("Flutter error happened: $details");
@@ -53,15 +59,18 @@ class MyApp extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // getIt<Responsiveness>().init(constraints);
-        return MaterialApp(
-          title: 'GooseTap',
-          debugShowCheckedModeBanner: false,
-          theme: myTheme,
-          // theme: TelegramThemeUtil.getTheme(TelegramWebApp.instance),
-          // home: tg.platform == "android" || tg.platform == "ios"
-          //     ? MyBottomBar()
-          //     : QrCodeScreen(),
-          home: MyBottomBar(),
+        return BlocProvider(
+          create: (context) => GetUpgradesBloc(restClient: getIt<RestClient>()),
+          child: MaterialApp(
+            title: 'GooseTap',
+            debugShowCheckedModeBanner: false,
+            theme: myTheme,
+            // theme: TelegramThemeUtil.getTheme(TelegramWebApp.instance),
+            // home: tg.platform == "android" || tg.platform == "ios"
+            //     ? MyBottomBar()
+            //     : QrCodeScreen(),
+            home: MyBottomBar(),
+          ),
         );
       },
     );

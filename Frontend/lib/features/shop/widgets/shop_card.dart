@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:goose_tap/features/shop/blocs/get_upgrades_bloc/get_upgrades_bloc.dart';
 
 class ShopCard extends StatelessWidget {
   const ShopCard({super.key, required this.selectedIndex});
@@ -10,12 +12,12 @@ class ShopCard extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     List<String> imgList = [
-      "assets/shop_imgs/italy.png",
-      "assets/shop_imgs/meme.png",
-      "assets/shop_imgs/tick_tok_bun.png",
       "assets/shop_imgs/bench_press.png",
-      "assets/shop_imgs/winter_arc.png",
+      "assets/shop_imgs/tick_tok_bun.png",
       "assets/shop_imgs/dungeon_master.png",
+      "assets/shop_imgs/meme.png",
+      "assets/shop_imgs/italy.png",
+      "assets/shop_imgs/winter_arc.png",
     ];
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 40),
@@ -60,24 +62,39 @@ class ShopCard extends StatelessWidget {
                 )
               : LayoutBuilder(
                   builder: (context, constraints) {
-                    return GridView.builder(
-                      padding: EdgeInsets.all(constraints.maxWidth * 0.04),
+                    return BlocBuilder<GetUpgradesBloc, GetUpgradesState>(
+                      builder: (context, state) {
+                        if (state is GetUpgradesSuccess) {
+                          return GridView.builder(
+                            padding: EdgeInsets.all(
+                              constraints.maxWidth * 0.04,
+                            ),
 
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: size.width < 450 ? 2 : 3,
-                        childAspectRatio: 1.2,
-                      ),
-                      itemCount: 6,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: size.width < 450 ? 2 : 3,
+                                  childAspectRatio: 1.2,
+                                ),
+                            itemCount: 6,
 
-                      itemBuilder: (context, index) {
-                        return ShopBox(
-                          img: imgList[index],
-                          level: "lvl 13",
-                          moneyToBuy: "156.92K",
-                          possibleMoney: "1.61K",
-                          profitType: "Profit per hour",
-                          title: "ITALLIIAAA!!!",
-                        );
+                            itemBuilder: (context, index) {
+                              return ShopBox(
+                                img: imgList[index],
+                                level: "lvl 13",
+                                moneyToBuy: state.upgrades[index].baseCost
+                                    .toString(),
+                                possibleMoney: state.upgrades[index].baseCost
+                                    .toString(),
+                                profitType: "Profit per hour",
+                                title: state.upgrades[index].name,
+                              );
+                            },
+                          );
+                        } else if (state is GetUpgradesFailure) {
+                          return Center(child: Text(state.errorMessage));
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
                       },
                     );
                   },
@@ -142,7 +159,7 @@ class ShopBox extends StatelessWidget {
                         title,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: size.width * 0.022,
+                          fontSize: size.width * 0.018,
                           fontWeight: FontWeight.w600,
                         ),
                         overflow: TextOverflow.ellipsis,
