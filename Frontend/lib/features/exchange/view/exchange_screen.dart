@@ -42,19 +42,9 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    Dio dio = Dio();
 
     return Scaffold(
       backgroundColor: Colors.black,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final response = await dio.get(
-            'https://kirozan-001-site1.qtempurl.com/api/Auth/test',
-          );
-          print(response.data.toString());
-        },
-        child: Icon(Icons.add),
-      ),
       body: Column(
         children: [
           Expanded(
