@@ -15,10 +15,15 @@ class _MoneyBoxState extends State<MoneyBox> {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+
     return Center(
       child: SizedBox(
-        width: 200,
-        height: 50,
+        // width: 200,
+        // height: 50,
+        width: width * 0.8,
+        height: height * 0.06,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -43,7 +48,7 @@ class _MoneyBoxState extends State<MoneyBox> {
               widget.counter.toString(),
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 34,
+                fontSize: 30,
                 fontWeight: FontWeight.w900,
               ),
             ),

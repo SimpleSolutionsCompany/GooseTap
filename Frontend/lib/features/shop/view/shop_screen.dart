@@ -59,13 +59,6 @@ class _ShopScreenState extends State<ShopScreen> {
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     // await fetchUpgrades();
-      //     await getUp();
-      //   },
-      //   child: Icon(Icons.speed),
-      // ),
       backgroundColor: Colors.black,
       body: Stack(
         alignment: Alignment.center,
@@ -80,28 +73,51 @@ class _ShopScreenState extends State<ShopScreen> {
               ),
             ),
           ),
-          Positioned(
-            top: height * 0.08,
-            child: InfoBoxes(onTap: () {}),
-          ),
-          Positioned(top: height * 0.17, child: MoneyBox(counter: 1000)),
-          Positioned(
-            top: height * 0.28,
-            child: PanelSwitcher(
-              selectedIndex: selectedIndex,
-              onChanged: switchPanels,
+          SafeArea(
+            child: Column(
+              children: [
+                SizedBox(height: height * 0.1),
+                Flexible(flex: 1, child: InfoBoxes(onTap: () {})),
+                Spacer(flex: 1),
+                Flexible(flex: 1, child: MoneyBox(counter: 1000)),
+                Spacer(flex: 1),
+                Flexible(
+                  flex: 1,
+                  child: PanelSwitcher(
+                    selectedIndex: selectedIndex,
+                    onChanged: switchPanels,
+                  ),
+                ),
+                SizedBox(height: height * 0.02),
+                Flexible(
+                  flex: 8,
+                  child: ShopCard(selectedIndex: selectedIndex),
+                ),
+              ],
             ),
           ),
-          Positioned(
-            bottom: 30,
-            left: 0,
-            right: 0,
-            height: MediaQuery.of(context).size.height * 1,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ShopCard(selectedIndex: selectedIndex),
-            ),
-          ),
+          // Positioned(
+          //   top: height * 0.08,
+          //   child: InfoBoxes(onTap: () {}),
+          // ),
+          // Positioned(top: height * 0.17, child: MoneyBox(counter: 1000)),
+          // Positioned(
+          //   top: height * 0.28,
+          //   child: PanelSwitcher(
+          //     selectedIndex: selectedIndex,
+          //     onChanged: switchPanels,
+          //   ),
+          // ),
+          // Positioned(
+          //   bottom: 30,
+          //   left: 0,
+          //   right: 0,
+          //   height: MediaQuery.of(context).size.height * 1,
+          //   child: Align(
+          //     alignment: Alignment.bottomCenter,
+          //     child: ShopCard(selectedIndex: selectedIndex),
+          //   ),
+          // ),
         ],
       ),
     );

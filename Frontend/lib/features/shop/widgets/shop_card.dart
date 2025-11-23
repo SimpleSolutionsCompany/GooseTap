@@ -21,85 +21,80 @@ class ShopCard extends StatelessWidget {
     ];
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 40),
-      child: FractionallySizedBox(
-        heightFactor: 0.5,
-        widthFactor: 1,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(size.width * 0.03),
-            color: Color.fromARGB(65, 47, 47, 47),
-          ),
-          child: selectedIndex == 1
-              ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            size.width * 0.03,
-                          ),
-                        ),
-                        child: Image.asset(
-                          "assets/comming_soon.png",
-                          fit: BoxFit.fill,
-                          width: size.width * 0.5,
-                        ),
-                      ),
-                      SizedBox(height: size.height * 0.03),
-                      Text(
-                        "COMMING SOON...)))",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: size.width * 0.06,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                )
-              : LayoutBuilder(
-                  builder: (context, constraints) {
-                    return BlocBuilder<GetUpgradesBloc, GetUpgradesState>(
-                      builder: (context, state) {
-                        if (state is GetUpgradesSuccess) {
-                          return GridView.builder(
-                            padding: EdgeInsets.all(
-                              constraints.maxWidth * 0.04,
-                            ),
-
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: size.width < 450 ? 2 : 3,
-                                  childAspectRatio: 1.2,
-                                ),
-                            itemCount: 6,
-
-                            itemBuilder: (context, index) {
-                              return ShopBox(
-                                img: imgList[index],
-                                level: "lvl 13",
-                                moneyToBuy: state.upgrades[index].baseCost
-                                    .toString(),
-                                possibleMoney: state.upgrades[index].baseCost
-                                    .toString(),
-                                profitType: "Profit per hour",
-                                title: state.upgrades[index].name,
-                              );
-                            },
-                          );
-                        } else if (state is GetUpgradesFailure) {
-                          return Center(child: Text(state.errorMessage));
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },
-                    );
-                  },
-                ),
+      // child: FractionallySizedBox(
+      //   heightFactor: 0.5,
+      //   widthFactor: 1,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(size.width * 0.03),
+          color: Color.fromARGB(65, 47, 47, 47),
         ),
+        child: selectedIndex == 1
+            ? Padding(
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(size.width * 0.03),
+                      ),
+                      child: Image.asset(
+                        "assets/comming_soon.png",
+                        fit: BoxFit.fill,
+                        width: size.width * 0.5,
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.03),
+                    Text(
+                      "COMMING SOON...)))",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: size.width * 0.06,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              )
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  return BlocBuilder<GetUpgradesBloc, GetUpgradesState>(
+                    builder: (context, state) {
+                      if (state is GetUpgradesSuccess) {
+                        return GridView.builder(
+                          padding: EdgeInsets.all(constraints.maxWidth * 0.04),
+
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: size.width < 450 ? 2 : 3,
+                                childAspectRatio: 1.2,
+                              ),
+                          itemCount: 6,
+
+                          itemBuilder: (context, index) {
+                            return ShopBox(
+                              img: imgList[index],
+                              level: "lvl 13",
+                              moneyToBuy: state.upgrades[index].baseCost
+                                  .toString(),
+                              possibleMoney: state.upgrades[index].baseCost
+                                  .toString(),
+                              profitType: "Profit per hour",
+                              title: state.upgrades[index].name,
+                            );
+                          },
+                        );
+                      } else if (state is GetUpgradesFailure) {
+                        return Center(child: Text(state.errorMessage));
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  );
+                },
+              ),
       ),
     );
   }

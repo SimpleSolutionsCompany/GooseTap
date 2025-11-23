@@ -1,4 +1,3 @@
-import "package:dio/dio.dart";
 import "package:flutter/material.dart";
 import "package:get_it/get_it.dart";
 import "../../widgets/widgets.dart";
@@ -60,29 +59,63 @@ class _ExchangeScreenState extends State<ExchangeScreen> {
                         "assets/exchange_imgs/gradient_bg_purple.png",
                       ),
                     ),
+                    SafeArea(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: height * 0.07),
+                          Flexible(
+                            flex: 2,
+                            child: UserCard(
+                              counter: _counter,
+                              progress: _progress,
+                            ),
+                          ),
 
-                    Positioned(
-                      top: height * 0.10,
-                      child: UserCard(counter: _counter, progress: _progress),
-                    ),
-
-                    Positioned(
-                      top: height * 0.36,
-                      child: InfoBoxes(onTap: () {}),
-                    ),
-                    Positioned(
-                      top: height * 0.45,
-                      child: GooseCircle(
-                        counter: _counter,
-                        onTapUp: (details) => _onTap(stackContext, details),
+                          // Spacer(flex: 1),
+                          Flexible(
+                            flex: 1,
+                            child: Center(child: InfoBoxes(onTap: () {})),
+                          ),
+                          // Spacer(flex: 1),
+                          // SizedBox(height: height * 0.015),
+                          Flexible(
+                            flex: 3,
+                            child: Center(
+                              child: GooseCircle(
+                                counter: _counter,
+                                onTapUp: (details) =>
+                                    _onTap(stackContext, details),
+                              ),
+                            ),
+                          ),
+                          // SizedBox(height: height * 0.008),
+                          Flexible(flex: 1, child: Energy(energy: _energy)),
+                        ],
                       ),
-                      // child: TestCircle(),
                     ),
 
-                    Positioned(
-                      top: height * 0.84,
-                      child: Energy(energy: _energy),
-                    ),
+                    // Positioned(
+                    //   top: height * 0.10,
+                    //   child: UserCard(counter: _counter, progress: _progress),
+                    // ),
+                    // Positioned(
+                    //   top: height * 0.36,
+                    //   child: InfoBoxes(onTap: () {}),
+                    // ),
+                    // Positioned(
+                    //   top: height * 0.45,
+                    //   child: GooseCircle(
+                    //     counter: _counter,
+                    //     onTapUp: (details) => _onTap(stackContext, details),
+                    //   ),
+                    //   // child: TestCircle(),
+                    // ),
+                    // Positioned(
+                    //   top: height * 0.84,
+                    //   child: Energy(energy: _energy),
+                    // ),
                     ..._flyingOnes.map(
                       (e) => e.build(stackContext, _removeFlyingOne),
                     ),

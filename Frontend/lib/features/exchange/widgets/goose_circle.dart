@@ -22,41 +22,16 @@ class _GooseCircleState extends State<GooseCircle>
   @override
   void initState() {
     super.initState();
+
     _animationController = AnimationController(
       vsync: this,
-      // 1. Made the animation faster for a "snappier" clicker feel
-      duration: const Duration(milliseconds: 150),
+      duration: const Duration(milliseconds: 280), // smoother
     );
 
-    _scaleAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        // 2. "Squish" down (same as before)
-        tween: Tween(
-          begin: 1.0,
-          end: 0.9,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 30, // Use 30% of the duration
-      ),
-      TweenSequenceItem(
-        // 3. "Overshoot" past 1.0 to 1.05
-        tween: Tween(
-          begin: 0.9,
-          end: 1.05,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 40, // Use 40% of the duration
-      ),
-      TweenSequenceItem(
-        // 4. "Settle" back down to 1.0
-        tween: Tween(
-          begin: 1.05,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeIn)),
-        weight: 30, // Use 30% of the duration
-      ),
-    ]).animate(_animationController);
-
-    // 5. REMOVED the addListener(setState) calls.
-    // We will use AnimatedBuilder in the build method instead.
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.08, // overshoot amount
+    ).chain(CurveTween(curve: Curves.elasticOut)).animate(_animationController);
   }
 
   @override
@@ -66,14 +41,19 @@ class _GooseCircleState extends State<GooseCircle>
   }
 
   void _handleTap(TapUpDetails details) {
-    if (_animationController.status != AnimationStatus.forward) {
-      _animationController.forward(from: 0.0);
-    }
+    _animationController.forward(from: 0.0); // always restarts
     widget.onTapUp(details);
   }
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+
+    final double outer = width * 0.72;
+    final double inner = width * 0.67;
+    final double gooseWidth = width * 0.70;
+
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -87,8 +67,8 @@ class _GooseCircleState extends State<GooseCircle>
               clipBehavior: Clip.hardEdge,
               children: [
                 Container(
-                  width: 323,
-                  height: 323,
+                  width: outer,
+                  height: outer,
 
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -113,39 +93,37 @@ class _GooseCircleState extends State<GooseCircle>
                 ),
 
                 // Inner shadow overlay
-                IgnorePointer(
-                  child: ClipOval(
-                    child: Container(
-                      width: 323,
-                      height: 323,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(0, -200),
-                            color: Colors.white.withOpacity(0.25),
-                            blurRadius: 50,
-                            spreadRadius: 20,
-                          ),
-                        ],
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withOpacity(0.15),
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.4),
-                          ],
-                          stops: const [0.0, 0.5, 1.0],
+                ClipOval(
+                  child: Container(
+                    width: outer,
+                    height: outer,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(0, -200),
+                          color: Colors.white.withOpacity(0.25),
+                          blurRadius: 50,
+                          spreadRadius: 20,
                         ),
+                      ],
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withOpacity(0.15),
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.4),
+                        ],
+                        stops: const [0.0, 0.5, 1.0],
                       ),
                     ),
                   ),
                 ),
 
                 Container(
-                  width: 294,
-                  height: 294,
+                  width: inner,
+                  height: inner,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
@@ -156,13 +134,15 @@ class _GooseCircleState extends State<GooseCircle>
                   ),
                 ),
                 Positioned(
-                  right: 20,
-
+                  right: outer * 0.06,
                   child: ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: 105, sigmaY: 105),
+                    imageFilter: ImageFilter.blur(
+                      sigmaX: outer * 0.32,
+                      sigmaY: outer * 0.32,
+                    ),
                     child: Container(
-                      width: 200,
-                      height: 200,
+                      width: outer * 0.62,
+                      height: outer * 0.62,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white.withOpacity(0.7),
@@ -171,12 +151,15 @@ class _GooseCircleState extends State<GooseCircle>
                   ),
                 ),
                 Positioned(
-                  left: 20,
+                  left: outer * 0.06,
                   child: ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
+                    imageFilter: ImageFilter.blur(
+                      sigmaX: outer * 0.1,
+                      sigmaY: outer * 0.1,
+                    ),
                     child: Container(
-                      width: 200,
-                      height: 200,
+                      width: outer * 0.62,
+                      height: outer * 0.62,
 
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -188,8 +171,8 @@ class _GooseCircleState extends State<GooseCircle>
                 FittedBox(
                   fit: BoxFit.contain,
                   child: SizedBox(
-                    width: 300,
-                    height: 270,
+                    width: gooseWidth,
+                    height: gooseWidth * 0.9,
                     child: Image.asset("assets/exchange_imgs/goose.png"),
                   ),
                 ),

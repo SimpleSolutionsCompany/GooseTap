@@ -67,7 +67,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
                   selectedIndex: _selectedIndex,
                   checkIndex: 1,
                   onTap: () => _onItemTapped(1),
-                  screenName: "Mine",
+                  screenName: "Shop",
                   screenImage: "assets/bottom_nav_bar_imgs/pickaxe.svg",
                 ),
                 _BottomBarBox(
@@ -102,7 +102,6 @@ class _MyBottomBarState extends State<MyBottomBar> {
 
 class _BottomBarBox extends StatelessWidget {
   _BottomBarBox({
-    super.key,
     required this.selectedIndex,
     required this.checkIndex,
     required this.onTap,
