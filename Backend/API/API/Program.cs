@@ -119,6 +119,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IGenericRepository<Upgrade>, UpgradeRepository>();
 builder.Services.AddTransient<UpgradeService>();
+builder.Services.AddTransient<UserService>();
 
 builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();
 builder.Services.AddTransient<TelegramAuthService>(provider =>

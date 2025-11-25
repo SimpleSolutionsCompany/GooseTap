@@ -73,6 +73,10 @@ namespace Domain.Models
         /// </summary>
         public DateTime LastEnergyRestoreTime { get; set; } = DateTime.UtcNow;
 
+        /// <summary>
+        /// Скількі кліків приносить користувачу один клік.
+        /// </summary>
+        public int ProfitPerClick { get; set; } = 1;
 
         // --- Навігаційні властивості ---
 
