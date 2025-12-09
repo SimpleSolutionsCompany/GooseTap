@@ -1,9 +1,14 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goose_tap/features/shop/blocs/get_upgrades_bloc/get_upgrades_bloc.dart';
 import 'package:goose_tap/features/shop/shop.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
+import 'package:telegram_web_app/telegram_web_app.dart';
+
+import '../../../local/local.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -39,7 +44,17 @@ class _ShopScreenState extends State<ShopScreen> {
   //   print(response.upgrades[0].name);
   // }
 
+  final SharedHelper sharedHelper = SharedHelper();
+
   int selectedIndex = 0;
+  int _money = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<GetUpgradesBloc>().add(OnGetUpgradesEvent());
+    _money = sharedHelper.getSavedMoney();
+  }
 
   void switchPanels(int newIndex) {
     setState(() {
@@ -49,16 +64,17 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.read<GetUpgradesBloc>().add(OnGetUpgradesEvent());
-  }
-
-  @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final tg = TelegramWebApp.instance;
+          Clipboard.setData(ClipboardData(text: tg.initData.raw));
+        },
+        child: Icon(Icons.add),
+      ),
       backgroundColor: Colors.black,
       body: Stack(
         alignment: Alignment.center,
@@ -79,7 +95,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 SizedBox(height: height * 0.1),
                 Flexible(flex: 1, child: InfoBoxes(onTap: () {})),
                 Spacer(flex: 1),
-                Flexible(flex: 1, child: MoneyBox(counter: 1000)),
+                Flexible(flex: 1, child: MoneyBox(counter: _money)),
                 Spacer(flex: 1),
                 Flexible(
                   flex: 1,

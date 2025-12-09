@@ -5,10 +5,18 @@ import 'package:goose_tap/features/exchange/widgets/widgets.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
 
 class UserCard extends StatelessWidget {
-  UserCard({super.key, required this.counter, required this.progress});
+  UserCard({
+    super.key,
+    required this.counter,
+    required this.progress,
+    this.level = 1,
+    this.requiredClicks = 1000,
+  });
 
   final int counter;
   final double progress;
+  final int level;
+  final int requiredClicks;
   final getIt = GetIt.instance;
 
   @override
@@ -119,7 +127,11 @@ class UserCard extends StatelessWidget {
                   ),
                   MoneyBox(counter: counter),
                   Spacer(),
-                  ProgressBar(progress: progress),
+                  ProgressBar(
+                    progress: progress,
+                    level: level,
+                    requiredClicks: requiredClicks,
+                  ),
                 ],
               ),
             ),
