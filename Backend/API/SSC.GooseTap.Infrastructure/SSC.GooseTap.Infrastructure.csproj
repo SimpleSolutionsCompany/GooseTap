@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SSC.GooseTap.Business\SSC.GooseTap.Business.csproj" />
     <ProjectReference Include="..\SSC.GooseTap.Domain\SSC.GooseTap.Domain.csproj" />
+    <ProjectReference Include="..\SSC.GooseTap.DataAccess\SSC.GooseTap.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

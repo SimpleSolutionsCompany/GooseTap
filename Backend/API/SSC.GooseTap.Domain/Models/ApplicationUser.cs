@@ -13,27 +13,22 @@ namespace SSC.GooseTap.Domain.Models
     /// Успадковує IdentityUser для інтеграції з ASP.NET Identity.
     /// Містить як дані автентифікації, так і ігровий стан.
     /// </summary>
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<Guid>
     {
-        // --- Ідентифікаційні дані ---
-
-        // public string FirstName { get; set; } // Вже є в IdentityUser (через Claims)
-        // public string? LastName { get; set; } // Аналогічно
+        
+        
 
         /// <summary>
         /// Унікальний Telegram ID користувача.
-        /// Це буде наш основний "логін" з Telegram.
+        /// Це буде наш основний "login" з Telegram.
         /// </summary>
         public string TelegramId { get; set; }
 
-
-        // --- Дані Автентифікації (Refresh Token) ---
-
-        public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
+        
+       
 
 
-        // --- Ігровий Стан ("Холодні" дані) ---
+        
 
         /// <summary>
         /// Основний баланс монет (остання збережена версія з SQL).
@@ -41,17 +36,18 @@ namespace SSC.GooseTap.Domain.Models
         public long Balance { get; set; } = 0;
 
         /// <summary>
-        /// Пасивний дохід на годину (розраховується на основі апгрейдів).
+        /// Пасивний дохід на секунду
         /// </summary>
-        public long ProfitPerHour { get; set; } = 0;
+        public long ProfitPerSecond { get; set; } = 0;
 
         /// <summary>
         /// Остання дата, коли було зараховано пасивний дохід.
         /// </summary>
+        
         public DateTime LastPassiveIncomeClaim { get; set; } = DateTime.UtcNow;
 
 
-        // --- "Гарячі" дані (зберігаються в SQL, але кешуються в Redis) ---
+        
 
         /// <summary>
         /// Максимальний запас енергії.
@@ -83,6 +79,6 @@ namespace SSC.GooseTap.Domain.Models
         /// <summary>
         /// Список апгрейдів, які купив цей користувач.
         /// </summary>
-        public List<UserUpgrade> UserUpgrades { get; set; }
+        public List<UserUpgrade>? UserUpgrades { get; set; }
     }
 }

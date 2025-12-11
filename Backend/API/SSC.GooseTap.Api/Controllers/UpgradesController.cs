@@ -6,7 +6,7 @@ namespace SSC.GooseTap.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [AllowAnonymous]
     public class UpgradesController(UpgradeService upgradeService) : ControllerBase
     {
         [HttpGet("GetAll")]
@@ -14,7 +14,7 @@ namespace SSC.GooseTap.Api.Controllers
         {
             try
             {
-                var upgrades = await upgradeService.GetAllUpgrades();
+                var upgrades = await upgradeService.GetAllUpgradesAsync();
                 return Ok(new 
                 { 
                     Message = "List of all upgrades.",

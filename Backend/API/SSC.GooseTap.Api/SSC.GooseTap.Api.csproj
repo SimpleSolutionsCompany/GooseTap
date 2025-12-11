@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>8c672737-33ec-4647-9fe4-df53e20d429a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +31,15 @@
   <ItemGroup>
     <ProjectReference Include="..\SSC.GooseTap.Business\SSC.GooseTap.Business.csproj" />
     <ProjectReference Include="..\SSC.GooseTap.Infrastructure\SSC.GooseTap.Infrastructure.csproj" />
-    <ProjectReference Include="..\SSC.GooseTap.Persistence\SSC.GooseTap.Persistence.csproj" />
+    <ProjectReference Include="..\SSC.GooseTap.DataAccess\SSC.GooseTap.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Properties\PublishProfiles\kirozan-001-site1 - FTP.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
 </Project>

@@ -3,46 +3,38 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SSC.GooseTap.Api.Middleware;
+using SSC.GooseTap.Business.Contracts;
 using SSC.GooseTap.Business.Contracts.Infrastructure;
 using SSC.GooseTap.Business.Services;
 using SSC.GooseTap.Domain.Interfaces;
 using SSC.GooseTap.Domain.Models;
 using SSC.GooseTap.Infrastructure.Configuration;
 using SSC.GooseTap.Infrastructure.Services;
-using SSC.GooseTap.Persistence.Context;
-using SSC.GooseTap.Persistence.Repositories; 
+using SSC.GooseTap.DataAccess.Context;
+using SSC.GooseTap.DataAccess.Repositories;
+using System.Reflection;
 
-// <--- Змінено (беремо з проєкту Persistence)
+using DotNetEnv;
 
-// TODO: Додай правильний namespace для AutoMapper профілів
-// using Application.Mapping;
+Env.Load();
+
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-
-//DotNetEnv.Env.Load();
-//builder.Configuration.AddEnvironmentVariables();
-
-
-
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
-
 
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "JWT_N1 API",
+        Title = "GooseTap API",
         Version = "v1",
-        Description = "An example API for demonstrating authentication with JWT."
+        Description = "API for GooseTap Clicker Game."
     });
 
     option.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -68,14 +60,30 @@ builder.Services.AddSwaggerGen(option =>
             new string[] {}
         }
     });
+
+    // Set the comments path for the Swagger JSON and UI.
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        option.IncludeXmlComments(xmlPath);
+    }
 });
 
-// 👇 Connection string тепер можна брати з .env або Environment Variables
+// Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        // Оце той рядок, якого не вистачало для міграцій:
+        b => b.MigrationsAssembly("SSC.GooseTap.DataAccess")
+    ));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(option =>
+// Identity
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(option =>
 {
     //option.Password.RequireDigit = false;
     //option.Password.RequiredLength = 6;
@@ -87,7 +95,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(option =>
 .AddDefaultTokenProviders();
 
 
-
+// Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -100,21 +108,20 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JWTSettings:Issuer"], // 👈 береться з ENV або .env
-        ValidAudience = builder.Configuration["JWTSettings:Audience"], // 👈 береться з ENV або .env
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:key"])) // 👈 береться з ENV або .env
+        ValidIssuer = builder.Configuration["JWTSettings:Issuer"],
+        ValidAudience = builder.Configuration["JWTSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:key"]))
     };
 });
 
-
-//builder.Services.AddTransient<TokenService>();
-//builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();
-//builder.Services.AddTransient<IRedisCacheService, RedisCacheService>();
+// Services Registration
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IGenericRepository<Upgrade>, UpgradeRepository>();
 builder.Services.AddScoped<IGenericRepository<ApplicationUser>, UserRepository>();
+
 builder.Services.AddTransient<UpgradeService>();
 builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<GameService>(); // New
 
 builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();
 builder.Services.AddTransient<TelegramAuthService>(provider =>
@@ -122,61 +129,65 @@ builder.Services.AddTransient<TelegramAuthService>(provider =>
     return new TelegramAuthService(builder.Configuration["Telegram:BotToken"]);
 });
 
+// Click Queue Services
+builder.Services.AddSingleton<IClickQueue, ClickQueue>();
+builder.Services.AddHostedService<ClickQueueBackgroundService>();
 
 
-// 👇 EmailSettings тепер теж через ENV або .env
 var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>();
 builder.Services.AddSingleton(emailSettings);
 builder.Services.AddTransient<IEmailService, EmailService>();
-
-
-
-//builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowAll", policy =>
-//        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-//});
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         policy => policy
-            .AllowAnyOrigin()
+            .AllowAnyOrigin() // In production, replace with specific origins
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
 
 
-
-
-
 var app = builder.Build();
 
-//ApplyMigrations(app);
+// Middleware Pipeline
 
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>(); // New Exception Middlewares
 
 app.UseCors("AllowAll");
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-//    db.Database.Migrate();
-//}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        await context.Database.MigrateAsync();
+        logger.LogInformation("Migrations Applied Successfully.");
+
+        // if (app.Environment.IsDevelopment())
+        // {
+        //     await DataSeeder.SeedAsync(context);
+        //     logger.LogInformation("Database Seeded Successfully.");
+        // }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+}
 
 
-
-//ServiceLocator.SetLocatorProvider(app.Services);
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment()) // Good practice to keep this check
 //{
-app.UseSwagger();
-app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 //}
+// For demo purposes allowing Swagger in prod too if manual removal is not desired, but safer to keep in dev block or configurable.
 
 app.UseHttpsRedirection();
 

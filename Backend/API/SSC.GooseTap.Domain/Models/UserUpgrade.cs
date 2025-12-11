@@ -12,10 +12,10 @@ namespace SSC.GooseTap.Domain.Models
     /// </summary>
     public class UserUpgrade
     {
-        public string ApplicationUserId { get; set; }
+        public Guid ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
 
-        public string UpgradeId { get; set; }
+        public Guid UpgradeId { get; set; }
         public virtual Upgrade Upgrade { get; set; }
 
         /// <summary>

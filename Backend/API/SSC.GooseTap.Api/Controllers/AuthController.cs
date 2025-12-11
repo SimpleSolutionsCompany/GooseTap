@@ -29,7 +29,7 @@ namespace SSC.GooseTap.Api.Controllers
         [HttpPost("login-telegram")]
         public async Task<IActionResult> LoginTelegram([FromBody] TelegramValidateRequest dto)
         {
-
+            bool IsUserNew = false;
 
 
 
@@ -38,14 +38,14 @@ namespace SSC.GooseTap.Api.Controllers
 
             // --- 1. Валідація хешу ---
             // (Також варто додати перевірку auth_date, як ми обговорювали)
-            if (!_telegramAuthService.Validate(dto.InitData))
+            if (!_telegramAuthService.Validate(dto.InitDataRaw))
             {
                 logger.LogWarning("Telegram Auth Failed: Invalid hash.");
                 return Unauthorized(new { Message = "Invalid data signature." });
             }
 
             // --- 2. Отримання даних користувача ---
-            var telegramUser = _telegramAuthService.GetUser(dto.InitData);
+            var telegramUser = _telegramAuthService.GetUser(dto.InitDataRaw);
             if (telegramUser == null || string.IsNullOrEmpty(telegramUser.Id.ToString()))
             {
                 logger.LogWarning("Telegram Auth Failed: Could not parse user data.");
@@ -72,6 +72,8 @@ namespace SSC.GooseTap.Api.Controllers
 
             if (user == null)
             {
+                IsUserNew = true;
+                
                 // Сценарій: РЕЄСТРАЦІЯ
                 // Користувача не знайдено, створюємо нового
                 logger.LogInformation("Creating new user for Telegram ID {TelegramId}", telegramId);
@@ -114,17 +116,10 @@ namespace SSC.GooseTap.Api.Controllers
         }
 
 
-        private async Task<IActionResult> GenerateAuthResponse(ApplicationUser user)
+        private async Task<IActionResult> GenerateAuthResponse(ApplicationUser user, bool isNewUser = false)
         {
-            user.RefreshToken = tokenService.CreateRefreshToken();
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
-            var updateResult = await userManager.UpdateAsync(user);
-
-            if (!updateResult.Succeeded)
-            {
-                logger.LogError("Failed to update user refresh token for {UserId}", user.Id);
-                return BadRequest(new { Message = "Login failed (token update)." });
-            }
+           
+            
 
 
             var token = tokenService.CreateToken(user);
@@ -134,9 +129,9 @@ namespace SSC.GooseTap.Api.Controllers
             return Ok(new TelegramValidateResponse()
             {
                 AccessToken = token,
-                RefreshToken = user.RefreshToken,
-                ExpiresAt = DateTime.Now.AddMinutes(20).ToString(),
-                IsNewUser = false,
+                
+                ExpiresAt = DateTime.Now.AddMinutes(20),
+                IsNewUser = isNewUser,
 
             });
         }

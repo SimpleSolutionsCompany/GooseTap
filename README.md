@@ -86,3 +86,112 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 * Ніяких ключів у GitHub.
 * Кожен розробник має свій `.env` або user-secrets.
 * На сервері ключи зберігаються у системних ENV або GitHub Secrets.
+
+---
+
+# 🚀 Як запустити проєкт
+
+## 🛠 Попередні вимоги (Prerequisites)
+
+Перед початком переконайтеся, що у вас встановлено:
+
+*   **[.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)** (для Backend)
+*   **[Flutter SDK](https://docs.flutter.dev/get-started/install)** (для Frontend)
+*   **[Python 3.10+](https://www.python.org/downloads/)** та **[Poetry](https://python-poetry.org/docs/#installation)** (для Telegram Bot)
+*   **[Docker](https://www.docker.com/)** (опціонально, для запуску в контейнерах)
+
+---
+
+## 🔙 Backend (.NET)
+
+### Локальний запуск
+
+1.  **Перейдіть у папку API:**
+    ```bash
+    cd Backend/API
+    ```
+
+2.  **Налаштуйте конфігурацію:**
+    Створіть файл `.env` у корені `Backend/API` (або використовуйте `user-secrets` як описано вище) та додайте рядок підключення до БД:
+    ```env
+    ConnectionStrings__DefaultConnection=Server=...;Database=...;User Id=...;Password=...
+    ```
+
+3.  **Запустіть проєкт:**
+    ```bash
+    dotnet run --project SSC.GooseTap.Api/SSC.GooseTap.Api.csproj
+    ```
+    API буде доступне за адресою `http://localhost:5000` (або інший порт, вказаний у логах).
+
+### Запуск через Docker
+
+З кореневої папки репозиторію:
+
+```bash
+docker build -f Backend/API/SSC.GooseTap.Api/Dockerfile -t goosetap-api Backend/API
+docker run -p 8080:8080 -e ConnectionStrings__DefaultConnection="..." goosetap-api
+```
+
+---
+
+## 📱 Frontend (Flutter)
+
+### Локальний запуск
+
+1.  **Перейдіть у папку Frontend:**
+    ```bash
+    cd Frontend
+    ```
+
+2.  **Налаштуйте змінні середовища:**
+    Створіть файл `.env` у папці `Frontend`:
+    ```env
+    API_URL=http://localhost:5000 # Або ваша URL бекенду
+    ```
+
+3.  **Встановіть залежності:**
+    ```bash
+    flutter pub get
+    ```
+
+4.  **Запустіть застосунок:**
+    ```bash
+    flutter run
+    ```
+
+### Запуск через Docker (Nginx)
+
+```bash
+cd Frontend
+docker-compose up --build
+```
+Застосунок буде доступний на порту `8080`.
+
+---
+
+## 🤖 Telegram Bot (Python)
+
+### Локальний запуск (без Docker)
+
+1.  **Перейдіть у папку TgBot:**
+    ```bash
+    cd TgBot
+    ```
+
+2.  **Налаштуйте змінні середовища:**
+    Створіть файл `.env` у папці `TgBot/src` (важливо: саме в `src`, оскільки `config_reader.py` шукає його там):
+    ```env
+    BOT_TOKEN=ваш_токен_бота
+    ADMIN_IDS=[123456789, 987654321] # JSON масив ID адміністраторів
+    ```
+
+3.  **Встановіть залежності через Poetry:**
+    ```bash
+    poetry install
+    ```
+
+4.  **Запустіть бота:**
+    ```bash
+    poetry run python src/__main__.py
+    ```
+

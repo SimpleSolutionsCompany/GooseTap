@@ -1,49 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SSC.GooseTap.Domain.Models;
 
-namespace SSC.GooseTap.Persistence.Context
+namespace SSC.GooseTap.DataAccess.Context
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : IdentityDbContext<ApplicationUser>(options)
+    public static class ModelBuilderExtensions
     {
-        public DbSet<Upgrade> Upgrades { get; set; }
-        public DbSet<UserUpgrade> UserUpgrades { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
+        public static void Seed(this ModelBuilder builder)
         {
-
-            base.OnModelCreating(builder);
-
-
-            builder.Entity<ApplicationUser>(entity =>
-            {
-                entity.HasIndex(u => u.TelegramId).IsUnique();
-            });
-            
-            builder.Entity<Upgrade>(entity =>
-            {
-                entity.HasKey(u => u.Id);
-            });
-
-            
-            builder.Entity<UserUpgrade>(entity =>
-            {
-                entity.HasKey(uu => new { uu.ApplicationUserId, uu.UpgradeId });
-
-                entity.HasOne(uu => uu.ApplicationUser)
-                    .WithMany(u => u.UserUpgrades)
-                    .HasForeignKey(uu => uu.ApplicationUserId);
-
-                entity.HasOne(uu => uu.Upgrade)
-                    .WithMany(u => u.UserUpgrades)
-                    .HasForeignKey(uu => uu.UpgradeId);
-            });
-
             builder.Entity<Upgrade>().HasData(
                 new Upgrade
                 {
-                    Id = "italia",
+                    Id = Guid.NewGuid(),
                     Name = "ITALLIIAAA!!!",
                     Description = "Фанати з Італії приносять дохід.",
                     BaseCost = 15000,
@@ -51,7 +18,7 @@ namespace SSC.GooseTap.Persistence.Context
                 },
                 new Upgrade
                 {
-                    Id = "grechka",
+                    Id = Guid.NewGuid(),
                     Name = "Grechka",
                     Description = "Стратегічні запаси гречки.",
                     BaseCost = 30000,
@@ -59,7 +26,7 @@ namespace SSC.GooseTap.Persistence.Context
                 },
                 new Upgrade
                 {
-                    Id = "defense_brain",
+                    Id = Guid.NewGuid(),
                     Name = "Defense Brain",
                     Description = "Захист від шкідливого впливу.",
                     BaseCost = 50000,
@@ -67,7 +34,7 @@ namespace SSC.GooseTap.Persistence.Context
                 },
                 new Upgrade
                 {
-                    Id = "bench_press_100kg",
+                    Id = Guid.NewGuid(),
                     Name = "Bench press 100kg",
                     Description = "Сила - це прибуток.",
                     BaseCost = 50000,
@@ -75,7 +42,7 @@ namespace SSC.GooseTap.Persistence.Context
                 },
                 new Upgrade
                 {
-                    Id = "winter_arc",
+                    Id = Guid.NewGuid(),
                     Name = "Winter Arc",
                     Description = "Щось холодне і прибуткове.",
                     BaseCost = 50000,
@@ -83,16 +50,13 @@ namespace SSC.GooseTap.Persistence.Context
                 },
                 new Upgrade
                 {
-                    Id = "dungeon_master",
+                    Id = Guid.NewGuid(),
                     Name = "Dungeon Master",
                     Description = "Контроль над підземеллям.",
                     BaseCost = 50000,
                     BaseProfitPerHour = 5500
                 }
             );
-        
-
-
         }
     }
 }

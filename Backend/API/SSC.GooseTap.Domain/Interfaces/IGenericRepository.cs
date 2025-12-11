@@ -2,11 +2,11 @@
 
 using System.Linq.Expressions;
 
-namespace SSC.GooseTap.Domain.Interfaces
-{
-    public interface IGenericRepository<T> where T : class
+namespace SSC.GooseTap.Domain.Interfaces;
+
+    public interface IGenericRepository<T> 
     {
-        Task<T?> GetByIdAsync(string id);
+        Task<T?> GetByIdAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync();
 
         Task AddAsync(T entity);
@@ -17,9 +17,9 @@ namespace SSC.GooseTap.Domain.Interfaces
 
         
 
-        Task<IEnumerable<T>> GetByCondition(Expression<Func<T,bool>> predicate);
+       
 
 
 
     }
-}
+

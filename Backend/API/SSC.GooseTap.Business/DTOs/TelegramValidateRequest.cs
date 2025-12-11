@@ -8,6 +8,7 @@ namespace SSC.GooseTap.Business.DTOs
 {
     public class TelegramValidateRequest
     {
-        public string InitData { get; set; }
+        
+        public string InitDataRaw { get; set; }
     }
 }

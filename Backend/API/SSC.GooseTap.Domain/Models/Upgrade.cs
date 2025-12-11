@@ -15,9 +15,16 @@ namespace SSC.GooseTap.Domain.Models
         /// <summary>
         /// Унікальний текстовий ID (напр., "passive_income_hamster_1")
         /// </summary>
-        public string Id { get; set; }
+        public Guid Id { get; set; }
+        
+        /// <summary>
+        ///  Назва апгрейду.
+        /// </summary>
 
         public string Name { get; set; }
+        /// <summary>
+        ///  Опис апгрейду.
+        ///  </summary>
         public string Description { get; set; }
 
         /// <summary>

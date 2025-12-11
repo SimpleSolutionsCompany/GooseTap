@@ -25,7 +25,8 @@ namespace SSC.GooseTap.Infrastructure.Services
             var claims = new List<Claim>
             {
 
-                new Claim(ClaimTypes.NameIdentifier,applicationUser.Id)
+                new Claim("Id",applicationUser.Id.ToString()),
+                new Claim("TgId", applicationUser.TelegramId),
                 //new Claim(ClaimTypes.Name, applicationUser.UserName),
                 //new Claim("FirstName", applicationUser.FirstName),
                 //new Claim("LastName", applicationUser.LastName),
@@ -63,7 +64,7 @@ namespace SSC.GooseTap.Infrastructure.Services
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-
+        
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -74,7 +75,7 @@ namespace SSC.GooseTap.Infrastructure.Services
                 ValidAudience = _configuration["JwtSettings:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]))
             };
-
+        
             return tokenHandler.ValidateToken(token, validationParameters, out _);
         }
     }
