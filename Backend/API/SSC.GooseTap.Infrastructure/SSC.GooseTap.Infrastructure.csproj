@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.14.1" />
+    <PackageReference Include="MimeKit" Version="4.14.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.9.32" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SSC.GooseTap.Business\SSC.GooseTap.Business.csproj" />
+    <ProjectReference Include="..\SSC.GooseTap.Domain\SSC.GooseTap.Domain.csproj" />
+    <ProjectReference Include="..\SSC.GooseTap.DataAccess\SSC.GooseTap.DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>
