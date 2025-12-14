@@ -8,8 +8,9 @@ namespace SSC.GooseTap.Business.DTOs
 {
     public class TelegramValidateResponse
     {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("accessToken")]
+        public string AccessToken { get; set; } = string.Empty;
+        // No refresh token
         public DateTime ExpiresAt { get; set; }
         
        

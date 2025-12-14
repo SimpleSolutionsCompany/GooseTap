@@ -10,5 +10,8 @@ namespace SSC.GooseTap.Business.Responces
         public decimal ProfitPerHour { get; set; }
         public decimal OfflineIncome { get; set; }
         public DateTime LastSyncDate { get; set; }
+
+        public int Level { get; set; }
+        public string Rank { get; set; } = string.Empty;
     }
 }

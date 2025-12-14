@@ -39,6 +39,18 @@ namespace SSC.GooseTap.Domain.Models
 
         // TODO: Можна додати коефіцієнт зростання вартості (CostMultiplier)
 
+        // --- Умови розблокування (Dependencies) ---
+
+        /// <summary>
+        /// ID апгрейду, який потрібен для розблокування цього (опціонально).
+        /// </summary>
+        public Guid? ConditionUpgradeId { get; set; }
+
+        /// <summary>
+        /// Рівень необхідного апгрейду для розблокування.
+        /// </summary>
+        public int? ConditionLevel { get; set; }
+
         // --- Навігаційні властивості ---
 
         /// <summary>

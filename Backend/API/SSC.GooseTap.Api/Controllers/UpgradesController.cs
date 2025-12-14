@@ -11,7 +11,7 @@ namespace SSC.GooseTap.Api.Controllers
     [ApiController]
     public class UpgradesController(UpgradeService upgradeService, SSC.GooseTap.Business.Contracts.IUserService userService) : ControllerBase
     {
-        [HttpGet("GetAll")]
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllUpgrades()
         {

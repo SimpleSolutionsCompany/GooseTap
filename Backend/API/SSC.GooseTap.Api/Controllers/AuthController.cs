@@ -111,7 +111,7 @@ namespace SSC.GooseTap.Api.Controllers
             // --- 4. Генерація токенів ---
             // Сценарій: ЛОГІН (або щойно створений юзер)
             logger.LogInformation("Generating tokens for user {UserId}", user.Id);
-            return await GenerateAuthResponse(user, IsUserNew);
+            return GenerateAuthResponse(user, IsUserNew);
         }
 
         [HttpPost("login")]
@@ -122,7 +122,7 @@ namespace SSC.GooseTap.Api.Controllers
         }
 
 
-        private async Task<IActionResult> GenerateAuthResponse(ApplicationUser user, bool isNewUser = false)
+        private IActionResult GenerateAuthResponse(ApplicationUser user, bool isNewUser = false)
         {
            
             

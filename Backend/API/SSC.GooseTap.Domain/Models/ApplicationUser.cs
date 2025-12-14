@@ -70,6 +70,16 @@ namespace SSC.GooseTap.Domain.Models
         public DateTime LastEnergyRestoreTime { get; set; } = DateTime.UtcNow;
 
         /// <summary>
+        /// Поточний рівень користувача.
+        /// </summary>
+        public int Level { get; set; } = 1;
+
+        /// <summary>
+        /// Ранг користувача (напр. Bronze, Silver).
+        /// </summary>
+        public string Rank { get; set; } = "Bronze";
+
+        /// <summary>
         /// Скількі кліків приносить користувачу один клік.
         /// </summary>
         public int ProfitPerClick { get; set; } = 1;

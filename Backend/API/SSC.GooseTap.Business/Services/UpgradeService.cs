@@ -62,6 +62,21 @@ namespace SSC.GooseTap.Business.Services
                 return new Responces.ApiResponse<Responces.BuyUpgradeResponse>("Insufficient funds") { Success = false };
             }
 
+            // check dependencies
+            if (upgrade.ConditionUpgradeId.HasValue)
+            {
+                var conditionUpgrade = await unitOfWork.UpgradeRepository.GetByIdAsync(upgrade.ConditionUpgradeId.Value);
+                // Check if user has this upgrade at required level
+                var conditionUserUpgrade = user.UserUpgrades?.FirstOrDefault(u => u.UpgradeId == upgrade.ConditionUpgradeId.Value);
+                int currentConditionLevel = conditionUserUpgrade?.Level ?? 0;
+                int requiredLevel = upgrade.ConditionLevel ?? 1;
+
+                if (currentConditionLevel < requiredLevel)
+                {
+                    return new Responces.ApiResponse<Responces.BuyUpgradeResponse>($"Dependency not met: Requires {conditionUpgrade?.Name ?? "Unknown Upgrade"} Level {requiredLevel}") { Success = false };
+                }
+            }
+
             // Deduct cost
             user.Balance -= nextLevelPrice;
 

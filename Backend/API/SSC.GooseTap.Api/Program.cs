@@ -120,7 +120,7 @@ builder.Services.AddScoped<IGenericRepository<Upgrade>, UpgradeRepository>();
 builder.Services.AddScoped<IGenericRepository<ApplicationUser>, UserRepository>();
 
 builder.Services.AddTransient<UpgradeService>();
-builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<GameService>(); // New
 
 builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();

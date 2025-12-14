@@ -8,7 +8,7 @@ namespace SSC.GooseTap.Business.DTOs
 {
     public class TelegramValidateRequest
     {
-        
+        [System.Text.Json.Serialization.JsonPropertyName("initData")]
         public string InitDataRaw { get; set; }
     }
 }

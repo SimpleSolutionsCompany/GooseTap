@@ -5,10 +5,10 @@ using SSC.GooseTap.Domain.Models;
 
 namespace SSC.GooseTap.Business.Services
 {
-    public class GameService(IClickQueue clickQueue, UserService userService)
+    public class GameService(IClickQueue clickQueue, IUserService userService)
     {
         private readonly IClickQueue _clickQueue = clickQueue;
-        private readonly UserService _userService = userService;
+        private readonly IUserService _userService = userService;
 
         public async Task<ApiResponse<string>> ProcessClickAsync(Guid userId, GameUpdateRequest request)
         {
@@ -76,7 +76,9 @@ namespace SSC.GooseTap.Business.Services
                 MaxEnergy = user.MaxEnergy,
                 ProfitPerHour = Math.Round(user.ProfitPerSecond * 3600m, 2),
                 OfflineIncome = offlineIncome,
-                LastSyncDate = now
+                LastSyncDate = now,
+                Level = user.Level,
+                Rank = user.Rank
             };
 
             await _userService.UpdateUserAsync(user);
