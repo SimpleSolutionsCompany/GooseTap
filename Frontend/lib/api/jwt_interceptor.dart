@@ -66,7 +66,7 @@ class JwtInterceptor extends Interceptor {
 
     try {
       final resp = await dio.post(
-        "https://kirozan-001-site1.qtempurl.com/api/Auth/login-telegram",
+        "https://goosetap-001-site1.anytempurl.com/api/Auth/login-telegram",
         data: {"InitData": initDataRaw},
         options: Options(headers: {"Content-Type": "application/json"}),
       );

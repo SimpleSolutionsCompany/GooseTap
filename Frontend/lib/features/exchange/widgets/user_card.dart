@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:goose_tap/features/exchange/widgets/widgets.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
+import 'package:telegram_web_app/telegram_web_app.dart';
 
 class UserCard extends StatelessWidget {
   UserCard({
@@ -23,6 +24,7 @@ class UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
+    final tg = getIt<TelegramWebApp>();
 
     return Center(
       child: Column(
@@ -76,6 +78,7 @@ class UserCard extends StatelessWidget {
                                     width: 2.5,
                                   ),
                                 ),
+
                                 child: Image.asset(
                                   "assets/exchange_imgs/goose.png",
                                   fit: BoxFit.cover,
@@ -101,6 +104,7 @@ class UserCard extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(22),
+
                                 child: Image.asset(
                                   "assets/exchange_imgs/me.jpg",
                                   fit: BoxFit.cover,

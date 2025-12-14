@@ -123,6 +123,11 @@ class _ExchangeScreenState extends State<ExchangeScreen>
     if (level == 1) return 100;
     if (level == 2) return 1000;
     if (level == 3) return 3000;
+    if (level == 4) return 5000;
+    if (level == 5) return 8000;
+    if (level == 6) return 15000;
+    if(level == 7) return 30000;
+    if(level == 8) return 50000;
     // for higher levels, scale linearly
     return level * 1000;
   }
