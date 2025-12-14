@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:goose_tap/api/api.dart';
 import 'package:goose_tap/api/models/models.dart';

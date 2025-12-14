@@ -3,18 +3,28 @@ import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:goose_tap/features/exchange/widgets/widgets.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
+import 'package:telegram_web_app/telegram_web_app.dart';
 
 class UserCard extends StatelessWidget {
-  UserCard({super.key, required this.counter, required this.progress});
+  UserCard({
+    super.key,
+    required this.counter,
+    required this.progress,
+    this.level = 1,
+    this.requiredClicks = 1000,
+  });
 
   final int counter;
   final double progress;
+  final int level;
+  final int requiredClicks;
   final getIt = GetIt.instance;
 
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
+    final tg = getIt<TelegramWebApp>();
 
     return Center(
       child: Column(
@@ -68,6 +78,7 @@ class UserCard extends StatelessWidget {
                                     width: 2.5,
                                   ),
                                 ),
+
                                 child: Image.asset(
                                   "assets/exchange_imgs/goose.png",
                                   fit: BoxFit.cover,
@@ -93,6 +104,7 @@ class UserCard extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(22),
+
                                 child: Image.asset(
                                   "assets/exchange_imgs/me.jpg",
                                   fit: BoxFit.cover,
@@ -119,7 +131,11 @@ class UserCard extends StatelessWidget {
                   ),
                   MoneyBox(counter: counter),
                   Spacer(),
-                  ProgressBar(progress: progress),
+                  ProgressBar(
+                    progress: progress,
+                    level: level,
+                    requiredClicks: requiredClicks,
+                  ),
                 ],
               ),
             ),

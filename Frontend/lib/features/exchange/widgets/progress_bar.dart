@@ -3,7 +3,14 @@ import 'package:get_it/get_it.dart';
 
 class ProgressBar extends StatelessWidget {
   final double progress;
-  ProgressBar({super.key, required this.progress});
+  final int level;
+  final int requiredClicks;
+  ProgressBar({
+    super.key,
+    required this.progress,
+    required this.level,
+    required this.requiredClicks,
+  });
 
   final getIt = GetIt.instance;
 
@@ -36,7 +43,7 @@ class ProgressBar extends StatelessWidget {
                 ],
               ),
               Text(
-                "1/10",
+                "${(progress * requiredClicks).floor()}/$requiredClicks",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

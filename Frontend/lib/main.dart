@@ -1,11 +1,10 @@
 import 'dart:developer';
-import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:goose_tap/api/api.dart';
 import 'package:goose_tap/di/di.dart';
+import 'package:goose_tap/services/energy_service.dart';
 import 'package:goose_tap/features/shop/blocs/get_upgrades_bloc/get_upgrades_bloc.dart';
 import 'package:goose_tap/theme/theme.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
@@ -39,7 +38,10 @@ void main() async {
   // TelegramWebApp.instance.ready();
   await initTelegramWebApp();
   await dotenv.load(fileName: ".env");
-  setupDependencies();
+  await setupDependencies();
+
+  // start global energy ticker
+  getIt<EnergyService>().start();
 
   FlutterError.onError = (details) {
     log("Flutter error happened: $details");
