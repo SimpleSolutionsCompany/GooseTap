@@ -9,5 +9,7 @@ namespace SSC.GooseTap.Business.Contracts
         Task<Upgrade?> GetUpgradeByIdAsync(Guid id);
         Task UpdateUpgradeAsync(Upgrade upgrade);
         Task DeleteUpgradeAsync(Guid id);
+
+        Task<Responces.ApiResponse<Responces.BuyUpgradeResponse>> BuyUpgradeAsync(Guid userId, Guid upgradeId);
     }
 }

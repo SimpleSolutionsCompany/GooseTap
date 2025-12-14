@@ -58,5 +58,22 @@ namespace SSC.GooseTap.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("Sync")]
+        [ProducesResponseType(typeof(SSC.GooseTap.Business.Responces.CheckpointResponse), 200)]
+        public async Task<IActionResult> Sync([FromBody] SSC.GooseTap.Business.Requests.SyncRequest request)
+        {
+            var userIdString = User.FindFirst("Id")?.Value;
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new SSC.GooseTap.Business.Responces.ApiResponse<string>("Invalid User ID"));
+            }
+
+            var syncResult = await _gameService.SyncAsync(userId, request);
+            if (!syncResult.Success)
+                return BadRequest(syncResult);
+
+            return Ok(syncResult);
+        }
     }
 }

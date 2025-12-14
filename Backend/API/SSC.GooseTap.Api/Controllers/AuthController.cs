@@ -32,7 +32,6 @@ namespace SSC.GooseTap.Api.Controllers
             bool IsUserNew = false;
 
 
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -112,7 +111,14 @@ namespace SSC.GooseTap.Api.Controllers
             // --- 4. Генерація токенів ---
             // Сценарій: ЛОГІН (або щойно створений юзер)
             logger.LogInformation("Generating tokens for user {UserId}", user.Id);
-            return await GenerateAuthResponse(user);
+            return await GenerateAuthResponse(user, IsUserNew);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] TelegramValidateRequest dto)
+        {
+            // For compatibility with frontend preference of /api/auth/login
+            return await LoginTelegram(dto);
         }
 
 

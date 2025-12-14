@@ -19,5 +19,13 @@ namespace SSC.GooseTap.DataAccess.Repositories
                 .ThenInclude(uu => uu.Upgrade)
                 .FirstOrDefaultAsync(u => u.TelegramId == id);
         }
+
+        public override async Task<ApplicationUser?> GetByIdAsync(Guid id)
+        {
+            return await _dbSet
+                .Include(u => u.UserUpgrades)!
+                .ThenInclude(uu => uu.Upgrade)
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
     }
 }
