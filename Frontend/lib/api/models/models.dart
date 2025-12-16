@@ -7,4 +7,5 @@ export "problem_details.dart";
 export "sync_request.dart";
 export "checkpoint_response.dart";
 export "buy_upgrade_request.dart";
+export "buy_booster_request.dart";
 export "login_response.dart";

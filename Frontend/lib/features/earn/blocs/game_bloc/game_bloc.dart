@@ -25,6 +25,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<GameClicked>(_onGameClicked);
     on<GameSyncRequested>(_onGameSyncRequested);
     on<GameEnergyRegen>(_onGameEnergyRegen);
+    on<BoosterPurchased>(_onBoosterPurchased);
   }
 
   Future<void> _onGameStarted(
@@ -38,16 +39,24 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       int balance = cached?.balance ?? 0;
       int energy = cached?.energy ?? 1000;
       int maxEnergy = cached?.maxEnergy ?? 1000;
-      int profitPerHour = cached?.profitPerHour?.round() ?? 0; // Assuming int for simplicity or keep double
-      int level = cached?.level ?? 1;
-      if (level < 1) level = 1; // Safeguard
+    int profitPerClick = cached?.profitPerClick ?? 1;
+      int energyRestorePerSecond = cached?.energyRestorePerSecond ?? 1;
+      
+      int multitapLevel = cached?.multitapLevel ?? 1;
+      int energyLimitLevel = cached?.energyLimitLevel ?? 1;
+      int rechargeSpeedLevel = cached?.rechargeSpeedLevel ?? 1;
 
       emit(GameLoaded(
         balance: balance,
         energy: energy,
         maxEnergy: maxEnergy,
-        profitPerHour: profitPerHour.toDouble(), // Convert back to double for state if needed
+        profitPerHour: profitPerHour.toDouble(),
         level: level,
+        multitapLevel: multitapLevel,
+        energyLimitLevel: energyLimitLevel,
+        rechargeSpeedLevel: rechargeSpeedLevel,
+        profitPerClick: profitPerClick,
+        energyRestorePerSecond: energyRestorePerSecond,
       ));
 
       // Initial Sync
@@ -60,6 +69,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         profitPerHour = (synced.profitPerHour ?? profitPerHour).round();
         level = synced.level ?? level;
         if (level < 1) level = 1;
+        
+        profitPerClick = synced.profitPerClick ?? profitPerClick;
+        energyRestorePerSecond = synced.energyRestorePerSecond ?? energyRestorePerSecond;
+        multitapLevel = synced.multitapLevel ?? multitapLevel;
+        energyLimitLevel = synced.energyLimitLevel ?? energyLimitLevel;
+        rechargeSpeedLevel = synced.rechargeSpeedLevel ?? rechargeSpeedLevel;
 
         emit(GameLoaded(
           balance: balance,
@@ -67,13 +82,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           maxEnergy: maxEnergy,
           profitPerHour: profitPerHour.toDouble(),
           level: level,
+          multitapLevel: multitapLevel,
+          energyLimitLevel: energyLimitLevel,
+          rechargeSpeedLevel: rechargeSpeedLevel,
+          profitPerClick: profitPerClick,
+          energyRestorePerSecond: energyRestorePerSecond,
         ));
       } catch (e) {
         log("Sync failed: $e");
       }
       
       _startFlushTimer();
-      _startRegenTimer(); // Start regeneration
+      _startRegenTimer(); 
     } catch (e) {
       emit(GameError(message: e.toString()));
     }
@@ -88,7 +108,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       
       if (currentinfo.energy < 1) return;
 
-      final newBalance = currentinfo.balance + 1;
+      // Use dynamic profitPerClick
+      final newBalance = currentinfo.balance + currentinfo.profitPerClick;
       final newEnergy = currentinfo.energy - 1;
       
       int level = currentinfo.level;
@@ -97,18 +118,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       double progress = currentinfo.progress;
       final required = _requiredClicksForLevel(level);
       
-      // Safeguard division by zero
       if (required > 0) {
-        progress += 1.0 / required;
+        progress += currentinfo.profitPerClick / required; // Progress based on earnings or clicks? Usually earnings.
+        // Let's assume progress is based on coins earned
       }
 
       if (progress >= 1.0) {
-        progress = 0; // Reset progress
+        progress = 0; 
         level++;
       }
 
-      _pendingClicks++;
-      _pendingEnergy++;
+      _pendingClicks++; // This counts physical clicks
+      _pendingEnergy++; // This counts energy spent
 
       emit(currentinfo.copyWith(
         balance: newBalance,
@@ -123,13 +144,28 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       if (state is GameLoaded) {
         final current = state as GameLoaded;
         if (current.energy < current.maxEnergy) {
-          emit(current.copyWith(energy: current.energy + 1));
+          int newEnergy = current.energy + current.energyRestorePerSecond;
+          if (newEnergy > current.maxEnergy) newEnergy = current.maxEnergy;
+          emit(current.copyWith(energy: newEnergy));
         }
       }
   }
 
+  Future<void> _onBoosterPurchased(BoosterPurchased event, Emitter<GameState> emit) async {
+    try {
+      if (state is GameLoaded) {
+         // Optimistic update could be complex because we need price logic here to deduct balance
+         // For now, let's just make the call and then Sync
+         await _gameRepository.buyBooster(BuyBoosterRequest(type: event.type));
+         add(GameSyncRequested());
+      }
+    } catch (e) {
+      log("Booster purchase failed: $e");
+    }
+  }
+
   int _requiredClicksForLevel(int level) {
-    if (level <= 1) return 100; // Safeguard level 0 or negative
+    if (level <= 1) return 100;
     if (level == 2) return 1000;
     if (level == 3) return 3000;
     if (level == 4) return 5000;
@@ -145,6 +181,29 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     Emitter<GameState> emit,
   ) async {
      await _flushData(emit);
+     
+     // Also fetch fresh state
+     try {
+       final synced = await _gameRepository.sync(0); 
+       if (state is GameLoaded) {
+          final current = state as GameLoaded;
+          emit(GameLoaded(
+            balance: synced.balance ?? current.balance,
+            energy: synced.energy ?? current.energy,
+            maxEnergy: synced.maxEnergy ?? current.maxEnergy,
+            profitPerHour: (synced.profitPerHour ?? current.profitPerHour).toDouble(),
+            level: synced.level ?? current.level,
+            multitapLevel: synced.multitapLevel ?? current.multitapLevel,
+            energyLimitLevel: synced.energyLimitLevel ?? current.energyLimitLevel,
+            rechargeSpeedLevel: synced.rechargeSpeedLevel ?? current.rechargeSpeedLevel,
+            profitPerClick: synced.profitPerClick ?? current.profitPerClick,
+            energyRestorePerSecond: synced.energyRestorePerSecond ?? current.energyRestorePerSecond,
+            progress: current.progress, // keep local progress
+          ));
+       }
+     } catch(e) {
+       log("Sync error: $e");
+     }
   }
 
   void _startFlushTimer() {

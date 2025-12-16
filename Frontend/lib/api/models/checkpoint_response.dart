@@ -13,6 +13,13 @@ class CheckpointResponse {
   final int? level;
   final String? rank;
 
+  // Boosters
+  final int? multitapLevel;
+  final int? energyLimitLevel;
+  final int? rechargeSpeedLevel;
+  final int? profitPerClick;
+  final int? energyRestorePerSecond;
+
   CheckpointResponse({
     this.balance,
     this.energy,
@@ -22,6 +29,11 @@ class CheckpointResponse {
     this.lastSyncDate,
     this.level,
     this.rank,
+    this.multitapLevel,
+    this.energyLimitLevel,
+    this.rechargeSpeedLevel,
+    this.profitPerClick,
+    this.energyRestorePerSecond,
   });
 
   factory CheckpointResponse.fromJson(Map<String, dynamic> json) =>

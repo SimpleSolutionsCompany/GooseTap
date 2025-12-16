@@ -14,3 +14,8 @@ class GameClicked extends GameEvent {}
 class GameSyncRequested extends GameEvent {}
 
 class GameEnergyRegen extends GameEvent {}
+
+class BoosterPurchased extends GameEvent {
+  final String type;
+  const BoosterPurchased(this.type);
+}

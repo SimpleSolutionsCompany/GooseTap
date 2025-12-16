@@ -13,5 +13,13 @@ namespace SSC.GooseTap.Business.Responces
 
         public int Level { get; set; }
         public string Rank { get; set; } = string.Empty;
+
+        // Boosters info
+        public int MultitapLevel { get; set; }
+        public int EnergyLimitLevel { get; set; }
+        public int RechargeSpeedLevel { get; set; }
+
+        public int ProfitPerClick { get; set; }
+        public int EnergyRestorePerSecond { get; set; }
     }
 }

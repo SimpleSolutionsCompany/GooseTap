@@ -69,11 +69,29 @@ namespace SSC.GooseTap.Api.Controllers
                 return Unauthorized(new SSC.GooseTap.Business.Responces.ApiResponse<string>("Invalid User ID"));
             }
 
-            var syncResult = await _gameService.SyncAsync(userId, request);
             if (!syncResult.Success)
                 return BadRequest(syncResult);
 
             return Ok(syncResult);
+        }
+
+        [HttpPost("BuyBooster")]
+        [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+        public async Task<IActionResult> BuyBooster([FromBody] SSC.GooseTap.Business.Requests.BuyBoosterRequest request)
+        {
+            var userIdString = User.FindFirst("Id")?.Value;
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new ApiResponse<string>("Invalid User ID"));
+            }
+
+            var result = await _gameService.BuyBoosterAsync(userId, request);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
         }
     }
 }

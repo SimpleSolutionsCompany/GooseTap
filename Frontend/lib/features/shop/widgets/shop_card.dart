@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'boosters_tab.dart';
 import 'package:goose_tap/features/shop/blocs/get_upgrades_bloc/get_upgrades_bloc.dart';
 
 class ShopCard extends StatelessWidget {
@@ -30,34 +31,7 @@ class ShopCard extends StatelessWidget {
           color: Color.fromARGB(65, 47, 47, 47),
         ),
         child: selectedIndex == 1
-            ? Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(size.width * 0.03),
-                      ),
-                      child: Image.asset(
-                        "assets/comming_soon.png",
-                        fit: BoxFit.fill,
-                        width: size.width * 0.5,
-                      ),
-                    ),
-                    SizedBox(height: size.height * 0.03),
-                    Text(
-                      "COMMING SOON...)))",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: size.width * 0.06,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              )
+            ? const BoostersTab()
             : LayoutBuilder(
                 builder: (context, constraints) {
                   return BlocBuilder<GetUpgradesBloc, GetUpgradesState>(

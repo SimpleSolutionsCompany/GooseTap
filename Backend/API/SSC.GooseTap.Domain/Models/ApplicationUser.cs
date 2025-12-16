@@ -84,6 +84,11 @@ namespace SSC.GooseTap.Domain.Models
         /// </summary>
         public int ProfitPerClick { get; set; } = 1;
 
+        // --- Booster Levels ---
+        public int MultitapLevel { get; set; } = 1;
+        public int EnergyLimitLevel { get; set; } = 1;
+        public int RechargeSpeedLevel { get; set; } = 1;
+
         // --- Навігаційні властивості ---
 
         /// <summary>

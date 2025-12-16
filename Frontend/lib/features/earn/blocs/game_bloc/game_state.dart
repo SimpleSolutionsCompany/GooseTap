@@ -19,13 +19,27 @@ final class GameLoaded extends GameState {
   final int level;
   final double progress; // Added progress
 
+  // Boosters
+  final int multitapLevel;
+  final int energyLimitLevel;
+  final int rechargeSpeedLevel;
+  
+  final int profitPerClick;
+  final int energyRestorePerSecond;
+
   const GameLoaded({
     required this.balance,
     required this.energy,
     required this.maxEnergy,
     required this.profitPerHour,
     required this.level,
-    this.progress = 0.0, // Default to 0
+    this.progress = 0.0,
+    
+    this.multitapLevel = 1,
+    this.energyLimitLevel = 1,
+    this.rechargeSpeedLevel = 1,
+    this.profitPerClick = 1,
+    this.energyRestorePerSecond = 1,
   });
 
   GameLoaded copyWith({
@@ -35,6 +49,11 @@ final class GameLoaded extends GameState {
     double? profitPerHour,
     int? level,
     double? progress,
+    int? multitapLevel,
+    int? energyLimitLevel,
+    int? rechargeSpeedLevel,
+    int? profitPerClick,
+    int? energyRestorePerSecond,
   }) {
     return GameLoaded(
       balance: balance ?? this.balance,
@@ -43,6 +62,11 @@ final class GameLoaded extends GameState {
       profitPerHour: profitPerHour ?? this.profitPerHour,
       level: level ?? this.level,
       progress: progress ?? this.progress,
+      multitapLevel: multitapLevel ?? this.multitapLevel,
+      energyLimitLevel: energyLimitLevel ?? this.energyLimitLevel,
+      rechargeSpeedLevel: rechargeSpeedLevel ?? this.rechargeSpeedLevel,
+      profitPerClick: profitPerClick ?? this.profitPerClick,
+      energyRestorePerSecond: energyRestorePerSecond ?? this.energyRestorePerSecond,
     );
   }
 

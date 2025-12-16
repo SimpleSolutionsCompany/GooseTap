@@ -29,4 +29,7 @@ abstract class RestClient {
 
   @POST("/api/Upgrades/Buy")
   Future<void> buyUpgrade(@Body() BuyUpgradeRequest body);
+
+  @POST("/api/Game/BuyBooster")
+  Future<StringApiResponse> buyBooster(@Body() BuyBoosterRequest body);
 }

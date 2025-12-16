@@ -40,10 +40,11 @@ class GameRepository {
     // The BLoC will optimistically update local state.
     // However, if the backend returns specific data, we might want to parse it.
     // Spec says: "Returns success if the click was processed (queued)."
-    return await _client.gameClick(GameUpdateRequest(
-      clicks: clicks,
-      energySpent: energySpent,
       timestamp: DateTime.now(),
     ));
+  }
+
+  Future<StringApiResponse> buyBooster(BuyBoosterRequest request) async {
+    return await _client.buyBooster(request);
   }
 }
