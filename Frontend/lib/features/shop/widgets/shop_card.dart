@@ -71,18 +71,25 @@ class ShopCard extends StatelessWidget {
                                 crossAxisCount: size.width < 450 ? 2 : 3,
                                 childAspectRatio: 1.2,
                               ),
-                          itemCount: 6,
+                          itemCount: state.upgrades.length,
 
                           itemBuilder: (context, index) {
-                            return ShopBox(
-                              img: imgList[index],
-                              level: "lvl 13",
-                              moneyToBuy: state.upgrades[index].baseCost
-                                  .toString(),
-                              possibleMoney: state.upgrades[index].baseCost
-                                  .toString(),
-                              profitType: "Profit per hour",
-                              title: state.upgrades[index].name,
+                            final upgrade = state.upgrades[index];
+                            final img = imgList[index % imgList.length]; // Safe image access
+                            return GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<GetUpgradesBloc>()
+                                    .add(OnBuyUpgradeEvent(upgrade.id));
+                              },
+                              child: ShopBox(
+                                img: img,
+                                level: "lvl 1", // Assuming backend doesn't return existing level yet or field missing in UpgradeModel
+                                moneyToBuy: upgrade.baseCost.toString(),
+                                possibleMoney: upgrade.baseProfitPerHour.toString(),
+                                profitType: "Profit per hour",
+                                title: upgrade.name,
+                              ),
                             );
                           },
                         );

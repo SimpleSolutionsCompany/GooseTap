@@ -5,6 +5,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:goose_tap/api/api.dart';
 import 'package:goose_tap/di/di.dart';
 import 'package:goose_tap/services/energy_service.dart';
+import 'package:goose_tap/api/repository/auth_repository.dart';
+import 'package:goose_tap/api/repository/game_repository.dart';
+import 'package:goose_tap/api/repository/upgrades_repository.dart';
+import 'package:goose_tap/features/auth/blocs/auth_bloc/auth_bloc.dart';
+import 'package:goose_tap/features/earn/blocs/game_bloc/game_bloc.dart';
 import 'package:goose_tap/features/shop/blocs/get_upgrades_bloc/get_upgrades_bloc.dart';
 import 'package:goose_tap/theme/theme.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
@@ -61,8 +66,32 @@ class MyApp extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // getIt<Responsiveness>().init(constraints);
-        return BlocProvider(
-          create: (context) => GetUpgradesBloc(restClient: getIt<RestClient>()),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => GetUpgradesBloc(
+                upgradesRepository: getIt<UpgradesRepository>(),
+              )..add(OnGetUpgradesEvent()),
+            ),
+            BlocProvider(
+              create: (context) {
+                final bloc = AuthBloc(authRepository: getIt<AuthRepository>());
+                // Trigger login if we have initData from TelegramWebApp
+                // Or checking locally cached token
+                if (TelegramWebApp.instance.initData?.raw != null) {
+                   bloc.add(AuthLoginTelegramRequested(TelegramWebApp.instance.initData!.raw!));
+                } else {
+                   bloc.add(AuthCheckRequested());
+                }
+                return bloc;
+              },
+            ),
+            BlocProvider(
+              create: (context) => GameBloc(
+                gameRepository: getIt<GameRepository>(),
+              )..add(GameStarted()),
+            ),
+          ],
           child: MaterialApp(
             title: 'GooseTap',
             debugShowCheckedModeBanner: false,

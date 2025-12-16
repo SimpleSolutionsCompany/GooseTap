@@ -12,7 +12,7 @@ UpgradeModel _$UpgradeModelFromJson(Map<String, dynamic> json) => UpgradeModel(
   description: json['description'] as String,
   baseCost: (json['baseCost'] as num).toInt(),
   baseProfitPerHour: (json['baseProfitPerHour'] as num).toInt(),
-  userUpgrades: json['userUpgrades'] as List<dynamic>,
+  userUpgrades: json['userUpgrades'] as List<dynamic>? ?? const [],
 );
 
 Map<String, dynamic> _$UpgradeModelToJson(UpgradeModel instance) =>

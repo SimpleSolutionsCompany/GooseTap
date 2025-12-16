@@ -50,9 +50,11 @@ class JwtInterceptor extends Interceptor {
     }
 
     // Use test initData if provided, else read from tg
-    final initDataRaw = _testInitData ?? tg.initData?.raw;
-    if (initDataRaw == null) {
-      log("initData is null, skipping token refresh");
+    // Note: initData might be null if not in Telegram or during hot restart in some envs
+    final initDataRaw = _testInitData ?? (tg.isSupported ? tg.initData.raw : null);
+    
+    if (initDataRaw == null || initDataRaw.isEmpty) {
+      log("initData is null or empty, skipping token refresh");
       return handler.next(err);
     }
 

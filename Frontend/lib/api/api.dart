@@ -9,6 +9,24 @@ part 'api.g.dart';
 abstract class RestClient {
   factory RestClient(Dio dio, {String? baseUrl}) = _RestClient;
 
-  @GET("/api/Upgrades/GetAll")
+  @GET("/api/Upgrades")
   Future<MainUpgradeModel> getAllUpgrades();
+
+  @GET("/api/Admin/ClearDB")
+  Future<void> clearDB();
+
+  @POST("/api/Auth/login-telegram")
+  Future<LoginResponse> loginTelegram(@Body() TelegramValidateRequest body);
+
+  @POST("/api/Auth/login")
+  Future<void> login(@Body() TelegramValidateRequest body);
+
+  @POST("/api/Game/Click")
+  Future<StringApiResponse> gameClick(@Body() GameUpdateRequest body);
+
+  @POST("/api/Game/Sync")
+  Future<CheckpointResponse> gameSync(@Body() SyncRequest body);
+
+  @POST("/api/Upgrades/Buy")
+  Future<void> buyUpgrade(@Body() BuyUpgradeRequest body);
 }

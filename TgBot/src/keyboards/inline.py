@@ -6,7 +6,7 @@ def get_inline_keyboard() -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text="🪿 GOOSE TAP 🪿",  # uppercase
-                web_app=WebAppInfo(url="https://6bd920f4c150.ngrok-free.app")
+                web_app=WebAppInfo(url="https://7ffadc657131.ngrok-free.app")
             )
         ],
         [

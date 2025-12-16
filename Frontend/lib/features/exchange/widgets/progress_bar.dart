@@ -43,7 +43,7 @@ class ProgressBar extends StatelessWidget {
                 ],
               ),
               Text(
-                "${(progress * requiredClicks).floor()}/$requiredClicks",
+                "${(progress.isNaN || progress.isInfinite ? 0 : (progress * requiredClicks)).floor()}/$requiredClicks",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -65,7 +65,7 @@ class ProgressBar extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: FractionallySizedBox(
-                widthFactor: progress.clamp(0.0, 1.0),
+                widthFactor: (progress.isNaN || progress.isInfinite) ? 0.0 : progress.clamp(0.0, 1.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10),

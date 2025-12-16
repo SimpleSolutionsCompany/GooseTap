@@ -1,2 +1,10 @@
 export "upgrade_model.dart";
 export "main_upgrade_model.dart";
+export "telegram_validate_request.dart";
+export "game_update_request.dart";
+export "string_api_response.dart";
+export "problem_details.dart";
+export "sync_request.dart";
+export "checkpoint_response.dart";
+export "buy_upgrade_request.dart";
+export "login_response.dart";

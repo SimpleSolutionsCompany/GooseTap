@@ -6,6 +6,9 @@ import 'package:goose_tap/api/jwt_interceptor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../services/energy_service.dart';
+import 'package:goose_tap/api/repository/auth_repository.dart';
+import 'package:goose_tap/api/repository/game_repository.dart';
+import 'package:goose_tap/api/repository/upgrades_repository.dart';
 
 final getIt = GetIt.instance;
 
@@ -24,4 +27,12 @@ Future<void> setupDependencies() async {
 
   // Register global energy service (depends on SharedPreferences)
   getIt.registerSingleton<EnergyService>(EnergyService());
+
+  // Repositories
+  getIt.registerLazySingleton<AuthRepository>(
+      () => AuthRepository(getIt<RestClient>(), getIt<SharedPreferences>()));
+  getIt.registerLazySingleton<GameRepository>(
+      () => GameRepository(getIt<RestClient>(), getIt<SharedPreferences>()));
+  getIt.registerLazySingleton<UpgradesRepository>(
+      () => UpgradesRepository(getIt<RestClient>(), getIt<SharedPreferences>()));
 }

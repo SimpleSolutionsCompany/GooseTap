@@ -8,3 +8,11 @@ sealed class GetUpgradesEvent extends Equatable {
 }
 
 class OnGetUpgradesEvent extends GetUpgradesEvent {}
+
+class OnBuyUpgradeEvent extends GetUpgradesEvent {
+    final String id;
+    const OnBuyUpgradeEvent(this.id);
+
+    @override
+    List<Object> get props => [id];
+}

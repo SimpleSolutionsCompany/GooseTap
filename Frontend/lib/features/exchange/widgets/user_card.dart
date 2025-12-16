@@ -24,7 +24,7 @@ class UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    final tg = getIt<TelegramWebApp>();
+    // final tg = getIt<TelegramWebApp>(); // Unused and potentially crashing if not registered
 
     return Center(
       child: Column(

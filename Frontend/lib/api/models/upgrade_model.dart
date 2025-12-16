@@ -9,7 +9,7 @@ class UpgradeModel {
   final String description;
   final int baseCost;
   final int baseProfitPerHour;
-  final List<dynamic> userUpgrades;
+  final List<dynamic>? userUpgrades;
 
   UpgradeModel({
     required this.id,
@@ -17,7 +17,7 @@ class UpgradeModel {
     required this.description,
     required this.baseCost,
     required this.baseProfitPerHour,
-    required this.userUpgrades,
+    this.userUpgrades = const [],
   });
 
   factory UpgradeModel.fromJson(Map<String, dynamic> json) =>

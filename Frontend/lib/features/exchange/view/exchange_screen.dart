@@ -4,6 +4,8 @@ import "dart:developer";
 import "package:flutter/material.dart";
 import 'package:flutter/foundation.dart';
 import "package:get_it/get_it.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:goose_tap/features/earn/blocs/game_bloc/game_bloc.dart";
 import "package:goose_tap/services/energy_service.dart";
 
 import "../../../local/local.dart";
@@ -29,9 +31,9 @@ class _ExchangeScreenState extends State<ExchangeScreen>
   SharedHelper sharedHelper = SharedHelper();
 
   Timer? _debounce;
-  // use global EnergyService instead of per-screen timer
-  late final EnergyService _energyService;
-  VoidCallback? _energyListener;
+  // Global energy service usage removed from here as we use Bloc
+  // late final EnergyService _energyService;
+  // VoidCallback? _energyListener;
   AnimationController? _levelUpController;
   Animation<double>? _levelUpScale;
   bool _showLevelUp = false;
@@ -40,20 +42,8 @@ class _ExchangeScreenState extends State<ExchangeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _counter = sharedHelper.getSavedMoney();
-    _energyService = getIt<EnergyService>();
-    _energy = _energyService.energy.value;
-    // listen for global updates
-    _energyListener = () {
-      if (!mounted) return;
-      setState(() {
-        _energy = _energyService.energy.value;
-      });
-    };
-    _energyService.energy.addListener(_energyListener!);
-    _progress = sharedHelper.getSavedProgress();
-    _level = sharedHelper.getSavedLevel();
-
+    
+    // Animation setup
     _levelUpController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 450),
@@ -62,100 +52,36 @@ class _ExchangeScreenState extends State<ExchangeScreen>
       parent: _levelUpController!,
       curve: Curves.elasticOut,
     );
-
-    log("Money is: $_counter");
-    log("Energy is: $_energy");
-    log("Money is: $_progress");
-
-    // EnergyService handles periodic increments globally.
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.paused) {
-      sharedHelper.saveLastTime();
-    }
+    // BLoC handles saving/syncing, we can possibly trigger forced sync here if needed
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _debounce?.cancel();
-    if (_energyListener != null) {
-      _energyService.energy.removeListener(_energyListener!);
-    }
     _levelUpController?.dispose();
     super.dispose();
   }
 
   void _onTap(BuildContext context, TapUpDetails details) {
-    // perform tap effects and progression
-    if (_energyService.consume(1)) {
-      _counter++;
-      // increment progress according to clicks required for current level
-      final required = _requiredClicksForLevel(_level);
-      _progress += 1.0 / required;
+    // 1. Dispatch event to BLoC
+    context.read<GameBloc>().add(GameClicked());
 
-      // possibly level up (handle overflow/carryover)
-      if (_progress >= 1.0) {
-        _handleLevelUps();
-      }
-    }
-
+    // 2. Flying animation (Local UI effect)
     final renderBox = context.findRenderObject() as RenderBox;
     final position = renderBox.globalToLocal(details.globalPosition);
     setState(() {
       _flyingOnes.add(FlyingOne(key: UniqueKey(), position: position));
     });
-
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      sharedHelper.saveMoney(_counter);
-      sharedHelper.saveProgress(_progress);
-      sharedHelper.saveLevel(_level);
-      log("The money was saved successfully, counter is: $_counter");
-    });
   }
 
-  int _requiredClicksForLevel(int level) {
-    // Level 1 requires 100 clicks, level 2 requires 1000 clicks, level 3 requires 3000 clicks
-    if (level == 1) return 100;
-    if (level == 2) return 1000;
-    if (level == 3) return 3000;
-    if (level == 4) return 5000;
-    if (level == 5) return 8000;
-    if (level == 6) return 15000;
-    if(level == 7) return 30000;
-    if(level == 8) return 50000;
-    // for higher levels, scale linearly
-    return level * 1000;
-  }
-
-  void _handleLevelUps() {
-    // allow for carryover if progress exceeded 1.0
-    setState(() {
-      while (_progress >= 1.0) {
-        final overflow = _progress - 1.0;
-        _level++;
-        _progress = overflow;
-        sharedHelper.saveLevel(_level);
-        sharedHelper.saveProgress(_progress);
-        log('Leveled up to $_level');
-
-        // show animation
-        _showLevelUp = true;
-        _levelUpController?.forward(from: 0.0);
-        // hide after a short delay
-        Timer(const Duration(milliseconds: 1400), () {
-          if (!mounted) return;
-          setState(() {
-            _showLevelUp = false;
-          });
-        });
-      }
-    });
-  }
+  // Level up listener logic can be moved to BlocListener if we want side effects
+  // But for now, simple UI updates via BlocBuilder is cleaner.
+  // The animation trigger (_showLevelUp) needs to listen to state changes.
 
   void _removeFlyingOne(Key key) {
     if (!mounted) return;
@@ -169,94 +95,121 @@ class _ExchangeScreenState extends State<ExchangeScreen>
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     final time = DateTime.now().toUtc().millisecondsSinceEpoch;
-      //     int d = ((1765138834447 - 1765138824215) / 1000).floor();
-
-      //     print(d);
-      //   },
-      //   child: Icon(Icons.add),
-      // ),
       backgroundColor: Colors.black,
-      body: Column(
-        children: [
-          Expanded(
-            child: Builder(
-              builder: (stackContext) {
-                return Stack(
-                  alignment: Alignment.center,
-                  clipBehavior: Clip.none,
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Image.asset(
-                        "assets/exchange_imgs/gradient_bg_purple.png",
-                      ),
-                    ),
-                    SafeArea(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: height * 0.07),
-                          Flexible(
-                            flex: 2,
-                            child: UserCard(
-                              counter: _counter,
-                              progress: _progress,
-                              level: _level,
-                              requiredClicks: _requiredClicksForLevel(_level),
-                            ),
-                          ),
+      body: BlocConsumer<GameBloc, GameState>(
+        listener: (context, state) {
+           if (state is GameLoaded) {
+              // Check if level changed to trigger animation?
+              // Simple check: if state.level > previous.level?
+              // But BlocListener doesn't give previous state easily unless we store it.
+              // Logic for level up animation might need refactoring or we assume
+              // if we see progress reset it might include level up.
+              // For now, let's just make sure UI reflects state.
+              // If we want the specific animation popup from `_handleLevelUps`:
+              // We could implement `listenWhen`.
+           }
+        },
+        listenWhen: (previous, current) {
+           if (previous is GameLoaded && current is GameLoaded) {
+              if (current.level > previous.level) {
+                 // Trigger Animation
+                 _levelUpController?.forward(from: 0.0);
+                 setState(() { _showLevelUp = true; });
+                 Timer(const Duration(milliseconds: 1400), () {
+                    if (mounted) setState(() { _showLevelUp = false; });
+                 });
+              }
+           }
+           return true; 
+        },
+        builder: (context, state) {
+          int counter = 0;
+          int energy = 0;
+          double progress = 0;
+          int level = 1;
+          int requiredClicks = 100; // Default
 
-                          // Spacer(flex: 1),
-                          Flexible(
-                            flex: 1,
-                            child: Center(child: InfoBoxes(onTap: () {})),
+          if (state is GameLoaded) {
+            counter = state.balance;
+            energy = state.energy;
+            progress = state.progress;
+            level = state.level;
+            // We need to know required clicks for display?
+            // UserCard expects `requiredClicks`.
+            // We can move `_requiredClicksForLevel` to public static or just duplicate/keep helper.
+            // Since I removed the helper method from the class (in previous step), I should bring it back OR
+            // access it from GameBloc if I made it public static? I made it private in GameBloc.
+            // I'll re-add it as a helper here or keep it simple.
+            // Let's assume I need to handle `requiredClicks` calculation here.
+             if (level == 1) requiredClicks = 100;
+             else if (level == 2) requiredClicks = 1000;
+             else if (level == 3) requiredClicks = 3000;
+             else if (level == 4) requiredClicks = 5000;
+             else if (level == 5) requiredClicks = 8000;
+             else if (level == 6) requiredClicks = 15000;
+             else if (level == 7) requiredClicks = 30000;
+             else if (level == 8) requiredClicks = 50000;
+             else requiredClicks = level * 1000;
+          }
+
+          return Column(
+            children: [
+              Expanded(
+                child: Builder(
+                  builder: (stackContext) {
+                    return Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      children: [
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Image.asset(
+                            "assets/exchange_imgs/gradient_bg_purple.png",
                           ),
-                          // Spacer(flex: 1),
-                          // SizedBox(height: height * 0.015),
-                          Flexible(
-                            flex: 3,
-                            child: Center(
-                              child: GooseCircle(
-                                counter: _counter,
-                                // enabled: _energy > 0,
-                                onTapUp: (details) =>
-                                    _onTap(stackContext, details),
+                        ),
+                        SafeArea(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: height * 0.07),
+                              Flexible(
+                                flex: 2,
+                                child: UserCard(
+                                  counter: counter,
+                                  progress: progress,
+                                  level: level,
+                                  requiredClicks: requiredClicks,
+                                ),
                               ),
-                            ),
-                          ),
-                          // SizedBox(height: height * 0.008),
-                          Flexible(flex: 1, child: Energy(energy: _energy)),
-                        ],
-                      ),
-                    ),
 
-                    // Positioned(
-                    //   top: height * 0.10,
-                    //   child: UserCard(counter: _counter, progress: _progress),
-                    // ),
-                    // Positioned(
-                    //   top: height * 0.36,
-                    //   child: InfoBoxes(onTap: () {}),
-                    // ),
-                    // Positioned(
-                    //   top: height * 0.45,
-                    //   child: GooseCircle(
-                    //     counter: _counter,
-                    //     onTapUp: (details) => _onTap(stackContext, details),
-                    //   ),
-                    //   // child: TestCircle(),
-                    // ),
-                    // Positioned(
-                    //   top: height * 0.84,
-                    //   child: Energy(energy: _energy),
-                    // ),
-                    ..._flyingOnes.map(
-                      (e) => e.build(stackContext, _removeFlyingOne),
-                    ),
+                              // Spacer(flex: 1),
+                              Flexible(
+                                flex: 1,
+                                child: Center(child: InfoBoxes(onTap: () {})),
+                              ),
+                              // Spacer(flex: 1),
+                              // SizedBox(height: height * 0.015),
+                              Flexible(
+                                flex: 3,
+                                child: Center(
+                                  child: GooseCircle(
+                                    counter: counter,
+                                    // enabled: _energy > 0,
+                                    onTapUp: (details) =>
+                                        _onTap(stackContext, details),
+                                  ),
+                                ),
+                              ),
+                              // SizedBox(height: height * 0.008),
+                              Flexible(flex: 1, child: Energy(energy: energy)),
+                            ],
+                          ),
+                        ),
+                        ..._flyingOnes.map(
+                          (e) => e.build(stackContext, _removeFlyingOne),
+                        ),
+
                     if (kDebugMode)
                       Positioned(
                         bottom: 12,
@@ -270,72 +223,8 @@ class _ExchangeScreenState extends State<ExchangeScreen>
                             color: Colors.white10,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Builder(
-                                builder: (_) {
-                                  final millis = sharedHelper
-                                      .getLastSavedTimeMillis();
-                                  final label = millis == 0
-                                      ? 'none'
-                                      : DateTime.fromMillisecondsSinceEpoch(
-                                          millis,
-                                        ).toUtc().toIso8601String();
-                                  return Text(
-                                    'lastSaved: $label',
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 10,
-                                    ),
-                                  );
-                                },
-                              ),
-                              SizedBox(height: 6),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      _energyService.simulateAwaySeconds(10);
-                                      setState(() {
-                                        _energy = _energyService.energy.value;
-                                      });
-                                    },
-                                    child: Text(
-                                      'Sim 10s',
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      _energyService.simulateAwaySeconds(60);
-                                      setState(() {
-                                        _energy = _energyService.energy.value;
-                                      });
-                                    },
-                                    child: Text(
-                                      'Sim 60s',
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      _energyService.simulateAwaySeconds(3600);
-                                      setState(() {
-                                        _energy = _energyService.energy.value;
-                                      });
-                                    },
-                                    child: Text(
-                                      'Sim 1h',
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                          // child: <removed debug info relying on sharedHelper for clarity/safety>
+                          child: SizedBox(), 
                         ),
                       ),
                     if (_showLevelUp)
@@ -368,7 +257,7 @@ class _ExchangeScreenState extends State<ExchangeScreen>
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    'Level $_level',
+                                    'Level $level', // Using local var from builder
                                     style: TextStyle(
                                       color: Colors.white70,
                                       fontSize: 16,
@@ -387,7 +276,9 @@ class _ExchangeScreenState extends State<ExchangeScreen>
             ),
           ),
         ],
-      ),
-    );
-  }
+      );
+    },
+   ), // Closing BlocConsumer
+ );
+}
 }
