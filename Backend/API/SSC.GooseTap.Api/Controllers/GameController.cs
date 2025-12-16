@@ -69,6 +69,7 @@ namespace SSC.GooseTap.Api.Controllers
                 return Unauthorized(new SSC.GooseTap.Business.Responces.ApiResponse<string>("Invalid User ID"));
             }
 
+            var syncResult = await _gameService.SyncAsync(userId, request);
             if (!syncResult.Success)
                 return BadRequest(syncResult);
 
