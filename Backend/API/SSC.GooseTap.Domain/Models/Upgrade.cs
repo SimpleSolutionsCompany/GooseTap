@@ -32,24 +32,22 @@ namespace SSC.GooseTap.Domain.Models
         /// </summary>
         public long BaseCost { get; set; }
 
-        /// <summary>
-        /// Базовий дохід, який дає цей апгрейд на 1-му рівні.
-        /// </summary>
-        public long BaseProfitPerHour { get; set; }
-
-        // TODO: Можна додати коефіцієнт зростання вартості (CostMultiplier)
-
-        // --- Умови розблокування (Dependencies) ---
+        public BoosterType BoosterType { get; set; }
 
         /// <summary>
-        /// ID апгрейду, який потрібен для розблокування цього (опціонально).
+        /// Множник ціни. Ціна наступного левела = BaseCost * (CostMultiplier ^ Level).
         /// </summary>
-        public Guid? ConditionUpgradeId { get; set; }
+        public double CostMultiplier { get; set; } = 2.0;
 
         /// <summary>
-        /// Рівень необхідного апгрейду для розблокування.
+        /// Значення ефекту за один рівень (напр. +1 до кліку, +500 до енергії).
         /// </summary>
-        public int? ConditionLevel { get; set; }
+        public int EffectValue { get; set; } = 1;
+
+        /// <summary>
+        /// Максимальний рівень прокачки.
+        /// </summary>
+        public int MaxLevel { get; set; } = 10;
 
         // --- Навігаційні властивості ---
 

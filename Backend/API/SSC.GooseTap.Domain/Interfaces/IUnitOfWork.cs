@@ -3,8 +3,8 @@ namespace SSC.GooseTap.Domain.Interfaces
 {
     public interface IUnitOfWork
     {
-        IUserRepository UserRepository { get; }
-        IUpgradeRepository UpgradeRepository { get; }
+        IUserRepository Users { get; }
+        IUpgradeRepository Upgrades { get; }
         Task<int> SaveChangesAsync();
     }
 }

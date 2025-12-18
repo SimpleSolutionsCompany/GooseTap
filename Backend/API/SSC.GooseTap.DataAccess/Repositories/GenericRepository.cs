@@ -1,50 +1,60 @@
 using Microsoft.EntityFrameworkCore;
 using SSC.GooseTap.DataAccess.Context;
 using SSC.GooseTap.Domain.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SSC.GooseTap.DataAccess.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<TEntity>(ApplicationDbContext context) : IRepository<TEntity>
+        where TEntity : class
     {
-        protected readonly ApplicationDbContext _context;
-        protected readonly DbSet<T> _dbSet;
+        protected readonly ApplicationDbContext _context = context;
+        protected readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
 
-        public GenericRepository(ApplicationDbContext context)
-        {
-            _context = context;
-            _dbSet = context.Set<T>();
-        }
-
-        public virtual async Task<T?> GetByIdAsync(Guid id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
-
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>?> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
 
-        public virtual async Task AddAsync(T entity)
+        public async Task<TEntity?> GetByIdAsync(Guid id)
         {
-            await _dbSet.AddAsync(entity);
+            return await _dbSet.FindAsync(id);
         }
 
-        public virtual Task UpdateAsync(T entity)
+        public async Task<Guid> AddAsync(TEntity entity)
         {
-            _dbSet.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-            return Task.CompletedTask;
-        }
-
-        public virtual Task DeleteAsync(T entity)
-        {
-             if (_context.Entry(entity).State == EntityState.Detached)
+            var entry = await _dbSet.AddAsync(entity);
+            // Assuming the entity has an Id property of type Guid. 
+            // Since TEntity is just 'class', we can use reflection or EF Entry to get key.
+            // But relying on "Id" property convention is common.
+            try 
             {
-                _dbSet.Attach(entity);
+                var idProperty = entry.Property("Id");
+                if (idProperty != null && idProperty.CurrentValue != null)
+                {
+                    return (Guid)idProperty.CurrentValue;
+                }
             }
+            catch {}
+            
+            return Guid.Empty;
+        }
+
+        public async Task<bool> UpdateAsync(Guid id, TEntity entity)
+        {
+            var existing = await _dbSet.FindAsync(id);
+            if (existing == null) return false;
+
+            _context.Entry(existing).CurrentValues.SetValues(entity);
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(TEntity entity)
+        {
             _dbSet.Remove(entity);
-            return Task.CompletedTask;
+            return Task.FromResult(true).Result;
         }
     }
 }

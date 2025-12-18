@@ -3,9 +3,9 @@ using System.Text;
 using System.Web;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
-using SSC.GooseTap.Business.DTOs;
+using SSC.GooseTap.Business.Models;
 
-namespace SSC.GooseTap.Infrastructure.Services
+namespace SSC.GooseTap.Infrastructure.Services.TelegramAuth
 {
     public class TelegramAuthService 
     {

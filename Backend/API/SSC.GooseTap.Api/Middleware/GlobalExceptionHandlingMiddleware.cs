@@ -2,7 +2,8 @@ using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using SSC.GooseTap.Business.Responces;
+using SSC.GooseTap.Api.Common;
+
 
 namespace SSC.GooseTap.Api.Middleware
 {
@@ -26,12 +27,7 @@ namespace SSC.GooseTap.Api.Middleware
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var response = new ApiResponse<string>(exception.Message)
-            {
-                Success = false,
-                Message = "An unexpected error occurred. Please try again later.",
-                Errors = new List<string> { exception.Message } // In production, maybe hide generic exception details
-            };
+            var response = ApiResponse<object>.Failure("An error occurred", exception.Message);
 
             var jsonOptions = new JsonSerializerOptions
             {

@@ -1,162 +1,214 @@
-using SSC.GooseTap.Business.Contracts;
-using SSC.GooseTap.Business.Requests;
-using SSC.GooseTap.Business.Responces;
+using SSC.GooseTap.Business.DTOs;
+using SSC.GooseTap.Domain.Interfaces;
 using SSC.GooseTap.Domain.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SSC.GooseTap.Business.Services
 {
-    public class GameService(IClickQueue clickQueue, IUserService userService)
+    public class GameService(IUnitOfWork unitOfWork) : IGameService
     {
-        private readonly IClickQueue _clickQueue = clickQueue;
-        private readonly IUserService _userService = userService;
-
-        public async Task<ApiResponse<string>> ProcessClickAsync(Guid userId, GameUpdateRequest request)
+        public async Task<Result<ClickResponseDto>> ClickAsync(Guid userId)
         {
-            // 1. Basic Validation (Sync)
-            var user = await _userService.GetUserByIdAsync(userId);
+            var user = await unitOfWork.Users.GetByIdAsync(userId);
             if (user == null)
             {
-                return new ApiResponse<string>("User not found") { Success = false };
+                return Result.Fail<ClickResponseDto>("User not found");
             }
 
-            // 2. Queue the work
-            // We moved the heavy DB update logic to background
-            await _clickQueue.QueueBackgroundWorkItemAsync(userId, request);
+            // Sync energy before clicking to ensure accuracy
+            SyncEnergy(user);
 
-            return new ApiResponse<string>("Click queued successfully", "Success");
-        }
+            // Cost per click currently hardcoded to 1
+            int energyCost = 1; 
 
-        public async Task<ApiResponse<Responces.CheckpointResponse>> SyncAsync(Guid userId, Requests.SyncRequest request)
-        {
-            var user = await _userService.GetUserByIdAsync(userId);
-            if (user == null)
+            if (user.CurrentEnergy < energyCost)
             {
-                return new ApiResponse<Responces.CheckpointResponse>("User not found") { Success = false };
+                return Result.Fail<ClickResponseDto>("Not enough energy");
             }
 
-            var now = DateTime.UtcNow;
+            // Deduct energy
+            user.CurrentEnergy -= energyCost;
 
-            // 1. Apply passive income since last claim
-            var secondsSinceLastClaim = (now - user.LastPassiveIncomeClaim).TotalSeconds;
-            if (secondsSinceLastClaim < 0) secondsSinceLastClaim = 0;
+            // Add coins
+            user.Balance += user.ProfitPerClick;
 
-            var offlineIncomeDecimal = user.ProfitPerSecond * (decimal)secondsSinceLastClaim;
-            var offlineIncome = (long)Math.Floor(offlineIncomeDecimal);
+            // Save changes
+            await unitOfWork.SaveChangesAsync();
 
-            user.Balance += offlineIncome;
-            user.LastPassiveIncomeClaim = now;
-
-            // 2. Restore energy based on time since last restore
-            var secondsSinceEnergyRestore = (now - user.LastEnergyRestoreTime).TotalSeconds;
-            if (secondsSinceEnergyRestore < 0) secondsSinceEnergyRestore = 0;
-
-            var energyToRestore = (int)Math.Floor(secondsSinceEnergyRestore * user.EnergyRestorePerSecond);
-            if (energyToRestore > 0)
-            {
-                user.CurrentEnergy = Math.Min(user.MaxEnergy, user.CurrentEnergy + energyToRestore);
-                user.LastEnergyRestoreTime = now;
-            }
-
-            // 3. Apply taps (consumes energy)
-            var taps = Math.Max(0, request?.TapsCount ?? 0);
-            var energyAvailable = user.CurrentEnergy;
-            var energyUsed = Math.Min(energyAvailable, taps);
-
-            var effectiveTaps = energyUsed; // each tap consumes one energy and yields profit
-            var coinsFromTaps = (long)effectiveTaps * user.ProfitPerClick;
-
-            user.Balance += coinsFromTaps;
-            user.CurrentEnergy -= energyUsed;
-
-            // 4. Build response
-            var response = new Responces.CheckpointResponse
+            return Result.Ok(new ClickResponseDto
             {
                 Balance = user.Balance,
-                Energy = user.CurrentEnergy,
-                MaxEnergy = user.MaxEnergy,
-                ProfitPerHour = Math.Round(user.ProfitPerSecond * 3600m, 2),
-                OfflineIncome = offlineIncome,
-                LastSyncDate = now,
-                Level = user.Level,
-                Rank = user.Rank,
-                
-                // Booster info
-                MultitapLevel = user.MultitapLevel,
-                EnergyLimitLevel = user.EnergyLimitLevel,
-                RechargeSpeedLevel = user.RechargeSpeedLevel,
+                CurrentEnergy = user.CurrentEnergy,
                 ProfitPerClick = user.ProfitPerClick,
                 EnergyRestorePerSecond = user.EnergyRestorePerSecond
-            };
-
-            await _userService.UpdateUserAsync(user);
-
-            return new ApiResponse<Responces.CheckpointResponse>(response, "Synced");
+            });
         }
 
-        public async Task<ApiResponse<string>> BuyBoosterAsync(Guid userId, Requests.BuyBoosterRequest request)
+        public async Task<Result<ClickResponseDto>> SyncAsync(Guid userId)
         {
-            var user = await _userService.GetUserByIdAsync(userId);
-            if (user == null)
+            var user = await unitOfWork.Users.GetByIdAsync(userId);
+            if (user == null) return Result.Fail<ClickResponseDto>("User not found");
+
+            SyncEnergy(user);
+            await unitOfWork.SaveChangesAsync();
+
+            return Result.Ok(new ClickResponseDto
             {
-                return new ApiResponse<string>("User not found") { Success = false };
+                Balance = user.Balance,
+                CurrentEnergy = user.CurrentEnergy,
+                ProfitPerClick = user.ProfitPerClick,
+                EnergyRestorePerSecond = user.EnergyRestorePerSecond
+            });
+        }
+
+        public async Task<Result<IEnumerable<UpgradeDto>>> GetUpgradesAsync(Guid userId)
+        {
+             // Use the new method to get user with upgrades
+            var user = await unitOfWork.Users.GetByIdWithUpgradesAsync(userId);
+            if (user == null) return Result.Fail<IEnumerable<UpgradeDto>>("User not found");
+
+            var allUpgrades = await unitOfWork.Upgrades.GetAllAsync();
+            
+            var result = new List<UpgradeDto>();
+
+            foreach (var upgrade in allUpgrades)
+            {
+                // Find if user has bought this upgrade
+                var userUpgrade = user.UserUpgrades?.FirstOrDefault(u => u.UpgradeId == upgrade.Id);
+                int currentLevel = userUpgrade?.Level ?? 0;
+                
+                // Calculate Price for NEXT level (currentLevel + 1)
+                // If max level reached, we can show max level price or disable buy.
+                long price = CalculatePrice(upgrade.BaseCost, upgrade.CostMultiplier, currentLevel);
+                
+                bool canBuy = currentLevel < upgrade.MaxLevel && user.Balance >= price;
+
+                result.Add(new UpgradeDto
+                {
+                    Id = upgrade.Id,
+                    Name = upgrade.Name,
+                    Description = upgrade.Description,
+                    BoosterType = upgrade.BoosterType,
+                    CurrentLevel = currentLevel,
+                    MaxLevel = upgrade.MaxLevel,
+                    Price = price,
+                    EffectValue = upgrade.EffectValue,
+                    CostMultiplier = upgrade.CostMultiplier,
+                    CanBuy = canBuy
+                });
             }
 
-            // Define base costs (can be moved to config later)
-            const int MultitapBaseCost = 500;
-            const int EnergyLimitBaseCost = 500;
-            const int RechargeSpeedBaseCost = 2000;
+            return Result.Ok<IEnumerable<UpgradeDto>>(result);
+        }
 
-            long cost = 0;
-            int currentLevel = 0;
+        public async Task<Result<BuyUpgradeResponseDto>> BuyUpgradeAsync(Guid userId, Guid upgradeId)
+        {
+            var user = await unitOfWork.Users.GetByIdWithUpgradesAsync(userId);
+            if (user == null) return Result.Fail<BuyUpgradeResponseDto>("User not found");
 
-            switch (request.Type)
+            var upgrade = await unitOfWork.Upgrades.GetByIdAsync(upgradeId);
+            if (upgrade == null) return Result.Fail<BuyUpgradeResponseDto>("Upgrade not found");
+
+            // Check current level
+            var userUpgrade = user.UserUpgrades?.FirstOrDefault(u => u.UpgradeId == upgradeId);
+            int currentLevel = userUpgrade?.Level ?? 0;
+
+            if (currentLevel >= upgrade.MaxLevel)
             {
-                case Domain.Models.BoosterType.Multitap:
-                    currentLevel = user.MultitapLevel;
-                    cost = MultitapBaseCost * (long)Math.Pow(2, currentLevel - 1);
-                    break;
-                case Domain.Models.BoosterType.EnergyLimit:
-                    currentLevel = user.EnergyLimitLevel;
-                    // Example: 500, 1000, 2000, etc.
-                    cost = EnergyLimitBaseCost * (long)Math.Pow(2, currentLevel - 1);
-                    break;
-                case Domain.Models.BoosterType.RechargingSpeed:
-                    currentLevel = user.RechargeSpeedLevel;
-                    cost = RechargeSpeedBaseCost * (long)Math.Pow(2, currentLevel - 1);
-                    break;
-                default:
-                    return new ApiResponse<string>("Invalid booster type") { Success = false };
+                return Result.Fail<BuyUpgradeResponseDto>("Maximum level reached.");
             }
 
-            if (user.Balance < cost)
+            // Calculate Price
+            long price = CalculatePrice(upgrade.BaseCost, upgrade.CostMultiplier, currentLevel);
+            
+            if (user.Balance < price)
             {
-                return new ApiResponse<string>("Insufficient funds") { Success = false };
+                return Result.Fail<BuyUpgradeResponseDto>("Not enough coins.");
             }
 
-            // Deduct funds
-            user.Balance -= cost;
+            // Deduct Coins
+            user.Balance -= price;
 
-            // Apply effect
-            switch (request.Type)
+            // Apply Upgrade
+            int newLevel = currentLevel + 1;
+            
+            if (userUpgrade == null)
             {
-                case Domain.Models.BoosterType.Multitap:
-                    user.MultitapLevel++;
-                    user.ProfitPerClick += 1;
-                    break;
-                case Domain.Models.BoosterType.EnergyLimit:
-                    user.EnergyLimitLevel++;
-                    user.MaxEnergy += 500;
-                    user.CurrentEnergy = user.MaxEnergy; // Optional: fill energy on upgrade? Let's just raise max.
-                    break;
-                case Domain.Models.BoosterType.RechargingSpeed:
-                    user.RechargeSpeedLevel++;
-                    user.EnergyRestorePerSecond += 1;
-                    break;
+                // Create new link
+                userUpgrade = new UserUpgrade
+                {
+                    ApplicationUserId = user.Id,
+                    UpgradeId = upgrade.Id,
+                    Level = newLevel
+                };
+                // Ensure list exists
+                if (user.UserUpgrades == null) user.UserUpgrades = new List<UserUpgrade>();
+                user.UserUpgrades.Add(userUpgrade);
+            }
+            else
+            {
+                userUpgrade.Level = newLevel;
             }
 
-            await _userService.UpdateUserAsync(user);
+            // Apply Effect based on Type
+            ApplyUpgradeEffect(user, upgrade.BoosterType, upgrade.EffectValue);
 
-            return new ApiResponse<string>("Booster purchased successfully", "Success");
+            await unitOfWork.SaveChangesAsync();
+            
+            long nextPrice = CalculatePrice(upgrade.BaseCost, upgrade.CostMultiplier, newLevel);
+
+            return Result.Ok(new BuyUpgradeResponseDto
+            {
+                Success = true,
+                Message = "Upgrade purchased successfully.",
+                NewBalance = user.Balance,
+                NewLevel = newLevel,
+                NextLevelPrice = nextPrice,
+                EffectValue = upgrade.EffectValue
+            });
+        }
+        
+        private void ApplyUpgradeEffect(ApplicationUser user, BoosterType type, int effectValue)
+        {
+            switch (type)
+            {
+                case BoosterType.Multitap:
+                    user.ProfitPerClick += effectValue;
+                    break;
+                case BoosterType.EnergyLimit:
+                    user.MaxEnergy += effectValue;
+                    break;
+                case BoosterType.RestoreEnergyPerSecond:
+                    user.EnergyRestorePerSecond += effectValue;
+                    break;
+            }
+        }
+        
+        private void SyncEnergy(ApplicationUser user)
+        {
+            var now = DateTime.UtcNow;
+            var secondsPassed = (now - user.LastEnergyRestoreTime).TotalSeconds;
+            if (secondsPassed < 1) return;
+
+            int restored = (int)(secondsPassed * user.EnergyRestorePerSecond);
+            if (restored > 0)
+            {
+                // If we are over cap, don't reduce, just don't add.
+                if (user.CurrentEnergy < user.MaxEnergy)
+                {
+                    user.CurrentEnergy = Math.Min(user.MaxEnergy, user.CurrentEnergy + restored);
+                }
+                user.LastEnergyRestoreTime = now;
+            }
+        }
+        
+        private long CalculatePrice(long baseCost, double multiplier, int level)
+        {
+            // Level 1 costs BaseCost. Level 2 costs BaseCost * Multiplier^1.
+            // Formula: Price = BaseCost * (Multiplier ^ CurrentLevel)
+            return (long)(baseCost * Math.Pow(multiplier, level));
         }
     }
 }

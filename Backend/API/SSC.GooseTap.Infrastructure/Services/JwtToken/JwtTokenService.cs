@@ -1,14 +1,12 @@
-﻿
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using SSC.GooseTap.Business.Contracts.Infrastructure;
 using SSC.GooseTap.Domain.Models;
 
-namespace SSC.GooseTap.Infrastructure.Services
+namespace SSC.GooseTap.Infrastructure.Services.JwtToken
 {
     public class JwtTokenService: IJwtTokenService
     {

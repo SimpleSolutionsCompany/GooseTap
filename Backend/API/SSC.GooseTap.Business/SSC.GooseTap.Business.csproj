@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Responces\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GooseTap Clicker</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="app">
+        <!-- Loading -->
+        <div id="loading-overlay">
+            <div class="spinner"></div>
+            <p>Loading GooseTap...</p>
+        </div>
+
+        <header>
+            <div class="balance-container">
+                <div class="balance-label">Total Balance</div>
+                <div class="balance-value" id="balance">0</div>
+            </div>
+        </header>
+        
+        <div class="click-area">
+            <button id="goose-btn" class="goose-btn">
+                <!-- Placeholder Goose/Icon -->
+                <i class="fas fa-paw" style="font-size: 80px; color: white;"></i>
+            </button>
+        </div>
+        
+        <footer>
+            <div class="energy-container">
+                <div class="energy-text" id="energy-text">0 / 1000</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="energy-fill" style="width: 100%;"></div>
+                </div>
+            </div>
+            
+            <button class="menu-btn" id="open-upgrades-btn">
+                <i class="fas fa-bolt"></i> Upgrades
+            </button>
+        </footer>
+
+        <!-- Upgrades Modal -->
+        <div class="modal" id="upgrades-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Upgrades</h3>
+                    <button class="close-btn" id="close-upgrades-btn">&times;</button>
+                </div>
+                <div class="upgrades-list" id="upgrades-list">
+                    <!-- Items injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

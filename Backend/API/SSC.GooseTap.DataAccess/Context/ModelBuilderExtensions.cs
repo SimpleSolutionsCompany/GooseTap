@@ -13,48 +13,48 @@ namespace SSC.GooseTap.DataAccess.Context
                     Id = Guid.NewGuid(),
                     Name = "ITALLIIAAA!!!",
                     Description = "Фанати з Італії приносять дохід.",
-                    BaseCost = 15000,
-                    BaseProfitPerHour = 1610
+                    BaseCost = 15,
+                    
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Grechka",
                     Description = "Стратегічні запаси гречки.",
-                    BaseCost = 30000,
-                    BaseProfitPerHour = 2200
+                    BaseCost = 3,
+                    
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Defense Brain",
                     Description = "Захист від шкідливого впливу.",
-                    BaseCost = 50000,
-                    BaseProfitPerHour = 5500
+                    BaseCost = 5,
+                    
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Bench press 100kg",
                     Description = "Сила - це прибуток.",
-                    BaseCost = 50000,
-                    BaseProfitPerHour = 5500
+                    BaseCost = 5,
+                    
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Winter Arc",
                     Description = "Щось холодне і прибуткове.",
-                    BaseCost = 50000,
-                    BaseProfitPerHour = 5500
+                    BaseCost = 10,
+                    
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Dungeon Master",
                     Description = "Контроль над підземеллям.",
-                    BaseCost = 50000,
-                    BaseProfitPerHour = 5500
+                    BaseCost = 5,
+                    
                 }
             );
         }

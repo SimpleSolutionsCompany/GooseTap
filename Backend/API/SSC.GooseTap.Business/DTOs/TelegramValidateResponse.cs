@@ -10,10 +10,12 @@ namespace SSC.GooseTap.Business.DTOs
     {
         [System.Text.Json.Serialization.JsonPropertyName("accessToken")]
         public string AccessToken { get; set; } = string.Empty;
-        // No refresh token
+        
+        [System.Text.Json.Serialization.JsonPropertyName("expiresAt")]
         public DateTime ExpiresAt { get; set; }
         
-       
+        
+        [System.Text.Json.Serialization.JsonPropertyName("isNewUser")]
         public bool IsNewUser { get; set; }
     }   
 }

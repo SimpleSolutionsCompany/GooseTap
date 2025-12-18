@@ -4,18 +4,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SSC.GooseTap.Api.Middleware;
-using SSC.GooseTap.Business.Contracts;
-using SSC.GooseTap.Business.Contracts.Infrastructure;
-using SSC.GooseTap.Business.Services;
+
 using SSC.GooseTap.Domain.Interfaces;
 using SSC.GooseTap.Domain.Models;
-using SSC.GooseTap.Infrastructure.Configuration;
+
 using SSC.GooseTap.Infrastructure.Services;
+using SSC.GooseTap.Business.Services;
 using SSC.GooseTap.DataAccess.Context;
 using SSC.GooseTap.DataAccess.Repositories;
 using System.Reflection;
 
 using DotNetEnv;
+using SSC.GooseTap.Infrastructure.Services.JwtToken;
+using SSC.GooseTap.Infrastructure.Services.TelegramAuth;
 
 Env.Load();
 
@@ -78,7 +79,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         b => b.MigrationsAssembly("SSC.GooseTap.DataAccess")
     ));
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+// builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 // Identity
@@ -116,12 +117,13 @@ builder.Services.AddAuthentication(options =>
 
 // Services Registration
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IGenericRepository<Upgrade>, UpgradeRepository>();
-builder.Services.AddScoped<IGenericRepository<ApplicationUser>, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUpgradeRepository, UpgradeRepository>();
 
-builder.Services.AddTransient<UpgradeService>();
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<GameService>(); // New
+// builder.Services.AddScoped<IUserService, UserService>();
+// builder.Services.AddScoped<IUpgradeService, UpgradeService>();
+builder.Services.AddScoped<IGameService, GameService>();
+
 
 builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();
 builder.Services.AddTransient<TelegramAuthService>(provider =>
@@ -129,14 +131,10 @@ builder.Services.AddTransient<TelegramAuthService>(provider =>
     return new TelegramAuthService(builder.Configuration["Telegram:BotToken"]);
 });
 
-// Click Queue Services
-builder.Services.AddSingleton<IClickQueue, ClickQueue>();
-builder.Services.AddHostedService<ClickQueueBackgroundService>();
 
 
-var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>();
-builder.Services.AddSingleton(emailSettings);
-builder.Services.AddTransient<IEmailService, EmailService>();
+
+
 
 builder.Services.AddCors(options =>
 {
@@ -164,7 +162,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        await context.Database.MigrateAsync();
+        // await context.Database.MigrateAsync();
+        
         logger.LogInformation("Migrations Applied Successfully.");
 
         // if (app.Environment.IsDevelopment())
@@ -172,11 +171,14 @@ using (var scope = app.Services.CreateScope())
         //     await DataSeeder.SeedAsync(context);
         //     logger.LogInformation("Database Seeded Successfully.");
         // }
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
     }
     catch (Exception ex)
     {
         logger.LogError(ex, "An error occurred while migrating the database.");
     }
+    
 }
 
 
