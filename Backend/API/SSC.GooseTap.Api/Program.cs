@@ -162,7 +162,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        // await context.Database.MigrateAsync();
+        await context.Database.MigrateAsync();
         
         logger.LogInformation("Migrations Applied Successfully.");
 
@@ -171,11 +171,13 @@ using (var scope = app.Services.CreateScope())
         //     await DataSeeder.SeedAsync(context);
         //     logger.LogInformation("Database Seeded Successfully.");
         // }
-        context.Database.EnsureDeleted();
-        context.Database.EnsureCreated();
+        
+        
     }
     catch (Exception ex)
     {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        await context.Database.EnsureCreatedAsync();
         logger.LogError(ex, "An error occurred while migrating the database.");
     }
     
