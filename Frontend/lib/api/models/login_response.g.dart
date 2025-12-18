@@ -9,11 +9,13 @@ part of 'login_response.dart';
 LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
     LoginResponse(
       accessToken: json['accessToken'] as String?,
-      refreshToken: json['refreshToken'] as String?,
+      expiresAt: json['expiresAt'] as String?,
+      isNewUser: json['isNewUser'] as bool?,
     );
 
 Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) =>
     <String, dynamic>{
       'accessToken': instance.accessToken,
-      'refreshToken': instance.refreshToken,
+      'expiresAt': instance.expiresAt,
+      'isNewUser': instance.isNewUser,
     };

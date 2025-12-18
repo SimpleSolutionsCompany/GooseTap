@@ -7,6 +7,7 @@ import "package:get_it/get_it.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:goose_tap/features/earn/blocs/game_bloc/game_bloc.dart";
 import "package:goose_tap/services/energy_service.dart";
+import 'package:telegram_web_app/telegram_web_app.dart';
 
 import "../../../local/local.dart";
 import "../../widgets/widgets.dart";
@@ -98,6 +99,11 @@ class _ExchangeScreenState extends State<ExchangeScreen>
       backgroundColor: Colors.black,
       body: BlocConsumer<GameBloc, GameState>(
         listener: (context, state) {
+           if (state is GameError) {
+             ScaffoldMessenger.of(context).showSnackBar(
+               SnackBar(content: Text('Game Error: ${state.message}')),
+             );
+           }
            if (state is GameLoaded) {
               // Check if level changed to trigger animation?
               // Simple check: if state.level > previous.level?
@@ -180,13 +186,23 @@ class _ExchangeScreenState extends State<ExchangeScreen>
                                   progress: progress,
                                   level: level,
                                   requiredClicks: requiredClicks,
+                                  username: TelegramWebApp.instance.initData?.user?.username ?? 
+                                           "${(TelegramWebApp.instance.initData?.user as dynamic)?.first_name ?? ''} ${(TelegramWebApp.instance.initData?.user as dynamic)?.last_name ?? ''}".trim(),
+                                  photoUrl: (TelegramWebApp.instance.initData?.user as dynamic)?.photo_url,
                                 ),
                               ),
 
                               // Spacer(flex: 1),
                               Flexible(
                                 flex: 1,
-                                child: Center(child: InfoBoxes(onTap: () {})),
+                                child: Center(
+                                  child: InfoBoxes(
+                                    profitPerTap: state is GameLoaded ? (state as GameLoaded).profitPerClick : 1,
+                                    profitPerHour: state is GameLoaded ? (state as GameLoaded).profitPerHour : 0.0,
+                                    coinsToNextLevel: requiredClicks, // Using the local requiredClicks calculated earlier
+                                    onTap: () {},
+                                  ),
+                                ),
                               ),
                               // Spacer(flex: 1),
                               // SizedBox(height: height * 0.015),

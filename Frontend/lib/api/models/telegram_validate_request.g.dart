@@ -8,8 +8,8 @@ part of 'telegram_validate_request.dart';
 
 TelegramValidateRequest _$TelegramValidateRequestFromJson(
   Map<String, dynamic> json,
-) => TelegramValidateRequest(initData: json['initData'] as String?);
+) => TelegramValidateRequest(initDataRaw: json['initDataRaw'] as String?);
 
 Map<String, dynamic> _$TelegramValidateRequestToJson(
   TelegramValidateRequest instance,
-) => <String, dynamic>{'initData': instance.initData};
+) => <String, dynamic>{'initDataRaw': instance.initDataRaw};

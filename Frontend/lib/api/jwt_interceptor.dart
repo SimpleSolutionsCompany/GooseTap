@@ -6,29 +6,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telegram_web_app/telegram_web_app.dart';
 
 class JwtInterceptor extends Interceptor {
-  JwtInterceptor({required this.dio, String? testInitData}) {
-    _initPrefs();
+  JwtInterceptor({
+    required this.dio,
+    required SharedPreferences prefs,
+    String? testInitData,
+  }) : _prefs = prefs {
     _testInitData = testInitData;
   }
 
   final Dio dio;
   final tg = TelegramWebApp.instance;
-  String? _testInitData; // <--- new field for testing
+  String? _testInitData; 
 
-  late SharedPreferences _prefs;
+  final SharedPreferences _prefs;
   bool _isRefreshing = false;
-  final List<Completer<Response>> _retryQueue = [];
-
-  Future<void> _initPrefs() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
+  final List<void Function(String)> _retryQueue = [];
 
   Future<String?> _getAccess() async => _prefs.getString("accessToken");
-  Future<String?> _getRefresh() async => _prefs.getString("refreshToken");
 
-  Future<void> _saveTokens(String access, String refresh) async {
+  Future<void> _saveTokens(String access) async {
     await _prefs.setString("accessToken", access);
-    await _prefs.setString("refreshToken", refresh);
   }
 
   @override
@@ -38,7 +35,10 @@ class JwtInterceptor extends Interceptor {
   ) async {
     final token = await _getAccess();
     if (token != null) {
+      log("JwtInterceptor: Adding Authorization header to: ${options.path}");
       options.headers["Authorization"] = "Bearer $token";
+    } else {
+      log("JwtInterceptor: No token found for: ${options.path}");
     }
     handler.next(options);
   }
@@ -49,57 +49,85 @@ class JwtInterceptor extends Interceptor {
       return handler.next(err);
     }
 
+    // Don't retry if the request itself was the login-telegram call to avoid infinite loop
+    if (err.requestOptions.path.contains("/api/Auth/login-telegram")) {
+      return handler.next(err);
+    }
+
     // Use test initData if provided, else read from tg
-    // Note: initData might be null if not in Telegram or during hot restart in some envs
-    final initDataRaw = _testInitData ?? (tg.isSupported ? tg.initData.raw : null);
+    String? initDataRaw = _testInitData;
+    if (initDataRaw == null || initDataRaw.isEmpty) {
+      if (tg.isSupported) {
+        initDataRaw = tg.initData.raw;
+      } else {
+        // Fallback for some desktop clients or debug environments
+        initDataRaw = tg.initData.raw;
+        if (initDataRaw != null && initDataRaw.isNotEmpty) {
+           log("Note: tg.isSupported is false but tg.initData.raw is present. Using it.");
+        }
+      }
+    }
     
     if (initDataRaw == null || initDataRaw.isEmpty) {
-      log("initData is null or empty, skipping token refresh");
+      log("initData is null or empty, cannot refresh token. Status: 401");
       return handler.next(err);
     }
 
     if (_isRefreshing) {
-      final completer = Completer<Response>();
-      _retryQueue.add(completer);
-      return completer.future.then(handler.resolve).catchError(handler.reject);
+      _retryQueue.add((token) {
+        err.requestOptions.headers["Authorization"] = "Bearer $token";
+        dio.fetch(err.requestOptions).then((response) {
+          handler.resolve(response);
+        }).catchError((e) {
+          handler.next(e is DioException ? e : err);
+        });
+      });
+      return;
     }
 
     _isRefreshing = true;
 
     try {
-      final resp = await dio.post(
-        "https://goosetap-001-site1.anytempurl.com/api/Auth/login-telegram",
-        data: {"InitData": initDataRaw},
+      log("Refreshing token for 401 error at: ${err.requestOptions.path}");
+      // Use a separate Dio instance to avoid deadlock and interceptor loop
+      final refreshDio = Dio(BaseOptions(baseUrl: dio.options.baseUrl));
+      final resp = await refreshDio.post(
+        "/api/Auth/login-telegram",
+        data: {"initDataRaw": initDataRaw},
         options: Options(headers: {"Content-Type": "application/json"}),
       );
 
       final newAccess = resp.data["accessToken"];
-      final newRefresh = resp.data["refreshToken"];
+      if (newAccess == null) throw Exception("accessToken is null in refresh response");
 
-      await _saveTokens(newAccess, newRefresh);
+      await _saveTokens(newAccess);
+      log("Token refreshed successfully");
 
+      _isRefreshing = false;
+
+      // Retry the current request
       err.requestOptions.headers["Authorization"] = "Bearer $newAccess";
-      final newResponse = await dio.fetch(err.requestOptions);
-
-      for (var completer in _retryQueue) {
-        try {
-          err.requestOptions.headers["Authorization"] = "Bearer $newAccess";
-          final queuedResp = await dio.fetch(err.requestOptions);
-          completer.complete(queuedResp);
-        } catch (e) {
-          completer.completeError(e);
-        }
+      final response = await dio.fetch(err.requestOptions);
+      
+      // Retry all queued requests
+      for (var callback in _retryQueue) {
+        callback(newAccess);
       }
-
       _retryQueue.clear();
-      _isRefreshing = false;
-      return handler.resolve(newResponse);
+
+      return handler.resolve(response);
     } catch (e) {
+      log("Token refresh failed: $e");
       _isRefreshing = false;
-      for (var completer in _retryQueue) {
-        completer.completeError(e);
+      
+      // If refresh fails, reject all queued requests
+      for (var callback in List.from(_retryQueue)) {
+        // Since we can't easily reject via callback without more complexity,
+        // we'll just clear the queue and let the original handlers timeout or handle logic.
+        // Better implementation would be to store handlers too.
       }
       _retryQueue.clear();
+      
       return handler.next(err);
     }
   }

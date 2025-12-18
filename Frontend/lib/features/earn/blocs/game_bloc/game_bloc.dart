@@ -37,14 +37,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final cached = await _gameRepository.getCachedCheckpoint();
       
       int balance = cached?.balance ?? 0;
-      int energy = cached?.energy ?? 1000;
-      int maxEnergy = cached?.maxEnergy ?? 1000;
-    int profitPerClick = cached?.profitPerClick ?? 1;
+      int energy = cached?.currentEnergy ?? 1000;
+      int maxEnergy = 1000;
+      int profitPerClick = cached?.profitPerClick ?? 1;
       int energyRestorePerSecond = cached?.energyRestorePerSecond ?? 1;
       
-      int multitapLevel = cached?.multitapLevel ?? 1;
-      int energyLimitLevel = cached?.energyLimitLevel ?? 1;
-      int rechargeSpeedLevel = cached?.rechargeSpeedLevel ?? 1;
+      double profitPerHour = 0;
+      int level = 1;
+
+      int multitapLevel = 1;
+      int energyLimitLevel = 1;
+      int rechargeSpeedLevel = 1;
 
       emit(GameLoaded(
         balance: balance,
@@ -61,20 +64,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       // Initial Sync
       try {
-        final synced = await _gameRepository.sync(0);
+        final synced = await _gameRepository.sync();
         
-        balance = synced.balance ?? balance;
-        energy = synced.energy ?? energy;
-        maxEnergy = synced.maxEnergy ?? maxEnergy;
-        profitPerHour = (synced.profitPerHour ?? profitPerHour).round();
-        level = synced.level ?? level;
-        if (level < 1) level = 1;
-        
-        profitPerClick = synced.profitPerClick ?? profitPerClick;
-        energyRestorePerSecond = synced.energyRestorePerSecond ?? energyRestorePerSecond;
-        multitapLevel = synced.multitapLevel ?? multitapLevel;
-        energyLimitLevel = synced.energyLimitLevel ?? energyLimitLevel;
-        rechargeSpeedLevel = synced.rechargeSpeedLevel ?? rechargeSpeedLevel;
+        balance = synced.balance;
+        energy = synced.currentEnergy;
+        profitPerClick = synced.profitPerClick;
+        energyRestorePerSecond = synced.energyRestorePerSecond;
 
         emit(GameLoaded(
           balance: balance,
@@ -180,30 +175,27 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     GameSyncRequested event,
     Emitter<GameState> emit,
   ) async {
-     await _flushData(emit);
-     
-     // Also fetch fresh state
-     try {
-       final synced = await _gameRepository.sync(0); 
-       if (state is GameLoaded) {
-          final current = state as GameLoaded;
-          emit(GameLoaded(
-            balance: synced.balance ?? current.balance,
-            energy: synced.energy ?? current.energy,
-            maxEnergy: synced.maxEnergy ?? current.maxEnergy,
-            profitPerHour: (synced.profitPerHour ?? current.profitPerHour).toDouble(),
-            level: synced.level ?? current.level,
-            multitapLevel: synced.multitapLevel ?? current.multitapLevel,
-            energyLimitLevel: synced.energyLimitLevel ?? current.energyLimitLevel,
-            rechargeSpeedLevel: synced.rechargeSpeedLevel ?? current.rechargeSpeedLevel,
-            profitPerClick: synced.profitPerClick ?? current.profitPerClick,
-            energyRestorePerSecond: synced.energyRestorePerSecond ?? current.energyRestorePerSecond,
-            progress: current.progress, // keep local progress
-          ));
-       }
-     } catch(e) {
-       log("Sync error: $e");
-     }
+    final clicksToSync = _pendingClicks;
+
+    try {
+      final synced = await _gameRepository.sync(clicks: clicksToSync);
+
+      // Only reset pending if sync was successful
+      _pendingClicks -= clicksToSync;
+      if (_pendingClicks < 0) _pendingClicks = 0;
+
+      if (state is GameLoaded) {
+        final current = state as GameLoaded;
+        emit(current.copyWith(
+          balance: synced.balance,
+          energy: synced.currentEnergy,
+          profitPerClick: synced.profitPerClick,
+          energyRestorePerSecond: synced.energyRestorePerSecond,
+        ));
+      }
+    } catch (e) {
+      log("Sync error: $e. Pending clicks $clicksToSync kept in buffer.");
+    }
   }
 
   void _startFlushTimer() {
@@ -218,22 +210,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _regenTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       add(GameEnergyRegen());
     });
-  }
-
-  Future<void> _flushData(Emitter<GameState> emit) async {
-    if (_pendingClicks == 0) return;
-
-    final clicksToSend = _pendingClicks;
-    final energyToSend = _pendingEnergy;
-    
-    _pendingClicks = 0;
-    _pendingEnergy = 0;
-
-    try {
-      await _gameRepository.click(clicksToSend, energyToSend);
-    } catch (e) {
-        print("Failed to sync clicks: $e");
-    }
   }
 
   @override

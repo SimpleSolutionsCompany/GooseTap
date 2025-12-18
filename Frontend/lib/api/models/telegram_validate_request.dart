@@ -4,9 +4,10 @@ part 'telegram_validate_request.g.dart';
 
 @JsonSerializable()
 class TelegramValidateRequest {
-  final String? initData;
+  @JsonKey(name: 'initDataRaw')
+  final String? initDataRaw;
 
-  TelegramValidateRequest({this.initData});
+  TelegramValidateRequest({this.initDataRaw});
 
   factory TelegramValidateRequest.fromJson(Map<String, dynamic> json) =>
       _$TelegramValidateRequestFromJson(json);

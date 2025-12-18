@@ -71,7 +71,19 @@ final class GameLoaded extends GameState {
   }
 
   @override
-  List<Object> get props => [balance, energy, maxEnergy, profitPerHour, level, progress];
+  List<Object> get props => [
+        balance,
+        energy,
+        maxEnergy,
+        profitPerHour,
+        level,
+        progress,
+        multitapLevel,
+        energyLimitLevel,
+        rechargeSpeedLevel,
+        profitPerClick,
+        energyRestorePerSecond,
+      ];
 }
 
 final class GameError extends GameState {

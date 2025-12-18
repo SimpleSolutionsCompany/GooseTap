@@ -3,9 +3,18 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 
 class InfoBoxes extends StatelessWidget {
-  InfoBoxes({super.key, required this.onTap});
+  InfoBoxes({
+    super.key,
+    required this.onTap,
+    this.profitPerTap = 1,
+    this.profitPerHour = 0.0,
+    this.coinsToNextLevel = 100,
+  });
 
   final void Function()? onTap;
+  final int profitPerTap;
+  final double profitPerHour;
+  final int coinsToNextLevel;
   final getIt = GetIt.instance;
 
   @override
@@ -67,7 +76,7 @@ class InfoBoxes extends StatelessWidget {
                         ),
                         SizedBox(width: 3),
                         Text(
-                          "+12",
+                          "+$profitPerTap",
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.white,
@@ -95,7 +104,7 @@ class InfoBoxes extends StatelessWidget {
                   children: [
                     SizedBox(height: 5),
                     Text(
-                      "Earn per tap",
+                      "To next level",
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.white,
@@ -111,11 +120,9 @@ class InfoBoxes extends StatelessWidget {
                           height: 15,
                           child: Image.asset("assets/exchange_imgs/coin.png"),
                         ),
-
                         SizedBox(width: 3),
-
                         Text(
-                          "10M",
+                          "$coinsToNextLevel",
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.white,
@@ -142,7 +149,7 @@ class InfoBoxes extends StatelessWidget {
                   children: [
                     SizedBox(height: 5),
                     Text(
-                      "Earn per tap",
+                      "Profit per hour",
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.white,
@@ -160,7 +167,7 @@ class InfoBoxes extends StatelessWidget {
                         ),
                         SizedBox(width: 3),
                         Text(
-                          "+678.3K",
+                          "+${profitPerHour.toStringAsFixed(1)}",
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.white,

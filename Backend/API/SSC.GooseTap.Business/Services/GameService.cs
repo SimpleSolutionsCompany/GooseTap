@@ -9,49 +9,33 @@ namespace SSC.GooseTap.Business.Services
 {
     public class GameService(IUnitOfWork unitOfWork) : IGameService
     {
-        public async Task<Result<ClickResponseDto>> ClickAsync(Guid userId)
-        {
-            var user = await unitOfWork.Users.GetByIdAsync(userId);
-            if (user == null)
-            {
-                return Result.Fail<ClickResponseDto>("User not found");
-            }
-
-            // Sync energy before clicking to ensure accuracy
-            SyncEnergy(user);
-
-            // Cost per click currently hardcoded to 1
-            int energyCost = 1; 
-
-            if (user.CurrentEnergy < energyCost)
-            {
-                return Result.Fail<ClickResponseDto>("Not enough energy");
-            }
-
-            // Deduct energy
-            user.CurrentEnergy -= energyCost;
-
-            // Add coins
-            user.Balance += user.ProfitPerClick;
-
-            // Save changes
-            await unitOfWork.SaveChangesAsync();
-
-            return Result.Ok(new ClickResponseDto
-            {
-                Balance = user.Balance,
-                CurrentEnergy = user.CurrentEnergy,
-                ProfitPerClick = user.ProfitPerClick,
-                EnergyRestorePerSecond = user.EnergyRestorePerSecond
-            });
-        }
-
-        public async Task<Result<ClickResponseDto>> SyncAsync(Guid userId)
+        public async Task<Result<ClickResponseDto>> SyncAsync(Guid userId, SyncGameRequestDto? request)
         {
             var user = await unitOfWork.Users.GetByIdAsync(userId);
             if (user == null) return Result.Fail<ClickResponseDto>("User not found");
 
             SyncEnergy(user);
+
+            if (request != null && request.ClickCount > 0)
+            {
+                int clicks = request.ClickCount;
+                int energyCost = 1; // Assuming 1 energy per click for now
+                int totalEnergyCost = clicks * energyCost;
+
+                // For batched sync, we cap the clicks by available energy to prevent negative energy
+                if (user.CurrentEnergy < totalEnergyCost)
+                {
+                    clicks = user.CurrentEnergy / energyCost;
+                    totalEnergyCost = clicks * energyCost;
+                }
+
+                if (clicks > 0)
+                {
+                    user.CurrentEnergy -= totalEnergyCost;
+                    user.Balance += (long)clicks * user.ProfitPerClick;
+                }
+            }
+
             await unitOfWork.SaveChangesAsync();
 
             return Result.Ok(new ClickResponseDto

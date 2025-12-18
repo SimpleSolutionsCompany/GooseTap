@@ -7,7 +7,6 @@ namespace SSC.GooseTap.Business.Services
     {
         Task<Result<IEnumerable<UpgradeDto>>> GetUpgradesAsync(Guid userId);
         Task<Result<BuyUpgradeResponseDto>> BuyUpgradeAsync(Guid userId, Guid upgradeId);
-        Task<Result<ClickResponseDto>> ClickAsync(Guid userId);
-        Task<Result<ClickResponseDto>> SyncAsync(Guid userId);
+        Task<Result<ClickResponseDto>> SyncAsync(Guid userId, SyncGameRequestDto? request);
     }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:goose_tap/api/api.dart';
 import 'package:goose_tap/api/models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,42 +10,58 @@ class GameRepository {
 
   static const String _checkpointKey = 'game_checkpoint';
 
+  DateTime? _lastSyncTime;
+  static const Duration _syncThrottle = Duration(seconds: 3);
+
   GameRepository(this._client, this._prefs);
 
-  Future<CheckpointResponse?> getCachedCheckpoint() async {
+  Future<ClickResponse?> getCachedCheckpoint() async {
     final jsonString = _prefs.getString(_checkpointKey);
     if (jsonString != null) {
       try {
         final Map<String, dynamic> json = jsonDecode(jsonString);
-        return CheckpointResponse.fromJson(json);
+        return ClickResponse.fromJson(json);
       } catch (e) {
+        log("Error decoding cached checkpoint: $e");
         return null;
       }
     }
     return null;
   }
 
-  Future<void> saveCheckpoint(CheckpointResponse checkpoint) async {
+  Future<void> saveCheckpoint(ClickResponse checkpoint) async {
     final jsonString = jsonEncode(checkpoint.toJson());
     await _prefs.setString(_checkpointKey, jsonString);
   }
 
-  Future<CheckpointResponse> sync(int tapsCount) async {
-    final response = await _client.gameSync(SyncRequest(tapsCount: tapsCount));
-    await saveCheckpoint(response);
-    return response;
-  }
+  Future<ClickResponse> sync({int clicks = 0}) async {
+    final now = DateTime.now();
+    // Only throttle if no clicks are being sent. 
+    // If there ARE clicks, we want to send them immediately (or at least not block them here).
+    if (clicks == 0 && _lastSyncTime != null && now.difference(_lastSyncTime!) < _syncThrottle) {
+      log("GameRepository: Sync throttled. Returning cached state.");
+      final cached = await getCachedCheckpoint();
+      if (cached != null) return cached;
+    }
 
-  Future<StringApiResponse> click(int clicks, int energySpent) async {
-    // Note: This endpoint returns StringApiResponse, but doesn't return the full checkpoint.
-    // The BLoC will optimistically update local state.
-    // However, if the backend returns specific data, we might want to parse it.
-    // Spec says: "Returns success if the click was processed (queued)."
-      timestamp: DateTime.now(),
-    ));
+    log("GameRepository: Syncing game state (clicks=$clicks)...");
+    _lastSyncTime = now;
+    
+    try {
+      final response = await _client.gameSync(SyncRequest(clickCount: clicks));
+      log("GameRepository: Sync successful. Balance: ${response.balance}");
+      await saveCheckpoint(response);
+      return response;
+    } catch (e) {
+      log("GameRepository: Sync failed: $e");
+      rethrow;
+    }
   }
 
   Future<StringApiResponse> buyBooster(BuyBoosterRequest request) async {
-    return await _client.buyBooster(request);
+    log("GameRepository: Buying booster...");
+    final response = await _client.buyBooster(request);
+    log("GameRepository: Booster purchase response: ${response.message}");
+    return response;
   }
 }

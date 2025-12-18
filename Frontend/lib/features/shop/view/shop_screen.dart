@@ -7,6 +7,7 @@ import 'package:goose_tap/features/earn/blocs/game_bloc/game_bloc.dart';
 import 'package:goose_tap/features/shop/blocs/get_upgrades_bloc/get_upgrades_bloc.dart';
 import 'package:goose_tap/features/shop/shop.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
+import 'package:goose_tap/features/exchange/widgets/user_card.dart';
 import 'package:telegram_web_app/telegram_web_app.dart';
 
 import '../../../local/local.dart';
@@ -83,17 +84,38 @@ class _ShopScreenState extends State<ShopScreen> {
                   Flexible(flex: 1, child: InfoBoxes(onTap: () {})),
                   Spacer(flex: 1),
                   Flexible(
-                    flex: 1, 
+                    flex: 2,
                     child: BlocBuilder<GameBloc, GameState>(
                       builder: (context, state) {
-                         int balance = 0;
-                         if (state is GameLoaded) {
-                            balance = state.balance;
-                         } else {
-                            // Fallback to shared helper if GameBloc not ready?
-                            // balance = sharedHelper.getSavedMoney();
-                         }
-                         return MoneyBox(counter: balance);
+                        int balance = 0;
+                        double progress = 0;
+                        int level = 1;
+                        if (state is GameLoaded) {
+                          balance = state.balance;
+                          progress = state.progress;
+                          level = state.level;
+                        }
+                        
+                        int requiredClicks = 100;
+                        if (level == 1) requiredClicks = 100;
+                        else if (level == 2) requiredClicks = 1000;
+                        else if (level == 3) requiredClicks = 3000;
+                        else if (level == 4) requiredClicks = 5000;
+                        else if (level == 5) requiredClicks = 8000;
+                        else if (level == 6) requiredClicks = 15000;
+                        else if (level == 7) requiredClicks = 30000;
+                        else if (level == 8) requiredClicks = 50000;
+                        else requiredClicks = level * 1000;
+
+                        return UserCard(
+                          counter: balance,
+                          progress: progress,
+                          level: level,
+                          requiredClicks: requiredClicks,
+                          username: TelegramWebApp.instance.initData?.user?.username ?? 
+                                   "${(TelegramWebApp.instance.initData?.user as dynamic)?.first_name ?? ''} ${(TelegramWebApp.instance.initData?.user as dynamic)?.last_name ?? ''}".trim(),
+                          photoUrl: (TelegramWebApp.instance.initData?.user as dynamic)?.photo_url,
+                        );
                       },
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:goose_tap/api/api.dart';
 import 'package:goose_tap/api/models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,33 +16,33 @@ class UpgradesRepository {
     final jsonString = _prefs.getString(_upgradesKey);
     if (jsonString != null) {
       try {
-        final Map<String, dynamic> json = jsonDecode(jsonString);
-        // Assuming MainUpgradeModel structure
-        final mainModel = MainUpgradeModel.fromJson(json);
-        return mainModel.upgrades;
+        final List<dynamic> jsonList = jsonDecode(jsonString);
+        return jsonList.map((e) => UpgradeModel.fromJson(e as Map<String, dynamic>)).toList();
       } catch (e) {
+        log("Error decoding cached upgrades: $e");
         return [];
       }
     }
     return [];
   }
 
-  Future<void> saveUpgrades(MainUpgradeModel model) async {
-    final jsonString = jsonEncode(model.toJson());
+  Future<void> saveUpgrades(List<UpgradeModel> upgrades) async {
+    final jsonString = jsonEncode(upgrades.map((e) => e.toJson()).toList());
     await _prefs.setString(_upgradesKey, jsonString);
   }
 
   Future<List<UpgradeModel>> getUpgrades() async {
-    // Note: existing method is getAllUpgrades which returns MainUpgradeModel
-    // MainUpgradeModel presumably has a list of upgrades
-    final response = await _client.getAllUpgrades();
-    await saveUpgrades(response);
-    return response.upgrades;
+    log("UpgradesRepository: Fetching upgrades...");
+    final upgrades = await _client.getAllUpgrades();
+    log("UpgradesRepository: Fetched ${upgrades.length} upgrades.");
+    await saveUpgrades(upgrades);
+    return upgrades;
   }
 
-  Future<void> buyUpgrade(String id) async {
-    await _client.buyUpgrade(BuyUpgradeRequest(upgradeId: id));
-    // After buying, we might want to re-fetch upgrades or the user state
-    // For now, let the caller handle re-fetching if needed.
+  Future<BuyUpgradeResponse> buyUpgrade(String id) async {
+    log("UpgradesRepository: Buying upgrade $id...");
+    final response = await _client.buyUpgrade(id);
+    log("UpgradesRepository: Buy upgrade response: success=${response.success}, message=${response.message}");
+    return response;
   }
 }

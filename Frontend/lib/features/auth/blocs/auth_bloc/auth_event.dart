@@ -17,3 +17,7 @@ class AuthLoginTelegramRequested extends AuthEvent {
   @override
   List<Object> get props => [initData];
 }
+
+class AuthLogoutRequested extends AuthEvent {}
+
+class AuthRetryRequested extends AuthEvent {}

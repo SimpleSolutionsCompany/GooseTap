@@ -2,6 +2,11 @@ using SSC.GooseTap.Domain.Models;
 
 namespace SSC.GooseTap.Business.DTOs
 {
+    public class SyncGameRequestDto
+    {
+        public int ClickCount { get; set; }
+    }
+
     public class UpgradeDto
     {
         public Guid Id { get; set; }

@@ -4,9 +4,9 @@ part 'sync_request.g.dart';
 
 @JsonSerializable()
 class SyncRequest {
-  final int? tapsCount;
+  final int? clickCount;
 
-  SyncRequest({this.tapsCount});
+  SyncRequest({this.clickCount});
 
   factory SyncRequest.fromJson(Map<String, dynamic> json) =>
       _$SyncRequestFromJson(json);

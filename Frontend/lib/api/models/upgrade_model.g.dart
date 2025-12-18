@@ -10,9 +10,13 @@ UpgradeModel _$UpgradeModelFromJson(Map<String, dynamic> json) => UpgradeModel(
   id: json['id'] as String,
   name: json['name'] as String,
   description: json['description'] as String,
-  baseCost: (json['baseCost'] as num).toInt(),
-  baseProfitPerHour: (json['baseProfitPerHour'] as num).toInt(),
-  userUpgrades: json['userUpgrades'] as List<dynamic>? ?? const [],
+  boosterType: (json['boosterType'] as num).toInt(),
+  currentLevel: (json['currentLevel'] as num).toInt(),
+  maxLevel: (json['maxLevel'] as num).toInt(),
+  price: (json['price'] as num).toInt(),
+  effectValue: (json['effectValue'] as num).toInt(),
+  costMultiplier: (json['costMultiplier'] as num).toDouble(),
+  canBuy: json['canBuy'] as bool,
 );
 
 Map<String, dynamic> _$UpgradeModelToJson(UpgradeModel instance) =>
@@ -20,7 +24,11 @@ Map<String, dynamic> _$UpgradeModelToJson(UpgradeModel instance) =>
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
-      'baseCost': instance.baseCost,
-      'baseProfitPerHour': instance.baseProfitPerHour,
-      'userUpgrades': instance.userUpgrades,
+      'boosterType': instance.boosterType,
+      'currentLevel': instance.currentLevel,
+      'maxLevel': instance.maxLevel,
+      'price': instance.price,
+      'effectValue': instance.effectValue,
+      'costMultiplier': instance.costMultiplier,
+      'canBuy': instance.canBuy,
     };

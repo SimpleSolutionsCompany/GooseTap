@@ -39,23 +39,37 @@ Future<void> initTelegramWebApp() async {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // TelegramWebApp.instance.ready();
-  await initTelegramWebApp();
-  await dotenv.load(fileName: ".env");
-  await setupDependencies();
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    // TelegramWebApp.instance.ready();
+    await initTelegramWebApp();
+    try {
+      await dotenv.load(fileName: ".env");
+    } catch (e) {
+      log("Failed to load .env: $e");
+      // Fallback or just continue, maybe API_URL is null and will crash later but at least app starts
+    }
+    await setupDependencies();
 
-  // start global energy ticker
-  getIt<EnergyService>().start();
+    // start global energy ticker
+    getIt<EnergyService>().start();
 
-  FlutterError.onError = (details) {
-    log("Flutter error happened: $details");
-  };
+    FlutterError.onError = (details) {
+      log("Flutter error happened: $details");
+    };
 
-  final talker = TalkerFlutter.init();
-  Bloc.observer = TalkerBlocObserver(talker: talker);
+    final talker = TalkerFlutter.init();
+    Bloc.observer = TalkerBlocObserver(talker: talker);
 
-  runApp(const MyApp());
+    runApp(const MyApp());
+  } catch (e, stack) {
+    log("Initialization failed: $e", stackTrace: stack);
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(child: Text("Init Failed: $e", textDirection: TextDirection.ltr)),
+      ),
+    ));
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -63,47 +77,97 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // getIt<Responsiveness>().init(constraints);
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => GetUpgradesBloc(
-                upgradesRepository: getIt<UpgradesRepository>(),
-              )..add(OnGetUpgradesEvent()),
-            ),
-            BlocProvider(
-              create: (context) {
-                final bloc = AuthBloc(authRepository: getIt<AuthRepository>());
-                // Trigger login if we have initData from TelegramWebApp
-                // Or checking locally cached token
-                if (TelegramWebApp.instance.initData?.raw != null) {
-                   bloc.add(AuthLoginTelegramRequested(TelegramWebApp.instance.initData!.raw!));
-                } else {
-                   bloc.add(AuthCheckRequested());
-                }
-                return bloc;
-              },
-            ),
-            BlocProvider(
-              create: (context) => GameBloc(
-                gameRepository: getIt<GameRepository>(),
-              )..add(GameStarted()),
-            ),
-          ],
-          child: MaterialApp(
-            title: 'GooseTap',
+    return BlocProvider(
+      create: (context) {
+        final bloc = AuthBloc(authRepository: getIt<AuthRepository>());
+        // Trigger login if we have initData from TelegramWebApp
+        if (TelegramWebApp.instance.initData?.raw != null &&
+            TelegramWebApp.instance.initData!.raw!.isNotEmpty) {
+          bloc.add(AuthLoginTelegramRequested(
+              TelegramWebApp.instance.initData!.raw!));
+        } else {
+          bloc.add(AuthCheckRequested());
+        }
+        return bloc;
+      },
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthAuthenticated) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => GetUpgradesBloc(
+                    upgradesRepository: getIt<UpgradesRepository>(),
+                  )..add(OnGetUpgradesEvent()),
+                ),
+                BlocProvider(
+                  create: (context) => GameBloc(
+                    gameRepository: getIt<GameRepository>(),
+                  )..add(GameStarted()),
+                ),
+              ],
+              child: MaterialApp(
+                title: 'GooseTap',
+                debugShowCheckedModeBanner: false,
+                theme: myTheme,
+                home: MyBottomBar(),
+              ),
+            );
+          }
+
+          if (state is AuthFailure) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: myTheme,
+              home: Scaffold(
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Authentication Failed",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        state.message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (TelegramWebApp.instance.initData?.raw != null) {
+                            context.read<AuthBloc>().add(
+                                AuthLoginTelegramRequested(
+                                    TelegramWebApp.instance.initData!.raw!));
+                          } else {
+                            context.read<AuthBloc>().add(AuthCheckRequested());
+                          }
+                        },
+                        child: Text("Retry"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+
+          // AuthInitial, AuthLoading, or AuthUnauthenticated
+          return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: myTheme,
-            // theme: TelegramThemeUtil.getTheme(TelegramWebApp.instance),
-            // home: tg.platform == "android" || tg.platform == "ios"
-            //     ? MyBottomBar()
-            //     : QrCodeScreen(),
-            home: MyBottomBar(),
-          ),
-        );
-      },
+            home: const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(
+                  color: Colors.purple,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -18,9 +18,9 @@ void main() {
 
     test('Helpers: Check raw URL connectivity', () async {
        try {
-         final response = await dio.get('$baseUrl/api/Upgrades');
+         final response = await dio.get('$baseUrl/api/v1/Game/upgrades');
          expect(response.statusCode, 200);
-         print('GET /api/Upgrades status: ${response.statusCode}');
+         print('GET /api/v1/Game/upgrades status: ${response.statusCode}');
        } catch (e) {
          print('Error connecting to $baseUrl: $e');
          // If this fails, integration test fails, which is expected if server invalid
@@ -32,7 +32,7 @@ void main() {
     
     test('POST /api/Game/Sync returns 401/403 (or success) implying endpoint exists', () async {
       try {
-        await client.gameSync(SyncRequest(tapsCount: 0));
+        await client.gameSync();
       } catch (e) {
         if (e is DioException) {
           // We expect 401 because we didn't log in / set Authorization header
@@ -47,7 +47,7 @@ void main() {
 
     test('POST /api/Game/Click returns 401/403 (implying endpoint exists)', () async {
       try {
-        await client.gameClick(GameUpdateRequest(clicks: 1, energySpent: 1, timestamp: DateTime.now()));
+        await client.gameClick();
       } catch (e) {
         if (e is DioException) {
            print('POST /api/Game/Click status: ${e.response?.statusCode}');

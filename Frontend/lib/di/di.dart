@@ -20,8 +20,11 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<Dio>(() => Dio());
   getIt.registerLazySingleton<RestClient>(() {
     final apiUrl = dotenv.env["API_URL"];
+    if (apiUrl != null) {
+      getIt<Dio>().options.baseUrl = apiUrl;
+    }
     final dio = getIt<Dio>()
-      ..interceptors.add(JwtInterceptor(dio: getIt<Dio>()));
+      ..interceptors.add(JwtInterceptor(dio: getIt<Dio>(), prefs: prefs));
     return RestClient(dio, baseUrl: apiUrl);
   });
 

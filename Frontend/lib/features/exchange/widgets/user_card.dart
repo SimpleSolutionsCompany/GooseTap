@@ -12,19 +12,22 @@ class UserCard extends StatelessWidget {
     required this.progress,
     this.level = 1,
     this.requiredClicks = 1000,
+    this.username,
+    this.photoUrl,
   });
 
   final int counter;
   final double progress;
   final int level;
   final int requiredClicks;
+  final String? username;
+  final String? photoUrl;
   final getIt = GetIt.instance;
 
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    // final tg = getIt<TelegramWebApp>(); // Unused and potentially crashing if not registered
 
     return Center(
       child: Column(
@@ -104,11 +107,21 @@ class UserCard extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(22),
-
-                                child: Image.asset(
-                                  "assets/exchange_imgs/me.jpg",
-                                  fit: BoxFit.cover,
-                                ),
+                                child: photoUrl != null && photoUrl!.isNotEmpty
+                                    ? Image.network(
+                                        photoUrl!,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                           return Image.asset(
+                                            "assets/exchange_imgs/default_avatar.png",
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      )
+                                    : Image.asset(
+                                        "assets/exchange_imgs/default_avatar.png",
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                           ],
@@ -116,7 +129,7 @@ class UserCard extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(bottom: 20),
                           child: Text(
-                            "Semeniuk Vlad",
+                            username ?? "Semeniuk Vlad",
                             style: GoogleFonts.sarpanch(
                               textStyle: TextStyle(
                                 color: Colors.white,

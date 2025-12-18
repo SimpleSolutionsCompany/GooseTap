@@ -58,10 +58,10 @@ class ShopCard extends StatelessWidget {
                               },
                               child: ShopBox(
                                 img: img,
-                                level: "lvl 1", // Assuming backend doesn't return existing level yet or field missing in UpgradeModel
-                                moneyToBuy: upgrade.baseCost.toString(),
-                                possibleMoney: upgrade.baseProfitPerHour.toString(),
-                                profitType: "Profit per hour",
+                                level: "lvl ${upgrade.currentLevel}",
+                                moneyToBuy: upgrade.price.toString(),
+                                possibleMoney: upgrade.effectValue.toString(),
+                                profitType: "Profit per tap",
                                 title: upgrade.name,
                               ),
                             );

@@ -9,3 +9,5 @@ export "checkpoint_response.dart";
 export "buy_upgrade_request.dart";
 export "buy_booster_request.dart";
 export "login_response.dart";
+export "click_response.dart";
+export "buy_upgrade_response.dart";

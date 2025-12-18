@@ -30,22 +30,12 @@ namespace SSC.GooseTap.Api.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpPost("click")]
-        public async Task<IActionResult> Click()
+        [HttpPost("sync")]
+        public async Task<IActionResult> Sync([FromBody] SyncGameRequestDto? request)
         {
             var userId = GetUserId();
-            var result = await gameService.ClickAsync(userId);
-
-            if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest(result.Error);
-        }
-
-        [HttpGet("sync")]
-        public async Task<IActionResult> Sync()
-        {
-            var userId = GetUserId();
-            var result = await gameService.SyncAsync(userId);
-
+            var result = await gameService.SyncAsync(userId, request);
+ 
             if (result.IsSuccess) return Ok(result.Value);
             return BadRequest(result.Error);
         }

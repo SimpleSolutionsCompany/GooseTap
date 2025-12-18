@@ -7,17 +7,25 @@ class UpgradeModel {
   final String id;
   final String name;
   final String description;
-  final int baseCost;
-  final int baseProfitPerHour;
-  final List<dynamic>? userUpgrades;
+  final int boosterType;
+  final int currentLevel;
+  final int maxLevel;
+  final int price;
+  final int effectValue;
+  final double costMultiplier;
+  final bool canBuy;
 
   UpgradeModel({
     required this.id,
     required this.name,
     required this.description,
-    required this.baseCost,
-    required this.baseProfitPerHour,
-    this.userUpgrades = const [],
+    required this.boosterType,
+    required this.currentLevel,
+    required this.maxLevel,
+    required this.price,
+    required this.effectValue,
+    required this.costMultiplier,
+    required this.canBuy,
   });
 
   factory UpgradeModel.fromJson(Map<String, dynamic> json) =>

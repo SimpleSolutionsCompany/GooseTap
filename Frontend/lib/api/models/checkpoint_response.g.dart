@@ -18,6 +18,11 @@ CheckpointResponse _$CheckpointResponseFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['lastSyncDate'] as String),
       level: (json['level'] as num?)?.toInt(),
       rank: json['rank'] as String?,
+      multitapLevel: (json['multitapLevel'] as num?)?.toInt(),
+      energyLimitLevel: (json['energyLimitLevel'] as num?)?.toInt(),
+      rechargeSpeedLevel: (json['rechargeSpeedLevel'] as num?)?.toInt(),
+      profitPerClick: (json['profitPerClick'] as num?)?.toInt(),
+      energyRestorePerSecond: (json['energyRestorePerSecond'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$CheckpointResponseToJson(CheckpointResponse instance) =>
@@ -30,4 +35,9 @@ Map<String, dynamic> _$CheckpointResponseToJson(CheckpointResponse instance) =>
       'lastSyncDate': instance.lastSyncDate?.toIso8601String(),
       'level': instance.level,
       'rank': instance.rank,
+      'multitapLevel': instance.multitapLevel,
+      'energyLimitLevel': instance.energyLimitLevel,
+      'rechargeSpeedLevel': instance.rechargeSpeedLevel,
+      'profitPerClick': instance.profitPerClick,
+      'energyRestorePerSecond': instance.energyRestorePerSecond,
     };
