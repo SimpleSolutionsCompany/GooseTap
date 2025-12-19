@@ -7,7 +7,7 @@ part of 'sync_request.dart';
 // **************************************************************************
 
 SyncRequest _$SyncRequestFromJson(Map<String, dynamic> json) =>
-    SyncRequest(tapsCount: (json['tapsCount'] as num?)?.toInt());
+    SyncRequest(clickCount: (json['clickCount'] as num?)?.toInt());
 
 Map<String, dynamic> _$SyncRequestToJson(SyncRequest instance) =>
-    <String, dynamic>{'tapsCount': instance.tapsCount};
+    <String, dynamic>{'clickCount': instance.clickCount};

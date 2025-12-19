@@ -76,7 +76,12 @@ class _ExchangeScreenState extends State<ExchangeScreen>
     final renderBox = context.findRenderObject() as RenderBox;
     final position = renderBox.globalToLocal(details.globalPosition);
     setState(() {
-      _flyingOnes.add(FlyingOne(key: UniqueKey(), position: position));
+      final state = context.read<GameBloc>().state;
+      int profit = 1;
+      if (state is GameLoaded) {
+        profit = state.profitPerClick;
+      }
+      _flyingOnes.add(FlyingOne(key: UniqueKey(), position: position, value: profit));
     });
   }
 
@@ -95,206 +100,186 @@ class _ExchangeScreenState extends State<ExchangeScreen>
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: BlocConsumer<GameBloc, GameState>(
-        listener: (context, state) {
-           if (state is GameError) {
-             ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(content: Text('Game Error: ${state.message}')),
-             );
-           }
-           if (state is GameLoaded) {
-              // Check if level changed to trigger animation?
-              // Simple check: if state.level > previous.level?
-              // But BlocListener doesn't give previous state easily unless we store it.
-              // Logic for level up animation might need refactoring or we assume
-              // if we see progress reset it might include level up.
-              // For now, let's just make sure UI reflects state.
-              // If we want the specific animation popup from `_handleLevelUps`:
-              // We could implement `listenWhen`.
-           }
-        },
-        listenWhen: (previous, current) {
-           if (previous is GameLoaded && current is GameLoaded) {
-              if (current.level > previous.level) {
-                 // Trigger Animation
-                 _levelUpController?.forward(from: 0.0);
-                 setState(() { _showLevelUp = true; });
-                 Timer(const Duration(milliseconds: 1400), () {
-                    if (mounted) setState(() { _showLevelUp = false; });
-                 });
-              }
-           }
-           return true; 
-        },
-        builder: (context, state) {
-          int counter = 0;
-          int energy = 0;
-          double progress = 0;
-          int level = 1;
-          int requiredClicks = 100; // Default
+    return BlocConsumer<GameBloc, GameState>(
+      listener: (context, state) {
+        if (state is GameError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Game Error: ${state.message}')),
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is GameInitial || state is GameLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.purple),
+          );
+        }
 
-          if (state is GameLoaded) {
-            counter = state.balance;
-            energy = state.energy;
-            progress = state.progress;
-            level = state.level;
-            // We need to know required clicks for display?
-            // UserCard expects `requiredClicks`.
-            // We can move `_requiredClicksForLevel` to public static or just duplicate/keep helper.
-            // Since I removed the helper method from the class (in previous step), I should bring it back OR
-            // access it from GameBloc if I made it public static? I made it private in GameBloc.
-            // I'll re-add it as a helper here or keep it simple.
-            // Let's assume I need to handle `requiredClicks` calculation here.
-             if (level == 1) requiredClicks = 100;
-             else if (level == 2) requiredClicks = 1000;
-             else if (level == 3) requiredClicks = 3000;
-             else if (level == 4) requiredClicks = 5000;
-             else if (level == 5) requiredClicks = 8000;
-             else if (level == 6) requiredClicks = 15000;
-             else if (level == 7) requiredClicks = 30000;
-             else if (level == 8) requiredClicks = 50000;
-             else requiredClicks = level * 1000;
+        int counter = 0;
+        int energy = 0;
+        double progress = 0.0;
+        int level = 1;
+        int profitPerClick = 1;
+        double profitPerHour = 0.0;
+        int requiredClicks = 100;
+
+        if (state is GameLoaded) {
+          counter = state.balance;
+          energy = state.energy;
+          progress = state.progress;
+          level = state.level;
+          profitPerClick = state.profitPerClick;
+          profitPerHour = state.profitPerHour;
+          requiredClicks = _requiredClicksForLevel(level);
+        }
+
+        String username = "Goose Player";
+        String? photoUrl;
+        try {
+          final user = TelegramWebApp.instance.initData?.user;
+          if (user != null) {
+            final dynamic userDyn = user;
+            username = userDyn.username ?? 
+                      "${userDyn.first_name ?? ''} ${userDyn.last_name ?? ''}".trim();
+            if (username.isEmpty) username = "Goose Player";
+            photoUrl = userDyn.photo_url;
           }
+        } catch (e) {
+          log("Safe extraction of user info failed: $e");
+        }
 
-          return Column(
-            children: [
-              Expanded(
-                child: Builder(
-                  builder: (stackContext) {
-                    return Stack(
-                      alignment: Alignment.center,
-                      clipBehavior: Clip.none,
-                      children: [
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Image.asset(
-                            "assets/exchange_imgs/gradient_bg_purple.png",
-                          ),
-                        ),
-                        SafeArea(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: height * 0.07),
-                              Flexible(
-                                flex: 2,
-                                child: UserCard(
-                                  counter: counter,
-                                  progress: progress,
-                                  level: level,
-                                  requiredClicks: requiredClicks,
-                                  username: TelegramWebApp.instance.initData?.user?.username ?? 
-                                           "${(TelegramWebApp.instance.initData?.user as dynamic)?.first_name ?? ''} ${(TelegramWebApp.instance.initData?.user as dynamic)?.last_name ?? ''}".trim(),
-                                  photoUrl: (TelegramWebApp.instance.initData?.user as dynamic)?.photo_url,
-                                ),
-                              ),
+        return Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            // Background Layer
+            Positioned.fill(
+              child: Container(color: Colors.black),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Image.asset(
+                "assets/exchange_imgs/gradient_bg_purple.png",
+                width: MediaQuery.of(context).size.width * 0.8,
+                fit: BoxFit.contain,
+              ),
+            ),
 
-                              // Spacer(flex: 1),
-                              Flexible(
-                                flex: 1,
-                                child: Center(
-                                  child: InfoBoxes(
-                                    profitPerTap: state is GameLoaded ? (state as GameLoaded).profitPerClick : 1,
-                                    profitPerHour: state is GameLoaded ? (state as GameLoaded).profitPerHour : 0.0,
-                                    coinsToNextLevel: requiredClicks, // Using the local requiredClicks calculated earlier
-                                    onTap: () {},
-                                  ),
-                                ),
-                              ),
-                              // Spacer(flex: 1),
-                              // SizedBox(height: height * 0.015),
-                              Flexible(
-                                flex: 3,
-                                child: Center(
-                                  child: GooseCircle(
-                                    counter: counter,
-                                    // enabled: _energy > 0,
-                                    onTapUp: (details) =>
-                                        _onTap(stackContext, details),
-                                  ),
-                                ),
-                              ),
-                              // SizedBox(height: height * 0.008),
-                              Flexible(flex: 1, child: Energy(energy: energy)),
-                            ],
-                          ),
-                        ),
-                        ..._flyingOnes.map(
-                          (e) => e.build(stackContext, _removeFlyingOne),
-                        ),
+            // Main Content Layer
+            Positioned.fill(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    SizedBox(height: height * 0.05),
+                    
+                    // User Card
+                    Flexible(
+                      flex: 4,
+                      child: UserCard(
+                        counter: counter,
+                        progress: progress,
+                        level: level,
+                        requiredClicks: requiredClicks,
+                        username: username,
+                        photoUrl: photoUrl,
+                      ),
+                    ),
 
-                    if (kDebugMode)
-                      Positioned(
-                        bottom: 12,
-                        right: 12,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white10,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          // child: <removed debug info relying on sharedHelper for clarity/safety>
-                          child: SizedBox(), 
+                    // Info Boxes
+                    Flexible(
+                      flex: 2,
+                      child: Center(
+                        child: InfoBoxes(
+                          profitPerTap: profitPerClick,
+                          profitPerHour: profitPerHour,
+                          coinsToNextLevel: requiredClicks,
+                          onTap: () {},
                         ),
                       ),
-                    if (_showLevelUp)
-                      Positioned.fill(
-                        child: Center(
-                          child: ScaleTransition(
-                            scale: _levelUpScale ?? AlwaysStoppedAnimation(1.0),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 16,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.12),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.2),
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Level Up!',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    'Level $level', // Using local var from builder
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                    ),
+
+                    // Goose Circle
+                    Flexible(
+                      flex: 5,
+                      child: Center(
+                        child: AspectRatio(
+                          aspectRatio: 1.0,
+                          child: GooseCircle(
+                            counter: counter,
+                            onTapUp: (details) => _onTap(context, details),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Energy
+                    Flexible(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Energy(energy: energy),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Flying Ones Layer
+            ..._flyingOnes.map(
+              (e) => e.build(context, _removeFlyingOne),
+            ),
+
+            // Level Up Animation overlay
+            if (_showLevelUp)
+              Positioned.fill(
+                child: Center(
+                  child: ScaleTransition(
+                    scale: _levelUpScale ?? AlwaysStoppedAnimation(1.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.purple, width: 2),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Level Up!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
+                          Text(
+                            'Level $level',
+                            style: const TextStyle(color: Colors.white70, fontSize: 18),
+                          ),
+                        ],
                       ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ],
-      );
-    },
-   ), // Closing BlocConsumer
- );
-}
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  int _requiredClicksForLevel(int level) {
+    if (level <= 1) return 100;
+    if (level == 2) return 1000;
+    if (level == 3) return 3000;
+    if (level == 4) return 5000;
+    if (level == 5) return 8000;
+    if (level == 6) return 15000;
+    if (level == 7) return 30000;
+    if (level == 8) return 50000;
+    return level * 1000;
+  }
 }

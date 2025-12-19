@@ -34,7 +34,7 @@ class GameRepository {
     await _prefs.setString(_checkpointKey, jsonString);
   }
 
-  Future<ClickResponse> sync({int clicks = 0}) async {
+  Future<ClickResponse> sync({int clicks = 0, int? level, double? progress}) async {
     final now = DateTime.now();
     // Only throttle if no clicks are being sent. 
     // If there ARE clicks, we want to send them immediately (or at least not block them here).
@@ -50,8 +50,21 @@ class GameRepository {
     try {
       final response = await _client.gameSync(SyncRequest(clickCount: clicks));
       log("GameRepository: Sync successful. Balance: ${response.balance}");
-      await saveCheckpoint(response);
-      return response;
+      
+      // Merge local fields (level, progress) which aren't on the backend
+      final cached = await getCachedCheckpoint();
+      final mergedResponse = ClickResponse(
+        balance: response.balance,
+        currentEnergy: response.currentEnergy,
+        profitPerClick: response.profitPerClick,
+        energyRestorePerSecond: response.energyRestorePerSecond,
+        maxEnergy: response.maxEnergy,
+        level: level ?? cached?.level ?? 1,
+        progress: progress ?? cached?.progress ?? 0.0,
+      );
+
+      await saveCheckpoint(mergedResponse);
+      return mergedResponse;
     } catch (e) {
       log("GameRepository: Sync failed: $e");
       rethrow;

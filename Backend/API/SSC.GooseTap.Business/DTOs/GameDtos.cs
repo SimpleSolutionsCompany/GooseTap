@@ -30,6 +30,7 @@ namespace SSC.GooseTap.Business.DTOs
         public int CurrentEnergy { get; set; }
         public int ProfitPerClick { get; set; }
         public int EnergyRestorePerSecond { get; set; }
+        public int MaxEnergy { get; set; }
     }
 
     public class BuyUpgradeResponseDto

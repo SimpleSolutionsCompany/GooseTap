@@ -39,7 +39,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
           : GamesScreen(),
 
       bottomNavigationBar: Padding(
-        padding: EdgeInsetsGeometry.only(
+        padding: const EdgeInsets.only(
           left: 20,
           right: 20,
           top: 0,
@@ -52,7 +52,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
             borderRadius: BorderRadiusGeometry.circular(10),
           ),
           child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -119,6 +119,7 @@ class _BottomBarBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -133,7 +134,7 @@ class _BottomBarBox extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
-            padding: EdgeInsets.all(6),
+            padding: const EdgeInsets.all(6),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,

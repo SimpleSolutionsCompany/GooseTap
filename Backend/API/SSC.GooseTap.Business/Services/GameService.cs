@@ -43,7 +43,8 @@ namespace SSC.GooseTap.Business.Services
                 Balance = user.Balance,
                 CurrentEnergy = user.CurrentEnergy,
                 ProfitPerClick = user.ProfitPerClick,
-                EnergyRestorePerSecond = user.EnergyRestorePerSecond
+                EnergyRestorePerSecond = user.EnergyRestorePerSecond,
+                MaxEnergy = user.MaxEnergy
             });
         }
 

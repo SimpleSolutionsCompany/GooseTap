@@ -17,32 +17,21 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:telegram_web_app/telegram_web_app.dart';
 import 'features/widgets/widgets.dart';
 
-Future<void> initTelegramWebApp() async {
-  try {
-    final tg = TelegramWebApp.instance;
-
-    if (tg.isSupported) {
-      try {
-        tg.requestFullscreen();
-        tg.lockOrientation();
-      } catch (e) {
-        log("Telegram API failed: ${e.toString()}");
-      }
-    } else {
-      log(
-        "Telegram web app is not supported. Skipping fullscreen request and lockOrientaion",
-      );
-    }
-  } catch (outerError) {
-    log("Error is: ${outerError.toString()}");
-  }
-}
-
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
-    // TelegramWebApp.instance.ready();
-    await initTelegramWebApp();
+    
+    // Telegram Mini App initialization
+    final tg = TelegramWebApp.instance;
+    tg.ready();
+    if (tg.isSupported) {
+      try {
+        tg.expand();
+      } catch (e) {
+        log("Telegram expand failed: $e");
+      }
+    }
+
     try {
       await dotenv.load(fileName: ".env");
     } catch (e) {
@@ -80,11 +69,17 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final bloc = AuthBloc(authRepository: getIt<AuthRepository>());
-        // Trigger login if we have initData from TelegramWebApp
-        if (TelegramWebApp.instance.initData?.raw != null &&
-            TelegramWebApp.instance.initData!.raw!.isNotEmpty) {
-          bloc.add(AuthLoginTelegramRequested(
-              TelegramWebApp.instance.initData!.raw!));
+        
+        // Defensive check for Telegram initData
+        String? initDataRaw;
+        try {
+          initDataRaw = TelegramWebApp.instance.initData?.raw;
+        } catch (e) {
+          log("Telegram initData access failed: ${e.toString()}");
+        }
+
+        if (initDataRaw != null && initDataRaw.isNotEmpty) {
+          bloc.add(AuthLoginTelegramRequested(initDataRaw));
         } else {
           bloc.add(AuthCheckRequested());
         }

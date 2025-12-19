@@ -21,7 +21,7 @@ class ShopCard extends StatelessWidget {
       "assets/shop_imgs/winter_arc.png",
     ];
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 40),
       // child: FractionallySizedBox(
       //   heightFactor: 0.5,
       //   widthFactor: 1,
@@ -31,7 +31,7 @@ class ShopCard extends StatelessWidget {
           color: Color.fromARGB(65, 47, 47, 47),
         ),
         child: selectedIndex == 1
-            ? const BoostersTab()
+            ? const SizedBox()
             : LayoutBuilder(
                 builder: (context, constraints) {
                   return BlocBuilder<GetUpgradesBloc, GetUpgradesState>(
@@ -103,7 +103,7 @@ class ShopBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Padding(
-      padding: EdgeInsetsGeometry.all(size.width * 0.01),
+      padding: EdgeInsets.all(size.width * 0.01),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size.width * 0.035),

@@ -37,17 +37,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final cached = await _gameRepository.getCachedCheckpoint();
       
       int balance = cached?.balance ?? 0;
-      int energy = cached?.currentEnergy ?? 1000;
-      int maxEnergy = 1000;
       int profitPerClick = cached?.profitPerClick ?? 1;
       int energyRestorePerSecond = cached?.energyRestorePerSecond ?? 1;
+      int maxEnergy = cached?.maxEnergy ?? 1000;
       
       double profitPerHour = 0;
-      int level = 1;
-
-      int multitapLevel = 1;
-      int energyLimitLevel = 1;
-      int rechargeSpeedLevel = 1;
+      int level = cached?.level ?? 1;
+      double progress = cached?.progress ?? 0.0;
 
       emit(GameLoaded(
         balance: balance,
@@ -55,6 +51,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         maxEnergy: maxEnergy,
         profitPerHour: profitPerHour.toDouble(),
         level: level,
+        progress: progress,
         multitapLevel: multitapLevel,
         energyLimitLevel: energyLimitLevel,
         rechargeSpeedLevel: rechargeSpeedLevel,
@@ -64,12 +61,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       // Initial Sync
       try {
-        final synced = await _gameRepository.sync();
+        final synced = await _gameRepository.sync(
+          clicks: 0,
+          level: level,
+          progress: progress,
+        );
         
         balance = synced.balance;
         energy = synced.currentEnergy;
         profitPerClick = synced.profitPerClick;
         energyRestorePerSecond = synced.energyRestorePerSecond;
+        maxEnergy = synced.maxEnergy;
 
         emit(GameLoaded(
           balance: balance,
@@ -77,6 +79,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           maxEnergy: maxEnergy,
           profitPerHour: profitPerHour.toDouble(),
           level: level,
+          progress: progress,
           multitapLevel: multitapLevel,
           energyLimitLevel: energyLimitLevel,
           rechargeSpeedLevel: rechargeSpeedLevel,
@@ -176,9 +179,21 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     Emitter<GameState> emit,
   ) async {
     final clicksToSync = _pendingClicks;
+    int? currentLevel;
+    double? currentProgress;
+    
+    if (state is GameLoaded) {
+      final current = state as GameLoaded;
+      currentLevel = current.level;
+      currentProgress = current.progress;
+    }
 
     try {
-      final synced = await _gameRepository.sync(clicks: clicksToSync);
+      final synced = await _gameRepository.sync(
+        clicks: clicksToSync,
+        level: currentLevel,
+        progress: currentProgress,
+      );
 
       // Only reset pending if sync was successful
       _pendingClicks -= clicksToSync;
@@ -189,6 +204,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         emit(current.copyWith(
           balance: synced.balance,
           energy: synced.currentEnergy,
+          maxEnergy: synced.maxEnergy,
           profitPerClick: synced.profitPerClick,
           energyRestorePerSecond: synced.energyRestorePerSecond,
         ));

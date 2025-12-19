@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:goose_tap/features/exchange/widgets/widgets.dart';
 import 'package:goose_tap/features/widgets/widgets.dart';
-import 'package:telegram_web_app/telegram_web_app.dart';
 
 class UserCard extends StatelessWidget {
   UserCard({
@@ -22,7 +19,6 @@ class UserCard extends StatelessWidget {
   final int requiredClicks;
   final String? username;
   final String? photoUrl;
-  final getIt = GetIt.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +108,7 @@ class UserCard extends StatelessWidget {
                                         photoUrl!,
                                         fit: BoxFit.cover,
                                         errorBuilder: (context, error, stackTrace) {
-                                           return Image.asset(
+                                          return Image.asset(
                                             "assets/exchange_imgs/default_avatar.png",
                                             fit: BoxFit.cover,
                                           );
@@ -127,15 +123,13 @@ class UserCard extends StatelessWidget {
                           ],
                         ),
                         Padding(
-                          padding: EdgeInsets.only(bottom: 20),
+                          padding: const EdgeInsets.only(bottom: 20),
                           child: Text(
-                            username ?? "Semeniuk Vlad",
-                            style: GoogleFonts.sarpanch(
-                              textStyle: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            username ?? "Goose Player",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -143,6 +137,7 @@ class UserCard extends StatelessWidget {
                     ),
                   ),
                   MoneyBox(counter: counter),
+
                   Spacer(),
                   ProgressBar(
                     progress: progress,

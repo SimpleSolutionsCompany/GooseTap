@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 class FlyingOne {
   final Key key;
   final Offset position;
+  final int value;
 
-  FlyingOne({required this.key, required this.position});
+  FlyingOne({required this.key, required this.position, this.value = 1});
 
   Widget build(BuildContext context, Function(Key) onEnd) {
     return _AnimatedFlyingOne(
       key: key,
       startPosition: position,
+      value: value,
       onEnd: () => onEnd(key),
     );
   }
@@ -19,11 +21,13 @@ class FlyingOne {
 
 class _AnimatedFlyingOne extends StatefulWidget {
   final Offset startPosition;
+  final int value;
   final VoidCallback onEnd;
 
   const _AnimatedFlyingOne({
     required super.key,
     required this.startPosition,
+    required this.value,
     required this.onEnd,
   });
 
@@ -78,11 +82,17 @@ class _AnimatedFlyingOneState extends State<_AnimatedFlyingOne>
           child: Opacity(
             opacity: _fadeOut.value,
             child: Text(
-              '+1',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.yellow.withOpacity(0.9),
+              '+${widget.value}',
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+                shadows: [
+                  Shadow(
+                    color: Colors.purple,
+                    blurRadius: 10,
+                  ),
+                ],
               ),
             ),
           ),

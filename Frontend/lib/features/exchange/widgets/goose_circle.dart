@@ -67,7 +67,7 @@ class _GooseCircleSimpleState extends State<GooseCircleSimple>
             scale: _scaleAnimation.value,
             child: Stack(
               alignment: Alignment.center,
-              clipBehavior: Clip.hardEdge,
+              clipBehavior: Clip.none,
               children: [
                 Container(
                   width: outer,
@@ -175,7 +175,7 @@ class _GooseCircleSimpleState extends State<GooseCircleSimple>
                   fit: BoxFit.contain,
                   child: SizedBox(
                     width: gooseWidth,
-                    height: gooseWidth * 0.9,
+                    height: gooseWidth,
                     child: Image.asset("assets/exchange_imgs/goose.png"),
                   ),
                 ),
@@ -263,7 +263,7 @@ class _GooseCircleState extends State<GooseCircle>
           offset: Offset(0, _bounceAnimation?.value ?? 0.0),
           child: Stack(
             alignment: Alignment.center,
-            clipBehavior: Clip.hardEdge,
+            clipBehavior: Clip.none,
             children: [
               Container(
                 width: outer,
