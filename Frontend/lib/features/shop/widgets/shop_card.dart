@@ -50,6 +50,11 @@ class ShopCard extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final upgrade = state.upgrades[index];
                             final img = imgList[index % imgList.length]; // Safe image access
+                            final typeNames = ["Multitap", "Energy Limit", "Regen Speed"];
+                            final typeName = upgrade.boosterType < typeNames.length 
+                                ? typeNames[upgrade.boosterType] 
+                                : "Unknown";
+
                             return GestureDetector(
                               onTap: () {
                                 context
@@ -65,7 +70,7 @@ class ShopCard extends StatelessWidget {
                                 price: upgrade.price,
                                 effectValue: upgrade.effectValue,
                                 canBuy: upgrade.canBuy && upgrade.currentLevel < upgrade.maxLevel,
-                                typeName: "Multitap",
+                                typeName: typeName,
                               ),
                             );
                           },

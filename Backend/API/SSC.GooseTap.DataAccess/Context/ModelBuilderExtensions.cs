@@ -12,7 +12,7 @@ namespace SSC.GooseTap.DataAccess.Context
                 {
                     Id = Guid.NewGuid(),
                     Name = "ITALLIIAAA!!!",
-                    Description = "Multitap",
+                    Description = "Increase profit per tap",
                     BaseCost = 15,
                     BoosterType = BoosterType.Multitap
                 },
@@ -20,7 +20,7 @@ namespace SSC.GooseTap.DataAccess.Context
                 {
                     Id = Guid.NewGuid(),
                     Name = "Grechka",
-                    Description = "Multitap",
+                    Description = "Increase profit per tap",
                     BaseCost = 3,
                     BoosterType = BoosterType.Multitap
                 },
@@ -28,33 +28,33 @@ namespace SSC.GooseTap.DataAccess.Context
                 {
                     Id = Guid.NewGuid(),
                     Name = "Defense Brain",
-                    Description = "Multitap",
+                    Description = "Increase maximum energy",
                     BaseCost = 5,
-                    BoosterType = BoosterType.Multitap
+                    BoosterType = BoosterType.EnergyLimit
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Bench press 100kg",
-                    Description = "Multitap",
+                    Description = "Increase maximum energy",
                     BaseCost = 5,
-                    BoosterType = BoosterType.Multitap
+                    BoosterType = BoosterType.EnergyLimit
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Winter Arc",
-                    Description = "Multitap",
+                    Description = "Increase energy recovery speed",
                     BaseCost = 10,
-                    BoosterType = BoosterType.Multitap
+                    BoosterType = BoosterType.RestoreEnergyPerSecond
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Dungeon Master",
-                    Description = "Multitap",
+                    Description = "Increase energy recovery speed",
                     BaseCost = 5,
-                    BoosterType = BoosterType.Multitap
+                    BoosterType = BoosterType.RestoreEnergyPerSecond
                 }
             );
         }
