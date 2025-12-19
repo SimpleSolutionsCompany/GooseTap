@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class Energy extends StatefulWidget {
-  const Energy({super.key, required this.energy});
+  const Energy({super.key, required this.energy, this.maxEnergy = 1000});
 
   final int energy;
+  final int maxEnergy;
 
   @override
   State<Energy> createState() => _EnergyState();
@@ -12,7 +13,6 @@ class Energy extends StatefulWidget {
 
 class _EnergyState extends State<Energy> {
   final getIt = GetIt.instance;
-  int avaliableEnergy = 1000;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class _EnergyState extends State<Energy> {
                 child: Image.asset("assets/exchange_imgs/energy.png"),
               ),
               Text(
-                "${widget.energy}/$avaliableEnergy",
+                "${widget.energy}/${widget.maxEnergy}",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white,

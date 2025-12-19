@@ -56,16 +56,18 @@ class _ShopScreenState extends State<ShopScreen> {
         children: [
           // Background Layer
           Positioned.fill(
-            child: Container(color: Colors.black),
-          ),
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Image.asset(
-                "assets/exchange_imgs/gradient_bg_purple.png",
-                width: MediaQuery.of(context).size.width * 0.8,
-                fit: BoxFit.contain,
-                errorBuilder: (c, o, s) => Image.asset("assets/gradient_bg_purple2.png", fit: BoxFit.cover),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                gradient: RadialGradient(
+                  center: Alignment.topRight,
+                  radius: 1.2,
+                  colors: [
+                    Color.fromARGB(255, 42, 0, 68),
+                    Colors.black,
+                  ],
+                  stops: [0.0, 0.7],
+                ),
               ),
             ),
           ),
@@ -73,6 +75,7 @@ class _ShopScreenState extends State<ShopScreen> {
           // Main Content Layer
           Positioned.fill(
             child: SafeArea(
+              bottom: false,
               child: BlocBuilder<GameBloc, GameState>(
                 builder: (context, gameState) {
                   if (gameState is GameInitial || gameState is GameLoading) {

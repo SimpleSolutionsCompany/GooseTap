@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:telegram_web_app/telegram_web_app.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class FriendsScreen extends StatefulWidget {
   const FriendsScreen({super.key});
@@ -90,81 +89,82 @@ class _FriendsScreenState extends State<FriendsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Placeholder();
     // ⚠️ ЗМІНЕНО: Отримуємо .raw для відображення
     // final initDataRawString = tg.initData?.raw ?? 'initData.raw порожній';
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Telegram Auth Test"),
-        backgroundColor: Colors.blue,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // ⚠️ ЗМІНЕНО: Копіюємо .raw
-          // final dataToCopy = tg.initData?.raw ?? '';
-          // if (dataToCopy.isNotEmpty) {
-          // await Clipboard.setData(ClipboardData(text: dataToCopy));
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('✅ raw initData скопійовано')),
-          );
-          //   } else {
-          //     ScaffoldMessenger.of(context).showSnackBar(
-          //       const SnackBar(content: Text('⚠️ initData.raw порожній')),
-          //     );
-          //   }
-        },
-        child: const Icon(Icons.copy),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              "1️⃣ Raw initData:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              // child: SelectableText(
-              //   // ⚠️ ЗМІНЕНО: Відображаємо .raw
-              //   // initDataRawString,
-              //   // style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
-              // ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _authStatus == AuthStatus.loading
-                  ? null
-                  : _authenticate,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _getAuthButtonColor(),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: Text(_getAuthButtonText()),
-            ),
-            const SizedBox(height: 16),
-            _buildStatusIndicator(),
-            if (_authStatus == AuthStatus.success) ...[
-              const Divider(),
-              Text("Access Token: $_accessToken"),
-              Text("Refresh Token: $_refreshToken"),
-              Text("Expires At: $_expiresAt"),
-            ],
-            if (_authStatus == AuthStatus.error)
-              Text(
-                "❌ ${_errorMessage ?? 'Помилка'}",
-                style: const TextStyle(color: Colors.red),
-              ),
-          ],
-        ),
-      ),
-    );
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: const Text("Telegram Auth Test"),
+    //     backgroundColor: Colors.blue,
+    //   ),
+    //   floatingActionButton: FloatingActionButton(
+    //     onPressed: () async {
+    //       // ⚠️ ЗМІНЕНО: Копіюємо .raw
+    //       // final dataToCopy = tg.initData?.raw ?? '';
+    //       // if (dataToCopy.isNotEmpty) {
+    //       // await Clipboard.setData(ClipboardData(text: dataToCopy));
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         const SnackBar(content: Text('✅ raw initData скопійовано')),
+    //       );
+    //       //   } else {
+    //       //     ScaffoldMessenger.of(context).showSnackBar(
+    //       //       const SnackBar(content: Text('⚠️ initData.raw порожній')),
+    //       //     );
+    //       //   }
+    //     },
+    //     child: const Icon(Icons.copy),
+    //   ),
+    //   body: Padding(
+    //     padding: const EdgeInsets.all(16),
+    //     child: Column(
+    //       crossAxisAlignment: CrossAxisAlignment.stretch,
+    //       children: [
+    //         const Text(
+    //           "1️⃣ Raw initData:",
+    //           style: TextStyle(fontWeight: FontWeight.bold),
+    //         ),
+    //         const SizedBox(height: 8),
+    //         Container(
+    //           padding: const EdgeInsets.all(12),
+    //           decoration: BoxDecoration(
+    //             color: Colors.grey[200],
+    //             borderRadius: BorderRadius.circular(8),
+    //           ),
+    //           // child: SelectableText(
+    //           //   // ⚠️ ЗМІНЕНО: Відображаємо .raw
+    //           //   // initDataRawString,
+    //           //   // style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
+    //           // ),
+    //         ),
+    //         const SizedBox(height: 16),
+    //         ElevatedButton(
+    //           onPressed: _authStatus == AuthStatus.loading
+    //               ? null
+    //               : _authenticate,
+    //           style: ElevatedButton.styleFrom(
+    //             backgroundColor: _getAuthButtonColor(),
+    //             padding: const EdgeInsets.symmetric(vertical: 16),
+    //           ),
+    //           child: Text(_getAuthButtonText()),
+    //         ),
+    //         const SizedBox(height: 16),
+    //         _buildStatusIndicator(),
+    //         if (_authStatus == AuthStatus.success) ...[
+    //           const Divider(),
+    //           Text("Access Token: $_accessToken"),
+    //           Text("Refresh Token: $_refreshToken"),
+    //           Text("Expires At: $_expiresAt"),
+    //         ],
+    //         if (_authStatus == AuthStatus.error)
+    //           Text(
+    //             "❌ ${_errorMessage ?? 'Помилка'}",
+    //             style: const TextStyle(color: Colors.red),
+    //           ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 
   Widget _buildStatusIndicator() {

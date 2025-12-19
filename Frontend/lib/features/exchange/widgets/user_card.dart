@@ -54,73 +54,41 @@ class UserCard extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Positioned(
-                              left: 32,
-                              child: Container(
-                                height: 44,
-                                width: 44,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(22),
-                                  color: Color(0xFF4C0061),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.white.withOpacity(0.2),
-                                      blurRadius: 3,
-                                      offset: Offset(3, 3),
-                                    ),
-                                  ],
-                                  border: Border.all(
-                                    color: Color(0xFFFF0004),
-                                    width: 2.5,
-                                  ),
-                                ),
-
-                                child: Image.asset(
-                                  "assets/exchange_imgs/goose.png",
-                                  fit: BoxFit.cover,
-                                ),
+                        Container(
+                          height: 44,
+                          width: 44,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(22),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.2),
+                                blurRadius: 3,
+                                offset: Offset(3, 3),
                               ),
+                            ],
+                            border: Border.all(
+                              color: Color(0xFFFFEA00),
+                              width: 2.5,
                             ),
-                            Container(
-                              height: 44,
-                              width: 44,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(22),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.white.withOpacity(0.2),
-                                    blurRadius: 3,
-                                    offset: Offset(3, 3),
-                                  ),
-                                ],
-                                border: Border.all(
-                                  color: Color(0xFFFFEA00),
-                                  width: 2.5,
-                                ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(22),
-                                child: photoUrl != null && photoUrl!.isNotEmpty
-                                    ? Image.network(
-                                        photoUrl!,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Image.asset(
-                                            "assets/exchange_imgs/default_avatar.png",
-                                            fit: BoxFit.cover,
-                                          );
-                                        },
-                                      )
-                                    : Image.asset(
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(22),
+                            child: photoUrl != null && photoUrl!.isNotEmpty
+                                ? Image.network(
+                                    photoUrl!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
                                         "assets/exchange_imgs/default_avatar.png",
                                         fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                          ],
+                                      );
+                                    },
+                                  )
+                                : Image.asset(
+                                    "assets/exchange_imgs/default_avatar.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20),

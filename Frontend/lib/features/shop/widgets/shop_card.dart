@@ -28,7 +28,7 @@ class ShopCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size.width * 0.03),
-          color: Color.fromARGB(65, 47, 47, 47),
+          color: const Color.fromARGB(33, 47, 47, 47), // More transparent
         ),
         child: selectedIndex == 1
             ? const SizedBox()
@@ -58,11 +58,14 @@ class ShopCard extends StatelessWidget {
                               },
                               child: ShopBox(
                                 img: img,
-                                level: "lvl ${upgrade.currentLevel}",
-                                moneyToBuy: upgrade.price.toString(),
-                                possibleMoney: upgrade.effectValue.toString(),
-                                profitType: "Profit per tap",
-                                title: upgrade.name,
+                                name: upgrade.name,
+                                description: upgrade.description,
+                                currentLevel: upgrade.currentLevel,
+                                maxLevel: upgrade.maxLevel,
+                                price: upgrade.price,
+                                effectValue: upgrade.effectValue,
+                                canBuy: upgrade.canBuy && upgrade.currentLevel < upgrade.maxLevel,
+                                typeName: "Multitap",
                               ),
                             );
                           },
@@ -85,29 +88,40 @@ class ShopBox extends StatelessWidget {
   const ShopBox({
     super.key,
     required this.img,
-    required this.title,
-    required this.profitType,
-    required this.possibleMoney,
-    required this.level,
-    required this.moneyToBuy,
+    required this.name,
+    required this.description,
+    required this.currentLevel,
+    required this.maxLevel,
+    required this.price,
+    required this.effectValue,
+    required this.canBuy,
+    required this.typeName,
   });
 
   final String img;
-  final String title;
-  final String profitType;
-  final String possibleMoney;
-  final String level;
-  final String moneyToBuy;
+  final String name;
+  final String description;
+  final int currentLevel;
+  final int maxLevel;
+  final int price;
+  final int effectValue;
+  final bool canBuy;
+  final String typeName;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final bool isMaxLevel = currentLevel >= maxLevel;
+
     return Padding(
       padding: EdgeInsets.all(size.width * 0.01),
       child: Container(
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size.width * 0.035),
-          color: Color.fromARGB(67, 47, 47, 47),
+          color: isMaxLevel
+              ? const Color.fromARGB(40, 255, 0, 0) // Subtle red for max level
+              : const Color.fromARGB(67, 47, 47, 47),
         ),
         child: Column(
           children: [
@@ -127,74 +141,74 @@ class ShopBox extends StatelessWidget {
                     child: Image.asset(img),
                   ),
                   SizedBox(width: size.width * 0.025),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: size.width * 0.018,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: size.height * 0.005),
-                      Text(
-                        profitType,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: size.width * 0.022,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: size.height * 0.004),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: size.width * 0.03,
-                            child: Image.asset("assets/exchange_imgs/coin.png"),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: size.width * 0.024,
+                            fontWeight: FontWeight.w600,
                           ),
-                          SizedBox(width: size.width * 0.01),
-                          Text(
-                            possibleMoney,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: size.width * 0.026,
-                              fontWeight: FontWeight.w400,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: size.height * 0.002),
+                        Text(
+                          typeName, // "Multitap"
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: size.width * 0.022,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: size.height * 0.004),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: size.width * 0.03,
+                              child: Image.asset("assets/exchange_imgs/coin.png"),
                             ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ],
+                            SizedBox(width: size.width * 0.01),
+                            Text(
+                              "+$effectValue",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: size.width * 0.026,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            Divider(
-              color: const Color.fromARGB(22, 158, 158, 158),
+            const Divider(
+              color: Color.fromARGB(22, 158, 158, 158),
               height: 0.5,
               thickness: 0.5,
             ),
             Padding(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 5),
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(width: size.width * 0.02),
                   Text(
-                    level,
+                    "lvl $currentLevel",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: isMaxLevel ? Colors.red : Colors.white,
                       fontSize: size.width * 0.028,
                       fontWeight: FontWeight.w600,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(width: size.width * 0.03),
                   Container(
@@ -202,25 +216,36 @@ class ShopBox extends StatelessWidget {
                     width: 0.5,
                     color: const Color.fromARGB(44, 158, 158, 158),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: size.width * 0.03,
-                        child: Image.asset("assets/exchange_imgs/coin.png"),
+                  const SizedBox(width: 8),
+                  if (isMaxLevel)
+                    Text(
+                      "MAX LEVEL",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: size.width * 0.025,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(width: size.width * 0.01),
-                      Text(
-                        moneyToBuy,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: size.width * 0.025,
-                          fontWeight: FontWeight.w600,
+                    )
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: size.width * 0.03,
+                          child: Image.asset("assets/exchange_imgs/coin.png"),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+                        SizedBox(width: size.width * 0.01),
+                        Text(
+                          price.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: size.width * 0.025,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),

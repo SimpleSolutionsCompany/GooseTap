@@ -12,49 +12,49 @@ namespace SSC.GooseTap.DataAccess.Context
                 {
                     Id = Guid.NewGuid(),
                     Name = "ITALLIIAAA!!!",
-                    Description = "Фанати з Італії приносять дохід.",
+                    Description = "Multitap",
                     BaseCost = 15,
-                    
+                    BoosterType = BoosterType.Multitap
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Grechka",
-                    Description = "Стратегічні запаси гречки.",
+                    Description = "Multitap",
                     BaseCost = 3,
-                    
+                    BoosterType = BoosterType.Multitap
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Defense Brain",
-                    Description = "Захист від шкідливого впливу.",
+                    Description = "Multitap",
                     BaseCost = 5,
-                    
+                    BoosterType = BoosterType.Multitap
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Bench press 100kg",
-                    Description = "Сила - це прибуток.",
+                    Description = "Multitap",
                     BaseCost = 5,
-                    
+                    BoosterType = BoosterType.Multitap
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Winter Arc",
-                    Description = "Щось холодне і прибуткове.",
+                    Description = "Multitap",
                     BaseCost = 10,
-                    
+                    BoosterType = BoosterType.Multitap
                 },
                 new Upgrade
                 {
                     Id = Guid.NewGuid(),
                     Name = "Dungeon Master",
-                    Description = "Контроль над підземеллям.",
+                    Description = "Multitap",
                     BaseCost = 5,
-                    
+                    BoosterType = BoosterType.Multitap
                 }
             );
         }

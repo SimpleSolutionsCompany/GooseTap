@@ -48,8 +48,9 @@ class _MyBottomBarState extends State<MyBottomBar> {
         child: Container(
           height: 70,
           decoration: BoxDecoration(
-            color: Color(0xFF111111),
-            borderRadius: BorderRadiusGeometry.circular(10),
+            color: const Color(0xFF111111).withOpacity(0.95),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: Colors.white.withOpacity(0.05)),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

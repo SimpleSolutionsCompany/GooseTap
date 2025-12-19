@@ -154,15 +154,19 @@ class _ExchangeScreenState extends State<ExchangeScreen>
           children: [
             // Background Layer
             Positioned.fill(
-              child: Container(color: Colors.black),
-            ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Image.asset(
-                "assets/exchange_imgs/gradient_bg_purple.png",
-                width: MediaQuery.of(context).size.width * 0.8,
-                fit: BoxFit.contain,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  gradient: RadialGradient(
+                    center: Alignment.topRight,
+                    radius: 1.2,
+                    colors: [
+                      Color.fromARGB(255, 42, 0, 68),
+                      Colors.black,
+                    ],
+                    stops: [0.0, 0.7],
+                  ),
+                ),
               ),
             ),
 
@@ -213,12 +217,14 @@ class _ExchangeScreenState extends State<ExchangeScreen>
                       ),
                     ),
 
-                    // Energy
                     Flexible(
                       flex: 2,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: Energy(energy: energy),
+                        child: Energy(
+                          energy: energy,
+                          maxEnergy: (state as GameLoaded).maxEnergy,
+                        ),
                       ),
                     ),
                   ],
