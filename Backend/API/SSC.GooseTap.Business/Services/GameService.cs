@@ -175,9 +175,9 @@ namespace SSC.GooseTap.Business.Services
         {
             var now = DateTime.UtcNow;
             var secondsPassed = (now - user.LastEnergyRestoreTime).TotalSeconds;
-            if (secondsPassed < 1) return;
+            if (secondsPassed < 3) return; // Only sync if at least 3 seconds passed
 
-            int restored = (int)(secondsPassed * user.EnergyRestorePerSecond);
+            int restored = (int)(secondsPassed / 3.0 * user.EnergyRestorePerSecond);
             if (restored > 0)
             {
                 // If we are over cap, don't reduce, just don't add.

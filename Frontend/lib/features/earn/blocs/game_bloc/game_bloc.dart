@@ -37,13 +37,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final cached = await _gameRepository.getCachedCheckpoint();
       
       int balance = cached?.balance ?? 0;
+      int energy = cached?.currentEnergy ?? 1000;
+      int maxEnergy = cached?.maxEnergy ?? 1000;
       int profitPerClick = cached?.profitPerClick ?? 1;
       int energyRestorePerSecond = cached?.energyRestorePerSecond ?? 1;
-      int maxEnergy = cached?.maxEnergy ?? 1000;
       
       double profitPerHour = 0;
       int level = cached?.level ?? 1;
       double progress = cached?.progress ?? 0.0;
+
+      int multitapLevel = 1;
+      int energyLimitLevel = 1;
+      int rechargeSpeedLevel = 1;
 
       emit(GameLoaded(
         balance: balance,
@@ -223,7 +228,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   void _startRegenTimer() {
     _regenTimer?.cancel();
-    _regenTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+    _regenTimer = Timer.periodic(const Duration(seconds: 3), (_) {
       add(GameEnergyRegen());
     });
   }
